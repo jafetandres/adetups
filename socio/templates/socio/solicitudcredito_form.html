@@ -1,0 +1,418 @@
+{% extends 'socio/index.html' %}
+{% block content %}
+    <div class="card shadow-lg border-0 rounded-lg mt-5">
+        <div class="card-header"><h3 class="text-center font-weight-light my-4">Registro de Solicitud
+            de Crédito</h3></div>
+        <div class="card-body">
+            {% if 'ok' in request.GET %}
+                <div class="alert alert-success" role="alert">Registro actualizado correctamente</div>
+            {% endif %}
+            {% if form.errors %}
+                <div class="alert alert-warning" role="alert">
+                    {% if form.clasecredito.errors %}
+                        Clase de Crédito {{ form.clasecredito.errors }}
+                    {% endif %}
+                    {% if form.garante.errors %}
+                        Garante {{ form.garante.errors }}
+                    {% endif %}
+                    {% if form.monto.errors %}
+                        Monto {{ form.monto.errors }}
+                    {% endif %}
+                    {% if form.plazo.errors %}
+                        Plazo {{ form.plazo.errors }}
+                    {% endif %}
+                    {% if form.csocodigo.errors %}
+                        Clase de solicitud {{ form.csocodigo.errors }}
+                    {% endif %}
+                    {% if form.soccodigo.errors %}
+                        Socio {{ form.soccodigo.errors }}
+                    {% endif %}
+                    {% if form.solporint.errors %}
+                        Porcentaje de interes {{ form.solporint.errors }}
+                    {% endif %}
+                </div>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="text-md-center font-weight-bold text-primary" for="clasecreditoId">Clase de
+                        Crédito</label>
+                    <select class="selectpicker" name="clasecredito" id="clasecreditoId" required>
+                        <option value="" disabled selected>Escoger una opción</option>
+                        {% if clasecreditos %}
+                            {% for clasecredito in clasecreditos %}
+                                {% if solicitudcredito.clasecredito %}
+                                    <option value="{{ clasecredito.id }}"
+                                            {% if solicitudcredito.clasecredito.id == clasecredito.id %}
+                                            selected{% endif %}>{{ clasecredito.descripcion|title }}</option>
+                                {% else %}
+                                    <option value="{{ clasecredito.id }}">{{ clasecredito.descripcion|title }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="montoId">Monto Solicitado</label>
+                            <input class="form-control py-4" id="montoId" name="monto" type="number"
+                                   placeholder="Ingrese el valor del monto" value="{{ solicitudcredito.monto }}"
+                                   onkeyup="return soloNumeros(event)" required/>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="plazoId">Plazo (meses)</label>
+                            <input class="form-control py-4" id="plazoId" name="plazo" type="number"
+                                   placeholder="Ingrese la cantidad de meses plazo" value="{{ solicitudcredito.plazo }}"
+                                   onkeyup="return soloNumeros(event)" required/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row justify-content-center">
+                    <div class="col-4">
+                        <div class="form-group">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Ninguno"
+                                       id="garanteId" name="garante"
+                                       required readonly/>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-secondary" data-toggle="modal"
+                                            data-target="#modalGarante">Selecionar Garante
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <label id="labelGarante"></label>
+                    </div>
+                </div>
+                <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                    <div class="col-md-6">
+                        <a href="{% url 'socio:home' %}">
+                            <svg class="svg-inline--fa fa-arrow-left fa-w-14 mr-1" aria-hidden="true" focusable="false"
+                                 data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 448 512" data-fa-i2svg="">
+                                <path fill="currentColor"
+                                      d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
+                            </svg><!-- <i class="fas fa-arrow-left mr-1"></i> -->
+                            Volver
+                        </a>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <button type="button" class="btn btn-success" data-toggle="modal"
+                                data-target="#modalTablaAmortizacion" onclick="calcular()" id="buttonAmortizacion"
+                                disabled>Ver tabla de amortizacion
+                        </button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="div-comentario"></div>
+
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+         aria-hidden="true" id="modalGarante">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-table mr-1"></i>
+                            Socios
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="tablaGarante" width="100%" cellspacing="0">
+                                    <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Cédula</th>
+                                        <th>Nombres</th>
+                                        <th>Apellidos</th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Cédula</th>
+                                        <th>Nombres</th>
+                                        <th>Apellidos</th>
+                                    </tr>
+                                    </tfoot>
+                                    <tbody>
+                                    {% for socio in socios %}
+                                        <tr>
+                                            <td>{{ socio.id }}</td>
+                                            <td>{{ socio.usuario.username }}</td>
+                                            <td>{{ socio.usuario.nombres|title }}</td>
+                                            <td>{{ socio.usuario.apellidos|title }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+         aria-hidden="true" id="modalTablaAmortizacion">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-table mr-1"></i>
+                            Tabla de Amortizacion
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="tablaAmortizacion" width="100%" cellspacing="0">
+                                    <thead>
+                                    <tr>
+                                        <th>Numero</th>
+                                        <th>Interes</th>
+                                        <th>Abono Capital</th>
+                                        <th>Valor cuota</th>
+                                        <th>Saldo capital</th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <tr>
+                                        <th>Numero</th>
+                                        <th>Interes</th>
+                                        <th>Abono Capital</th>
+                                        <th>Valor cuota</th>
+                                        <th>Saldo capital</th>
+                                    </tr>
+                                    </tfoot>
+                                    <tbody id="tbody_1">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block js %}
+    {{ block.super }}
+    <script>
+        $('select').selectpicker();
+    </script>
+    <script>
+        function soloNumeros(evt) {
+            var monto = document.getElementById('montoId').value;
+            var plazo = document.getElementById('plazoId').value;
+            var charCode = (evt.which) ? evt.which : event.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            } else {
+                if (monto && plazo) {
+
+                    document.getElementById('buttonAmortizacion').disabled = false;
+                    {#calcular();#}
+                } else {
+                    document.getElementById('buttonAmortizacion').disabled = true;
+                }
+                return true;
+
+            }
+
+
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#tablaGarante').DataTable();
+            $('#tablaGarante tbody').on('click', 'tr', function () {
+                var data = table.row(this).data();
+                if ($(this).hasClass('text-success')) {
+                    $(this).removeClass('text-success');
+                    document.getElementById("garanteId").value = null;
+                    document.getElementById("labelGarante").innerText = '';
+                } else {
+                    table.$('tr.text-success').removeClass('text-success');
+                    $(this).addClass('text-success');
+                    document.getElementById("garanteId").value = data[0];
+                    document.getElementById("labelGarante").innerText = data[2].charAt(0).toUpperCase() + data[2].slice(1) + " " + data[3].charAt(0).toUpperCase() + data[3].slice(1);
+                }
+            });
+        });
+    </script>
+
+    <script>
+        function calculate() {
+            // Get the user's input from the form. Assume it is all valid.
+            // Convert interest from a percentage to a decimal, and convert from
+            // an annual rate to a monthly rate. Convert payment period in years
+            // to the number of monthly payments.
+            {#var principal = document.loandata.principal.value;#}
+            {#var interest = document.loandata.interest.value / 100 / 12;#}
+            {#var payments = document.loandata.years.value * 12;#}
+            var principal = 4000;
+            var interest = 9 / 100 / 12;
+            var payments = 18;
+
+            // Now compute the monthly payment figure, using esoteric math.
+            var x = Math.pow(1 + interest, payments);
+            var monthly = (principal * x * interest) / (x - 1);
+
+            // Check that the result is a finite number. If so, display the results.
+            if (!isNaN(monthly) &&
+                (monthly != Number.POSITIVE_INFINITY) &&
+                (monthly != Number.NEGATIVE_INFINITY)) {
+
+                {#document.loandata.payment.value = round(monthly);#}
+                {#document.loandata.total.value = round(monthly * payments);#}
+                {#document.loandata.totalinterest.value =#}
+                {#    round((monthly * payments) - principal);#}
+                console.log(round(monthly));
+                console.log(round(monthly * payments));
+                console.log(round((monthly * payments) - principal));
+
+            }
+                // Otherwise, the user's input was probably invalid, so don't
+            // display anything.
+            else {
+                document.loandata.payment.value = "";
+                document.loandata.total.value = "";
+                document.loandata.totalinterest.value = "";
+            }
+        }
+
+        // This simple method rounds a number to two decimal places.
+        function round(x) {
+            return Math.round(x * 100) / 100;
+        }
+    </script>
+    <script>
+
+        function getTasa(tasa) {
+            tasa = tasa / 12
+            tasa = tasa / 100.0
+            return tasa;
+        }
+
+        function getValorDeCuotaFija(monto, tasa, cuotas, periodo) {
+            tasa = getTasa(tasa, periodo);
+            valor = monto * ((tasa * Math.pow(1 + tasa, cuotas)) / (Math.pow(1 + tasa, cuotas) - 1));
+            return valor.toFixed(2);
+        }
+
+        function getAmortizacion(monto, tasa, cuotas, periodo) {
+            var valor_de_cuota = getValorDeCuotaFija(monto, tasa, cuotas, periodo);
+            var saldo_al_capital = monto;
+            var items = new Array();
+
+            for (i = 0; i < cuotas; i++) {
+                interes = saldo_al_capital * getTasa(tasa, periodo);
+                abono_al_capital = valor_de_cuota - interes;
+                saldo_al_capital -= abono_al_capital;
+                numero = i + 1;
+
+                interes = interes.toFixed(2);
+                abono_al_capital = abono_al_capital.toFixed(2);
+                saldo_al_capital = saldo_al_capital.toFixed(2);
+
+                item = [numero, interes, abono_al_capital, valor_de_cuota, saldo_al_capital];
+                items.push(item);
+            }
+            return items;
+        }
+
+
+        function setMoneda(num) {
+            num = num.toString().replace(/\$|\,/g, '');
+            if (isNaN(num)) num = "0";
+            sign = (num == (num = Math.abs(num)));
+            num = Math.floor(num * 100 + 0.50000000001);
+            cents = num % 100;
+            num = Math.floor(num / 100).toString();
+            if (cents < 10) cents = "0" + cents;
+            for (var i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++)
+                num = num.substring(0, num.length - (4 * i + 3)) + ',' + num.substring(num.length - (4 * i + 3));
+            return (((sign) ? '' : '-') + '$' + num + ((cents == "00") ? '' : '.' + cents));
+        }
+
+
+        function calcular() {
+
+            var monto = document.getElementById("montoId").value;
+            var cuotas = document.getElementById("plazoId").value;
+            var tasa = 9;
+            if (!monto) {
+                alert('Indique el monto');
+                return;
+            }
+            if (!cuotas) {
+                alert('Indique las cuotas');
+                return;
+            }
+            if (parseInt(cuotas) < 1) {
+                alert('Las cuotas deben ser de 1 en adelante');
+                return;
+            }
+
+
+            var items = getAmortizacion(monto, tasa, cuotas,);
+            var t = $('#tablaAmortizacion').DataTable();
+            t.clear().draw();
+
+
+            if (parseInt(cuotas) > 3000) {
+                alert("Ha indicado una cantidad excesiva de cuotas, porfavor reduzcala a menos de 3000");
+                return;
+            }
+
+
+            for (i = 0; i < items.length; i++) {
+                item = items[i];
+                tr = document.createElement("tr");
+                for (e = 0; e < item.length; e++) {
+                    value = item[e];
+                    if (e > 0) {
+                        value = setMoneda(value);
+                    }
+
+                    td = document.createElement("td");
+                    textCell = document.createTextNode(value);
+                    td.appendChild(textCell);
+                    tr.appendChild(td);
+
+                }
+                t.row.add(tr).draw(false);
+
+
+            }
+            var div1 = document.getElementById("cuofijaId");
+            valor = setMoneda(items[0][3]);
+            div1.innerHTML = valor;
+
+
+        }
+    </script>
+{% endblock %}

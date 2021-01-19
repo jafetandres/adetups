@@ -1,0 +1,81 @@
+{% extends 'sistema/index.html' %}
+{% block content %}
+    <div class="card shadow-lg border-0 rounded-lg mt-5">
+        <div class="card-header"><h3 class="text-center font-weight-light my-4">{{ clasecredito.descripcion|title }}</h3>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="clcvaldesId">Valor desde</label>
+                            <p id="clcvaldesId">{{ clasecredito.valdesde }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="clcvalhasId">Valor hasta</label>
+                            <p id="clcvalhasId">{{ clasecredito.valhasta }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="clcplamaxId">Plazo máximo</label>
+                            <p id="clcplamaxId">{{ clasecredito.plazomax }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="clcgarantId">Garante</label>
+                            <p id="clcgarantId">{% if  clasecredito.garante%}
+                                Si
+                                {% else %}
+                                No
+                            {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="clcautoriId">Autorizar</label>
+                            <p id="clcautoriId">{% if  clasecredito.autorizacion%}
+                                Si
+                                {% else %}
+                                No
+                            {% endif %}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="clcestadoId">Estado</label>
+                            <p id="clcestadoId">{{ clasecredito.estado|title }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <a href="{% url 'sistema:clasecreditolist' %}">
+                            <svg class="svg-inline--fa fa-arrow-left fa-w-14 mr-1" aria-hidden="true" focusable="false"
+                                 data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 448 512" data-fa-i2svg="">
+                                <path fill="currentColor"
+                                      d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
+                            </svg><!-- <i class="fas fa-arrow-left mr-1"></i> -->
+                            Volver
+                        </a>
+                    </div>
+                    <div class="col-6" align="right">
+                        <a class="btn btn-warning" href="{% url 'sistema:clasecreditoupdate' clasecredito.id %}"
+                           aria-label="Edit">
+                            <i class="fa fa-clipboard" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

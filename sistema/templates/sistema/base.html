@@ -1,0 +1,197 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="jafet galvez"/>
+    <title>{% block titulo_pagina %}{% endblock %}</title>
+    {% block css %}
+        <script src="https://kit.fontawesome.com/5085a10421.js" crossorigin="anonymous"></script>
+        <link href="{% static 'css/styles.css' %}" rel="stylesheet"/>
+        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet"
+              crossorigin="anonymous"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"
+                crossorigin="anonymous"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+        <!-- Datepicker styles for this template-->
+        <link href="{% static 'css/datepicker.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.min.css">
+    {% endblock %}
+</head>
+<body class="sb-nav-fixed">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Adetups</a>
+    <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i>
+    </button>
+    <!-- Navbar Search-->
+    {% block buscar %}
+
+        {#        <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">#}
+        {#            <div class="input-group">#}
+        {#                <input class="form-control" type="text" placeholder="Buscar..." aria-label="Buscar"#}
+        {#                       aria-describedby="basic-addon2"/>#}
+        {#                <div class="input-group-append">#}
+        {#                    <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>#}
+        {#                </div>#}
+        {#            </div>#}
+        {#        </form>#}
+    {% endblock %}
+    <!-- Navbar-->
+    <ul class="navbar-nav d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">Cuenta</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a>
+            </div>
+        </li>
+    </ul>
+</nav>
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    {% block navbar %}
+                    {% endblock %}
+                </div>
+            </div>
+            <div class="sb-sidenav-footer">
+                <div class="small">Iniciado sesión como:</div>
+                {{ request.user }}
+            </div>
+        </nav>
+    </div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </main>
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">Copyright &copy; Adetups 2020</div>
+                    <div>
+                        <a href="#">Política de privacidad</a>
+                        &middot;
+                        <a href="#">Terminos &amp; Condiciones</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+{% block js %}
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"
+            crossorigin="anonymous"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.5/js/dataTables.buttons.min.js"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.print.min.js" crossorigin="anonymous"></script>
+    <script src="{% static 'assets/demo/datatables-demo.js' %}"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <!-- DatePicker core JavaScript-->
+    <script src="{% static 'js/datepicker.js' %}"></script>
+    <script src="{% static 'js/datepicker.es-ES.js' %}"></script>
+    <script>
+        $('#cambiarPassword').on('click', cambiarPassword);
+
+        function cambiarPassword() {
+            var new_password1 = document.getElementById('new_password1')
+            var new_password2 = document.getElementById('new_password2')
+            var mensajes = document.getElementById('mensajes')
+            var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            var html = "";
+            $.ajax({
+                url: "{% url 'sistema:cambiarpassword' %}",
+                type: "post", // or "get"
+                headers: {'X-CSRFToken': csrftoken},
+                data: {
+                    'new_password1': new_password1.value,
+                    'new_password2': new_password2.value,
+                    'usuario_id':{{ object.id }},
+                },
+                success: function (data) {
+                    var ul = document.createElement('ul');
+                    mensajes.innerHTML = '';
+                    if (data.length == 0) {
+                        $('#exampleModal').modal('hide');
+                        new_password1.value = '';
+                        new_password2.value = '';
+                        mensajes.className = '';
+                        document.getElementById('alertsId').innerHTML = '<div class="alert alert-success">Cambio de contraseña exitoso</div>';
+
+                    } else {
+                        for (let error of data) {
+                            var li = document.createElement('li');
+                            li.innerHTML = '<p>' + error + '</p>';
+                            ul.appendChild(li);
+                        }
+                        mensajes.className = 'alert alert-info';
+                        mensajes.appendChild(ul);
+                    }
+                },
+                error: function (data) {
+                    console.log('ocurrio un error')
+                }
+            });
+        }
+    </script>
+    <script>
+        function cancelarCambioPassword() {
+            document.getElementById('mensajes').innerHTML = '';
+            document.getElementById('new_password1').value = '';
+            document.getElementById('new_password2').value = '';
+            document.getElementById('mensajes').className = '';
+        }
+    </script>
+    <script>
+
+        $('.table').dataTable({
+            paging: true,
+            searching: true,
+            {% block btn_imprimir %}
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'print',
+                        text: 'Imprimir'
+                    }],
+            {% endblock %}
+            language: {
+                search: "Buscar:",
+                lengthMenu: "Mostrar _MENU_ registros",
+                info: "Se muestra de _START_ a _END_ registros de _TOTAL_ registros en total",
+                infoEmpty: "Se muestra 0 registros de 0 ",
+                infoFiltered: "(Hay _MAX_ registros en total)",
+                infoPostFix: "",
+                loadingRecords: "Cargando...",
+                zeroRecords: "No existen registros",
+                paginate: {
+                    first: "Primero",
+                    previous: "Previo",
+                    next: "Siguiente",
+                    last: "Anterior"
+                },
+            }
+
+        });
+
+    </script>
+{% endblock %}
+</body>
+</html>

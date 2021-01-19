@@ -1,0 +1,198 @@
+{% extends 'sistema/base.html' %}
+{% block titulo_pagina %}
+    Adetups Socio
+{% endblock %}
+{% block navbar %}
+    <div class="sb-sidenav-menu-heading">Principal</div>
+    <a class="nav-link" href="{% url 'socio:home' %}">
+        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+        Inicio
+    </a>
+    <div class="sb-sidenav-menu-heading">Interfaces</div>
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts"
+       aria-expanded="false" aria-controls="collapseLayouts">
+        <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
+        Mantenimientos
+        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+    </a>
+    <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne"
+         data-parent="#sidenavAccordion">
+        <nav class="sb-sidenav-menu-nested nav">
+            <a class="nav-link" href="{% url 'sistema:clasecreditolist' %}">Clase de Créditos</a>
+            <a class="nav-link" href="{% url 'sistema:clasesolicitudlist' %}">Clase de Solicitudes</a>
+            <a class="nav-link" href="{% url 'sistema:restriccionescreditolist' %}">Restricciones de
+                Crédito</a>
+            <a class="nav-link" href="{% url 'sistema:parametrolist' %}">Parámetros</a>
+            <a class="nav-link" href="layout-sidenav-light.html">Perfiles</a>
+            <a class="nav-link" href="layout-sidenav-light.html">Rubros</a>
+            <a class="nav-link" href="layout-sidenav-light.html">Socios</a>
+        </nav>
+    </div>
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProcesos"
+       aria-expanded="false" aria-controls="collapseProcesos">
+        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+        Procesos
+        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+    </a>
+    <div class="collapse" id="collapseProcesos" aria-labelledby="headingTwo"
+         data-parent="#sidenavAccordion">
+        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+            <a class="nav-link" href="">Liquidación de Créditos</a>
+            <a class="nav-link collapsed" href="#" data-toggle="collapse"
+               data-target="#procesosCollapseRubros" aria-expanded="false"
+               aria-controls="procesosCollapseRubros">
+                Rubros
+                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+            </a>
+            <div class="collapse" id="procesosCollapseRubros" aria-labelledby="headingOne"
+                 data-parent="#sidenavAccordionPages">
+                <nav class="sb-sidenav-menu-nested nav">
+                    <a class="nav-link" href="login.html">Detalle Rubros</a>
+                    <a class="nav-link" href="register.html">Subir Rubros</a>
+                    <a class="nav-link" href="password.html">Rubros Socios</a>
+                </nav>
+            </div>
+            <a class="nav-link collapsed" href="#" data-toggle="collapse"
+               data-target="#pagesCollapseError" aria-expanded="false"
+               aria-controls="pagesCollapseError">
+                Error
+                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+            </a>
+            <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne"
+                 data-parent="#sidenavAccordionPages">
+                <nav class="sb-sidenav-menu-nested nav">
+                    <a class="nav-link" href="401.html">401 Page</a>
+                    <a class="nav-link" href="404.html">404 Page</a>
+                    <a class="nav-link" href="500.html">500 Page</a>
+                </nav>
+            </div>
+        </nav>
+    </div>
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReportes"
+       aria-expanded="false" aria-controls="collapseReportes">
+        <div class="sb-nav-link-icon"><i class="fas fa-clipboard"></i></div>
+        Reportes
+        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+    </a>
+    <div class="collapse" id="collapseReportes" aria-labelledby="headingTwo"
+         data-parent="#sidenavAccordion">
+        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+            <a class="nav-link" href="">Créditos</a>
+            <a class="nav-link" href="">Solicitudes de Créditos</a>
+        </nav>
+    </div>
+{% endblock %}
+{% block content %}
+    <h1 class="mt-4">Bienvenido</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Inicio</li>
+    </ol>
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">Solicitar Crédito</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="{% url 'sistema:clasecreditolist' %}">Ver</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">Consultar Aportes</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="{% url 'sistema:clasesolicitudlist' %}">Ver</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">Creditos</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">Ver</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <i class="fas fa-table mr-1"></i>
+                    Solicitudes de Credito
+                </div>
+                <div class="col-6" align="right">
+                    <a class="btn" href="{% url 'socio:solicitudcreditocreate' %}"><i class="fa fa-plus fa-fw"
+                                                                               aria-hidden="true"></i>Añadir</a>
+                </div>
+            </div>
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Socio</th>
+                        <th>Fecha de creación</th>
+                        <th>Garante</th>
+                        <th>Monto</th>
+                        <th>Clase de Credito</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Socio</th>
+                        <th>Fecha de ingreso</th>
+                        <th>Garante</th>
+                        <th>Monto</th>
+                        <th>Clase de Credito</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for solicitudcredito in solicitudescredito %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'asistente:usuariodetail' solicitudcredito.socio.usuario.id %}">{{ solicitudcredito.socio.usuario.nombres|title }} {{ solicitudcredito.socio.usuario.apellidos|title }}</a>
+                            </td>
+                            <td>{{ solicitudcredito.fecha_ingreso }}</td>
+                            <td>
+                                <a href="{% url 'asistente:usuariodetail' solicitudcredito.garante.usuario.id %}">{{ solicitudcredito.garante.usuario.nombres|title }} {{ solicitudcredito.garante.usuario.apellidos|title }}</a>
+                            </td>
+                            <td>{{ solicitudcredito.monto }}</td>
+                            <td>{{ solicitudcredito.clasecredito.descripcion|title }}</td>
+                            <td>
+                                {% if solicitudcredito.estado == 'pendiente' %}
+                                    <p class="text-warning">Pendiente</p>
+                                {% elif solicitudcredito.estado == 'aprobada' %}
+                                    <p class="text-success">Aprobada</p>
+                                {% elif solicitudcredito.estado == 'negada' %}
+                                    <p class="text-danger">Negada</p>
+                                {% endif %}
+
+                            </td>
+                            <td class="text-center">
+                                <a class="btn btn-warning"
+                                   href="{% url 'asistente:solicitudcreditoupdate' solicitudcredito.id %}"
+                                   aria-label="Edit">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

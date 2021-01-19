@@ -1,0 +1,213 @@
+{% extends 'presidente/index.html' %}
+{% block content %}
+    <div class="card shadow-lg border-0 rounded-lg mt-5">
+        <div class="card-header">
+            <h3 class="text-center font-weight-light my-4">Solicitud de crédito para
+                <strong>{{ solicitudcredito.socio.usuario.nombres|title }} {{ solicitudcredito.socio.usuario.apellidos|title }}</strong>
+            </h3>
+        </div>
+        <div class="card-body">
+            {% if 'ok' in request.GET %}
+                <div class="alert alert-success" role="alert">Registro actualizado correctamente</div>
+            {% endif %}
+            {% if form.errors %}
+                <div class="alert alert-warning" role="alert">
+                    {% if form.estado.errors %}
+                        Estado {{ form.estado.errors }}
+                    {% endif %}
+                    {% if form.observaciones.errors %}
+                        Observaciones {{ form.observaciones.errors }}
+                    {% endif %}
+                </div>
+            {% endif %}
+            <div class="form-row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="small mb-1" for="clasecreditoId">Clase de Crédito</label>
+                        <p id="clasecreditoId">{{ solicitudcredito.clasecredito.descripcion|title }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="small mb-1" for="fecha_ingresoId">Fecha de ingreso</label>
+                        <p id="fecha_ingresoId">{{ solicitudcredito.fecha_ingreso|date }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="small mb-1" for="usernameId">Garante</label>
+                        <p id="usernameId">{{ solicitudcredito.garante.usuario.nombres|title }} {{ solicitudcredito.garante.usuario.apellidos|title }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="small mb-1" for="date_joinedId">Monto</label>
+                        <p id="date_joinedId">
+                            $ {{ solicitudcredito.monto }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="small mb-1" for="emailId">Plazo</label>
+                        <p id="emailId">
+                            {{ solicitudcredito.plazo }} meses
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="small mb-1" for="fecha_nacimientoId">Estado</label>
+                        <p id="fecha_nacimientoId">{{ solicitudcredito.estado }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="small mb-1" for="cuotaId">Cuota</label>
+                        <p id="cuotaId">
+                            $ {{ solicitudcredito.cuota }}
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="small mb-1" for="interesId">Interes</label>
+                        <p id="interesId">{{ solicitudcredito.interes }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="small mb-1" for="porcinteresId">Porcentaje de interes</label>
+                <p id="porcinteresId">{{ solicitudcredito.porcinteres }}</p>
+            </div>
+
+
+            <div class="row">
+                <div class="col-6">
+                    <a href="{% url 'asistente:home' %}">
+                        <svg class="svg-inline--fa fa-arrow-left fa-w-14 mr-1" aria-hidden="true" focusable="false"
+                             data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 448 512" data-fa-i2svg="">
+                            <path fill="currentColor"
+                                  d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
+                        </svg><!-- <i class="fas fa-arrow-left mr-1"></i> -->
+                        Volver
+                    </a>
+                </div>
+                {% if solicitudcredito.estado == 'pendiente' %}
+                    <div class="col-6" align="right">
+                        <button type="button" class="btn btn-outline-success" aria-label="Revisado" data-toggle="modal"
+                                data-target="#modalRevisada"
+                                aria-label="Edit"><i class="fa fa-check" aria-hidden="true"></i> Dar visto bueno
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" aria-label="Negada" data-toggle="modal"
+                                data-target="#modalNegada"
+                                aria-label="Edit"><i class="fa fa-times" aria-hidden="true"></i> Negar
+                        </button>
+                    </div>
+                {% elif solicitudcredito.estado == 'revisada' %}
+                    <div class="col-6" align="right">
+                        <p class="text-success"><i class="fa fa-check" aria-hidden="true"></i> Solicitud aprobada</p>
+                    </div>
+                {% elif solicitudcredito.estado == 'negada' %}
+                    <div class="col-6" align="right">
+                        <p class="text-danger"><i class="fa fa-times" aria-hidden="true"></i> Solicitud negada</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+    <form id="my_formNegada" method="post">
+        {% csrf_token %}
+        <input type="text" hidden name="estado" value="negada">
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalNegada" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Está seguro?</h5>
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Estas seguro de negar la solicitud de crédito
+                        para {{ solicitudcredito.socio.usuario.nombres|title }} {{ solicitudcredito.socio.usuario.apellidos|title }}
+
+                        <div class="form-group">
+                            <label class="small mb-1" for="observacionesId">Observaciones</label>
+                            <textarea class="form-control" id="observacionesId" name="observaciones"
+                                      rows="3" ></textarea>
+                            {#                <p id="porcinteresId">{{ solicitudcredito.porcinteres }}</p>#}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="button" class="btn btn-danger"
+                                onclick="document.getElementById('my_formNegada').submit();">
+                            Aceptar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+    <form id="my_formRevisada" method="post">
+        {% csrf_token %}
+        <input type="text" hidden name="estado" value="revisada">
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalRevisada" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Está seguro?</h5>
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Estas seguro de dar el visto bueno a la solicitud de crédito
+                        para {{ solicitudcredito.socio.usuario.nombres|title }} {{ solicitudcredito.socio.usuario.apellidos|title }}
+
+                        <div class="form-group">
+                            <label class="small mb-1" for="observacionesId">Observaciones</label>
+                            <textarea class="form-control" id="observacionesId" name="observaciones"
+                                      rows="3"></textarea>
+                            {#                <p id="porcinteresId">{{ solicitudcredito.porcinteres }}</p>#}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="button" class="btn btn-success"
+                                onclick="document.getElementById('my_formRevisada').submit();">
+                            Aceptar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

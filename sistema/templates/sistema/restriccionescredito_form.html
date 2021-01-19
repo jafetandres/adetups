@@ -1,0 +1,158 @@
+{% extends 'sistema/index.html' %}
+{% block content %}
+    <div class="card shadow-lg border-0 rounded-lg mt-5">
+        <div class="card-header"><h3 class="text-center font-weight-light my-4">Registro de Restricciones de
+            Crédito</h3></div>
+        <div class="card-body">
+            {% if 'ok' in request.GET %}
+                <div class="alert alert-success" role="alert">Registro actualizado correctamente</div>
+            {% endif %}
+            {% if form.errors %}
+                <div class="alert alert-warning" role="alert">
+                    {% if form.clasecredito.errors %}
+                        Clase de Crédito {{ form.clasecredito.errors }}
+                    {% endif %}
+                    {% if form.tiempodesde.errors %}
+                        Años desde {{ form.tiempodesde.errors }}
+                    {% endif %}
+                    {% if form.tiempohasta.errors %}
+                        Años hasta {{ form.tiempohasta.errors }}
+                    {% endif %}
+                    {% if form.plazomax.errors %}
+                        Plazo máximo de pago {{ form.plazomax.errors }}
+                    {% endif %}
+                    {% if form.valhasta.errors %}
+                        Valor máximo de crédito {{ form.valhasta.errors }}
+                    {% endif %}
+                    {% if form.estado.errors %}
+                        Estado {{ form.estado.errors }}
+                    {% endif %}
+                </div>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="text-md-center font-weight-bold text-primary" for="clasecreditoId">Clase de
+                        Crédito</label>
+                    <select class="selectpicker" name="clasecredito" id="clasecreditoId" required>
+                        <option value="" disabled selected>Escoger una opción</option>
+                        {% if clasecreditos %}
+                            {% for clasecredito in clasecreditos %}
+                                {% if restriccionescredito.clasecredito %}
+                                    <option value="{{ restriccionescredito.clasecredito.id }}"
+                                            {% if restriccionescredito.clasecredito.id == clasecredito.id %}
+                                            selected{% endif %}>{{ clasecredito.descripcion|title }}</option>
+                                {% else %}
+                                    <option value="{{ clasecredito.id }}"
+                                            >{{ clasecredito.descripcion|title }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="tiempodesdeId">Años desde</label>
+                            <input class="form-control py-4" id="tiempodesdeId" name="tiempodesde" type="number"
+                                   placeholder="Ingrese el valor" value="{{ restriccionescredito.tiempodesde }}"
+                                   onkeypress="return soloNumeros(event)" required/>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="tiempohastaId">Años hasta</label>
+                            <input class="form-control py-4" id="tiempohastaId" name="tiempohasta" type="number"
+                                   placeholder="Ingrese la valor" value="{{ restriccionescredito.tiempohasta }}"
+                                   onkeypress="return soloNumeros(event)" required/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="plazomaxId">Plazo máximo de pago</label>
+                            <input class="form-control py-4" id="plazomaxId" name="plazomax" type="number"
+                                   placeholder="Ingrese el plazo máximo de pago" value="{{ restriccionescredito.plazomax }}"
+                                   onkeypress="return soloNumeros(event)"/>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="valhastaId">Valor máximo de crédito</label>
+                            <input class="form-control py-4" id="valhastaId" name="valhasta" type="number"
+                                   placeholder="Ingrese el valor máximo de crédito" value="{{ restriccionescredito.valhasta }}"
+                                   onkeypress="return soloNumeros(event)"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <label class="small mb-1">Estado</label>
+                        <br>
+                        {% if restriccionescredito.estado %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="estado" id="estadoId1"
+                                       value="act" {% if restriccionescredito.estado == 'act' %}checked{% endif %}/>
+                                <label class="form-check-label" for="estadoId1">
+                                    ACTIVO
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="estado" id="estadoId2"
+                                       value="ina" {% if restriccionescredito.estado == 'ina' %}checked{% endif %}/>
+                                <label class="form-check-label" for="estadoId2">
+                                    INACTIVO
+                                </label>
+                            </div>
+                        {% else %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="estado" id="estadoId1"
+                                       value="act" checked>
+                                <label class="form-check-label" for="estadoId1">
+                                    ACTIVO
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="estado" id="estadoId2"
+                                       value="ina">
+                                <label class="form-check-label" for="estadoId2">
+                                    INACTIVO
+                                </label>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                    <a href="{% url 'sistema:restriccionescreditolist' %}">
+                        <svg class="svg-inline--fa fa-arrow-left fa-w-14 mr-1" aria-hidden="true" focusable="false"
+                             data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 448 512" data-fa-i2svg="">
+                            <path fill="currentColor"
+                                  d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
+                        </svg><!-- <i class="fas fa-arrow-left mr-1"></i> -->
+                        Volver
+                    </a>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    {{ block.super }}
+    <script>
+        $('select').selectpicker();
+    </script>
+    <script>
+        function soloNumeros(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    </script>
+
+{% endblock %}
