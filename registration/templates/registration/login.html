@@ -18,47 +18,53 @@
         <main>
             <div class="container">
                 <div class="row justify-content-center">
-                    <div class="col-lg-6">
-                        <div class="card shadow-lg border-0 rounded-lg mt-5">
-                            <div class="card-header"><h3 class="text-center font-weight-light my-4">Iniciar Sesión</h3>
+                    {% block content %}
+                        <div class="col-lg-4">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header"><h3 class="text-center font-weight-light my-4">Iniciar
+                                    Sesión</h3>
+                                </div>
+                                <div class="card-body">
+                                    {% if messages %}
+                                        {% for message in messages %}
+                                            <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label class="small mb-1" for="inputEmailAddress">Cédula</label>
+                                            <input class="form-control py-4" id="inputEmailAddress" name="username"
+                                                   placeholder="Ingrese su número de cédula" required/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="small mb-1" for="inputPassword">Contraseña</label>
+                                            <input class="form-control py-4" id="inputPassword" name="password"
+                                                   type="password"
+                                                   placeholder="Ingrese su contraseña" required/>
+                                        </div>
+                                        <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                                            <a class="small text-adetups" href="{% url 'password_reset' %}">Olvidé mi
+                                                contraseña?</a>
+                                            <button type="submit" class="btn btn-adetups">Ingresar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                {#                            <div class="card-footer text-center">#}
+                                {#                                <div class="small"><a href="register.html">Need an account? Sign up!</a></div>#}
+                                {#                            </div>#}
                             </div>
-                            <div class="card-body">
-                                {% if messages %}
-                                    {% for message in messages %}
-                                        <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
-                                    {% endfor %}
-                                {% endif %}
-                                <form method="post">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label class="small mb-1" for="inputEmailAddress">Cédula</label>
-                                        <input class="form-control py-4" id="inputEmailAddress" name="username"
-                                               placeholder="Ingrese su número de cédula" required/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="small mb-1" for="inputPassword">Contraseña</label>
-                                        <input class="form-control py-4" id="inputPassword" name="password"
-                                               type="password"
-                                               placeholder="Ingrese su contraseña" required/>
-                                    </div>
-                                    <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-                                        <a class="small" href="password.html">Olvidé mi contraseña?</a>
-                                        <button type="submit" class="btn btn-primary">Ingresar</button>
-                                    </div>
-                                </form>
+                        </div>
+                        <div class="col-lg-8 text-center">
+                            <div class="m-4">
+                                <img src="{% static 'img/team.png' %}" alt="">
                             </div>
-                            {#                            <div class="card-footer text-center">#}
-                            {#                                <div class="small"><a href="register.html">Need an account? Sign up!</a></div>#}
-                            {#                            </div>#}
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="m-4  bg-adetups">
-                             <h1>Bienvenido a Adetups</h1>
-                        </div>
+                            <h1 class="mt-5 text-adetups">ADETUPS</h1>
 
-                    </div>
+                        </div>
+                    {% endblock %}
                 </div>
+
             </div>
         </main>
     </div>
@@ -83,3 +89,4 @@
 <script src="js/scripts.js"></script>
 </body>
 </html>
+

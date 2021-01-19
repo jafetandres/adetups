@@ -2,7 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7f909e53-265b-4961-95e9-847068ff836c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/adetups/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/adetups/settings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/registration/templates/registration/password_reset_complete.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/registration/templates/registration/password_reset_confirm.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/registration/templates/registration/password_reset_done.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/registration/templates/registration/password_reset_email.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/registration/templates/registration/password_reset_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/registration/templates/registration/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/registration/templates/registration/login.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +43,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="database.data.extractors.current.export.id" value="SQL Inserts" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/asistente/templates/asistente" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/registration/templates/registration" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -46,11 +52,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/registration/templates/registration" />
       <recent name="$PROJECT_DIR$/asistente/templates/asistente" />
       <recent name="$PROJECT_DIR$/asistente/templates" />
       <recent name="$PROJECT_DIR$/sistema/templates/sistema" />
       <recent name="$PROJECT_DIR$/socio/templates/socio" />
-      <recent name="$PROJECT_DIR$/presidente/templates/presidente" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/asistente/templates/asistente" />
@@ -188,7 +194,7 @@
       <workItem from="1609212312528" duration="4037000" />
       <workItem from="1609300412916" duration="3721000" />
       <workItem from="1609951899661" duration="538000" />
-      <workItem from="1610554056125" duration="51805000" />
+      <workItem from="1610554056125" duration="59282000" />
     </task>
     <servers />
   </component>
