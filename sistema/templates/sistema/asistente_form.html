@@ -49,14 +49,17 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="small mb-1" for="usernameId">Cédula</label>
-                            <input class="form-control py-4" id="usernameId" name="username" type="text"
-                                   placeholder="Ingrese la cédula" value="{{ usuario.username }}"
-                                   required/>
+                    {% if usuario.username is null %}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="small mb-1" for="usernameId">Cédula</label>
+                                <input class="form-control py-4" id="usernameId" name="username" type="text"
+                                       placeholder="Ingrese la cédula" value="{{ usuario.username }}"
+                                       onkeypress="return soloNumeros(event)" maxlength="10" minlength="10"
+                                       required/>
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="emailId">Correo electrónico</label>
@@ -89,14 +92,16 @@
                         <div class="form-group">
                             <label class="small mb-1" for="telefonoId">Teléfono</label>
                             <input class="form-control py-4" id="telefonoId" name="telefono" type="tel"
-                                   placeholder="Ingrese el teléfono" value="{{ socio.telefono }}" required/>
+                                   placeholder="Ingrese el teléfono" value="{{ socio.telefono }}"
+                                   onkeypress="return soloNumeros(event)" required/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="celularId">Celular</label>
                             <input class="form-control py-4" id="celularId" name="celular" type="tel"
-                                   placeholder="Ingrese el celular" value="{{ socio.celular }}" required/>
+                                   placeholder="Ingrese el celular" value="{{ socio.celular }}"
+                                   onkeypress="return soloNumeros(event)" maxlength="10" minlength="10" required/>
                         </div>
                     </div>
                 </div>

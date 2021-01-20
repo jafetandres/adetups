@@ -1,15 +1,10 @@
-import math
 import json
 from django.contrib.auth import login
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.utils.decorators import method_decorator
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
@@ -62,7 +57,7 @@ def cambiar_password(request):
     return HttpResponse(json_dump, content_type='application/json')
 
 
-class HomePageView(TemplateView):
+class HomePageView(LoginRequiredMixin, TemplateView):
     template_name = "sistema/index.html"
 
     def get_context_data(self, **kwargs):
@@ -73,6 +68,7 @@ class HomePageView(TemplateView):
 
 class UsuarioDetailView(LoginRequiredMixin, DetailView):
     model = Usuario
+    template_name = 'sistema/usuario_detail.html'
 
 
 class AdministradorCreate(LoginRequiredMixin, CreateView):
@@ -108,7 +104,7 @@ class AdministradorCreate(LoginRequiredMixin, CreateView):
 
 class AdministradorUpdate(LoginRequiredMixin, UpdateView):
     model = Usuario
-    fields = ['nombres', 'apellidos', 'username', 'email', 'fecha_nacimiento', 'tipo', 'password']
+    fields = ['nombres', 'apellidos', 'email', 'fecha_nacimiento']
     template_name = 'sistema/administrador_form.html'
 
     def get_success_url(self):
@@ -139,6 +135,32 @@ class PresidenteCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
+class PresidenteUpdate(LoginRequiredMixin, UpdateView):
+    model = Usuario
+    fields = ['nombres', 'apellidos', 'email', 'fecha_nacimiento']
+    template_name = 'sistema/presidente_form.html'
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        Socio.objects.update(
+            direccion=self.request.POST.get('direccion', ''),
+            telefono=self.request.POST.get('telefono', ''),
+            celular=self.request.POST.get('celular', ''),
+            cargo=self.request.POST.get('cargo', ''),
+            area=self.request.POST.get('area', ''),
+            fecha_ingreso=self.request.POST.get('fecha_ingreso', None)
+        )
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['socio'] = Socio.objects.get(usuario_id=self.object.id)
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('sistema:presidenteupdate', args=[self.object.id]) + '?ok'
+
+
 class AsistenteCreate(LoginRequiredMixin, CreateView):
     model = Usuario
     success_url = reverse_lazy('sistema:home')
@@ -160,6 +182,32 @@ class AsistenteCreate(LoginRequiredMixin, CreateView):
                              fecha_ingreso=self.request.POST.get('fecha_ingreso', None)
                              )
         return super().form_valid(form)
+
+
+class AsistenteUpdate(LoginRequiredMixin, UpdateView):
+    model = Usuario
+    fields = ['nombres', 'apellidos', 'email', 'fecha_nacimiento']
+    template_name = 'sistema/asistente_form.html'
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        Socio.objects.update(
+            direccion=self.request.POST.get('direccion', ''),
+            telefono=self.request.POST.get('telefono', ''),
+            celular=self.request.POST.get('celular', ''),
+            cargo=self.request.POST.get('cargo', ''),
+            area=self.request.POST.get('area', ''),
+            fecha_ingreso=self.request.POST.get('fecha_ingreso', None)
+        )
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['socio'] = Socio.objects.get(usuario_id=self.object.id)
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('sistema:socioupdate', args=[self.object.id]) + '?ok'
 
 
 class SocioCreate(LoginRequiredMixin, CreateView):
@@ -211,14 +259,6 @@ class SocioUpdate(LoginRequiredMixin, UpdateView):
         return reverse_lazy('sistema:socioupdate', args=[self.object.id]) + '?ok'
 
 
-class UsuarioUpdate(LoginRequiredMixin, UpdateView):
-    model = Usuario
-    fields = ['nombres', 'apellidos', 'username', 'email', 'fecha_nacimiento', 'tipo', 'password']
-
-    def get_success_url(self):
-        return reverse_lazy('sistema:userupdate', args=[self.object.id]) + '?ok'
-
-
 class UsuarioDelete(LoginRequiredMixin, DeleteView):
     model = Usuario
 
@@ -239,13 +279,6 @@ class UsuarioDelete(LoginRequiredMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-# class SocioCreate(LoginRequiredMixin, CreateView):
-#     model = Socio
-#     fields = ['usuario', 'direccion', 'telefono', 'celular', 'cargo', 'area', 'fecha_ingreso']
-#     template_name = "sistema/usuario_form.html"
-
-
-# @method_decorator(staff_member_required, name='dispatch')
 class ClaseCreditoListView(LoginRequiredMixin, ListView):
     model = ClaseCredito
 

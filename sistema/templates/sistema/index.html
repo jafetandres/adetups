@@ -150,7 +150,7 @@
                     <tr>
                         <th>Nombres</th>
                         <th>Apellidos</th>
-                        <th>Cedula</th>
+                        <th>Cédula/Username</th>
                         <th>Tipo</th>
                         <th>Estado</th>
                         <th>Acciones</th>
@@ -160,7 +160,7 @@
                     <tr>
                         <th>Nombres</th>
                         <th>Apellidos</th>
-                        <th>Username</th>
+                        <th>Cédula/Username</th>
                         <th>Tipo</th>
                         <th>Estado</th>
                         <th>Acciones</th>
@@ -170,9 +170,25 @@
                     <tbody>
                     {% for usuario in usuarios %}
                         <tr>
-                            <td><a href="{% url 'sistema:usuariodetail' usuario.id %}">{{ usuario.nombres|title }}</a>
+                            <td>
+                                {% if usuario.tipo == 'administrador' %}
+                                    <a href="{% url 'sistema:usuariodetail' usuario.id %}">{{ usuario.nombres|title }}</a>
+                                {% endif %}
+                                {% if usuario.tipo == 'socio' %}
+                                    <a href="{% url 'sistema:usuariodetail' usuario.id %}">{{ usuario.nombres|title }}</a>
+                                {% endif %}
+                                {% if usuario.tipo == 'presidente' %}
+                                    <a href="{% url 'sistema:usuariodetail' usuario.id %}">{{ usuario.nombres|title }}</a>
+                                {% endif %}
+                                {% if usuario.tipo == 'asistente' %}
+                                    <a href="{% url 'sistema:usuariodetail' usuario.id %}">{{ usuario.nombres|title }}</a>
+                                {% endif %}
                             </td>
-                            <td>{{ usuario.apellidos|title }}</td>
+                            <td>{% if usuario.apellidos is null %}
+                            {% else %}
+                                {{ usuario.apellidos|title }}
+                            {% endif %}
+                            </td>
                             <td>{{ usuario.username }}</td>
                             <td>{{ usuario.tipo|title }}</td>
                             <td>
@@ -229,8 +245,17 @@
                                    href="{% url 'sistema:administradorupdate' usuario.id %}"
 
                                         {% endif %}
+                                        {% if usuario.tipo == 'presidente' %}
+                                   href="{% url 'sistema:presidenteupdate' usuario.id %}"
+
+                                        {% endif %}
+                                    {% if usuario.tipo == 'asistente' %}
+                                   href="{% url 'sistema:asistenteupdate' usuario.id %}"
+
+                                        {% endif %}
                                    aria-label="Edit">
-                                    <i class="fa fa-clipboard" aria-hidden="true"></i>
+                                    {#                                    <i class="fa fa-pencil" aria-hidden="true"></i>#}
+                                    Editar
                                 </a>
                             </td>
                         </tr>
@@ -240,4 +265,6 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block btn_imprimir %}
 {% endblock %}

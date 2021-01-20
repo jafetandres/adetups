@@ -1,14 +1,9 @@
 <{% extends 'sistema/index.html' %}
 {% block content %}
     <div class="card shadow-lg border-0 rounded-lg mt-5">
-        <div class="card-header"><h3 class="text-center font-weight-light my-4">Añadir Presidente</h3></div>
+        <div class="card-header"><h3 class="text-center font-weight-light my-4">Presidente</h3></div>
         <div class="card-body">
             <div id="alertsId">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-info m-2">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
                 {% if 'ok' in request.GET %}
                     <div class="alert alert-success" role="alert">Registro actualizado correctamente</div>
                 {% endif %}
@@ -37,70 +32,118 @@
             </div>
             <form method="post" id="formularioId">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label class="small mb-1" for="nombresId">Nombres</label>
-                    <input class="form-control py-4" id="nombresId" name="nombres" type="text"
-                           placeholder="Ingrese los nombres" value="{{ object.nombres }}" required/>
-                </div>
                 <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="nombresId">Nombres</label>
+                            <input class="form-control py-4" id="nombresId" name="nombres" type="text"
+                                   placeholder="Ingrese los nombres" value="{{ usuario.nombres }}" required/>
+                        </div>
+                    </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="apellidosId">Apellidos</label>
                             <input class="form-control py-4" id="apellidosId" name="apellidos" type="text"
-                                   placeholder="Ingrese los apellidos" value="{{ object.apellidos }}" required/>
+                                   placeholder="Ingrese los apellidos" value="{{ usuario.apellidos }}" required/>
                         </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    {% if usuario.username is null %}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="small mb-1" for="usernameId">Cédula</label>
+                                <input class="form-control py-4" id="usernameId" name="username" type="text"
+                                       placeholder="Ingrese la cédula" value="{{ usuario.username }}"
+                                       onkeypress="return soloNumeros(event)" maxlength="10" minlength="10"
+                                       required/>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="emailId">Correo electrónico</label>
+                            <input class="form-control py-4" id="emailId" name="email" type="email"
+                                   placeholder="Ingrese el correo electrónico" value="{{ usuario.email }}" required/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <label class="small mb-1" for="fecha_nacimientoId">Fecha de nacimiento</label>
+                        <input pattern="(?:19|20)(?:(?:[13579][26]|[02468][048])-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))|(?:[0-9]{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-8])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:29|30))|(?:(?:0[13578]|1[02])-31)))"
+                               class="form-control form-control-user" name="fecha_nacimiento"
+                               id="fecha_nacimientoId" value="{{ usuario.fecha_nacimiento }}"
+                               placeholder="aaaa-mm-dd" autocomplete="off"
+                               required/>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="small mb-1" for="usernameId">Cédula</label>
-                            <input class="form-control py-4" id="usernameId" name="username" type="text"
-                                   placeholder="Ingrese el username" value="{{ object.username }}"
-                                   required/>
+                            <label class="small mb-1" for="direccionId">Dirección</label>
+                            <input class="form-control py-4" id="direccionId" name="direccion" type="text"
+                                   placeholder="Ingrese la dirección" value="{{ socio.direccion }}" required/>
                         </div>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="small mb-1" for="emailId">Email</label>
-                            <input class="form-control py-4" id="emailId" name="email" type="email"
-                                   placeholder="Ingrese el email" value="{{ object.email }}" required/>
+                            <label class="small mb-1" for="telefonoId">Teléfono</label>
+                            <input class="form-control py-4" id="telefonoId" name="telefono" type="tel"
+                                   placeholder="Ingrese el teléfono" value="{{ socio.telefono }}"
+                                   onkeypress="return soloNumeros(event)" required/>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="small mb-1" for="fecha_nacimientoId">Fecha de Nacimiento</label>
-                        <input pattern="(?:19|20)(?:(?:[13579][26]|[02468][048])-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))|(?:[0-9]{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-8])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:29|30))|(?:(?:0[13578]|1[02])-31)))"
-                               class="form-control form-control-user" name="fecha_nacimiento"
-                               id="fecha_nacimientoId"
-                               placeholder="aaaa-mm-dd" autocomplete="off"
-                               required/>
+                        <div class="form-group">
+                            <label class="small mb-1" for="celularId">Celular</label>
+                            <input class="form-control py-4" id="celularId" name="celular" type="tel"
+                                   placeholder="Ingrese el celular" value="{{ socio.celular }}"
+                                   onkeypress="return soloNumeros(event)" maxlength="10" minlength="10" required/>
+                        </div>
                     </div>
                 </div>
-
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="cargoId">Cargo</label>
+                            <input class="form-control py-4" id="cargoId" name="cargo" type="text"
+                                   placeholder="Ingrese el cargo" value="{{ socio.cargo }}" required/>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="areaId">Área</label>
+                            <input class="form-control py-4" id="areaId" name="area" type="text"
+                                   placeholder="Ingrese el area" value="{{ socio.area }}" required/>
+                        </div>
+                    </div>
+                </div>
                 {% if usuario.password is null %}
                     <div class="form-row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="small mb-1" for="passwordId">Contraseña</label>
                                 <input class="form-control py-4" id="passwordId" name="password" type="password"
-                                       placeholder="Ingrese la contraseña" value="{{ object.password }}" required/>
+                                       placeholder="Ingrese la contraseña" required/>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="small mb-1" for="password2Id">Confirme la ontraseña</label>
                                 <input class="form-control py-4" id="password2Id" name="password2" type="password"
-                                       placeholder="Ingrese la confirmación de contraseña" value="{{ object.password }}"
+                                       placeholder="Ingrese la confirmación de contraseña"
                                        required/>
                             </div>
                         </div>
                     </div>
                 {% else %}
-                    <div class="form-group">
-                        <label class="small mb-1" for="password2Id">Confirme la ontraseña</label>
-                        <input class="form-control py-4" id="password2Id" name="password2" type="password"
-                               placeholder="Ingrese la confirmación de contraseña" value="{{ object.password }}"
-                               required/>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-outline-primary m-4" data-toggle="modal"
+                                    data-target="#exampleModal">Cambiar contraseña
+                            </button>
+                        </div>
                     </div>
                 {% endif %}
                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
@@ -118,11 +161,46 @@
             </form>
         </div>
     </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Cambio de contraseña</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            onclick="cancelarCambioPassword()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="mensajes"></div>
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Contraseña nueva:</label>
+                            <input type="password" class="form-control" name="new_password1" id="new_password1">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Contraseña nueva (confirmación):</label>
+                            <input type="password" class="form-control" name="new_password2" id="new_password2">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            onclick="cancelarCambioPassword()">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-success" id="cambiarPassword">Cambiar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 {% block js %}
     {{ block.super }}
     <script>
-
         $("#formularioId").on('submit', function (evt) {
             var password1 = document.getElementById('passwordId').value;
             var password2 = document.getElementById('password2Id').value;
@@ -132,14 +210,8 @@
                 evt.preventDefault();
             }
 
-
-            // tu codigo aqui
         });
-        {#function confirmarPassword() {#}
-        {#    var password1 = document.getElementById('passwordId').value;#}
-        {#    var password2 = document.getElementById('password2Id').value;#}
-        {##}
-        {#    #}
+
 
     </script>
     <script>
