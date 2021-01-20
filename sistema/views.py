@@ -71,6 +71,10 @@ class UsuarioDetailView(LoginRequiredMixin, DetailView):
     template_name = 'sistema/usuario_detail.html'
 
 
+class UsuarioListView(LoginRequiredMixin, ListView):
+    model = Usuario
+
+
 class AdministradorCreate(LoginRequiredMixin, CreateView):
     model = Usuario
     fields = ['nombres', 'apellidos', 'username', 'email', 'fecha_nacimiento', 'password']

@@ -30,6 +30,7 @@ SECRET_KEY = 'k#vl*#66^)ntotmaz)e9zvu!=8r^_ex!w9y6syg4vgix+sajle'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+ADMINS = [('Jafet', 'jafetandres@hotmail.com')]
 
 # Application definition
 
@@ -146,6 +147,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # LOGIN_REDIRECT_URL = 'sistema:index'
 LOGIN_URL = 'registration:login'
+LOGIN_REDIRECT_URL = 'registration:login'
 LOGOUT_REDIRECT_URL = 'registration:login'
 AUTH_USER_MODEL = 'sistema.Usuario'
 

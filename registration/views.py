@@ -8,22 +8,23 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
-        user = authenticate(username=username, password=password)
         if Usuario.objects.filter(username=username).exists():
-            user = Usuario.objects.get(username=username)
-            if user.is_active:
+            user = authenticate(username=username, password=password)
+            usuario = Usuario.objects.get(username=username)
+            if usuario.is_active:
                 if user is not None:
                     login(request, user)
-
                     user.save()
-
-                    if user.tipo == 'socio':
+                    if usuario.tipo == 'socio':
                         return redirect('socio:home')
-                    elif user.tipo == 'administrador':
-                        return redirect('sistema:home')
-                    elif user.tipo == 'presidente':
+                    elif usuario.tipo == 'administrador':
+                        if usuario.is_superuser:
+                            return redirect('sistema:home')
+                        else:
+                            messages.error(request, 'Usted no es superusuario')
+                    elif usuario.tipo == 'presidente':
                         return redirect('presidente:home')
-                    elif user.tipo == 'asistente':
+                    elif usuario.tipo == 'asistente':
                         return redirect('asistente:home')
                 else:
                     messages.error(request, 'Usuario o contraseña incorrectos')
