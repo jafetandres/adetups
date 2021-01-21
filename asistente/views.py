@@ -1,4 +1,5 @@
 import pandas as pd
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -43,18 +44,23 @@ class SolicitudCreditoCreate(LoginRequiredMixin, CreateView):
     model = SolicitudCredito
     fields = ['clasecredito', 'garante', 'monto', 'plazo']
     template_name = 'asistente/solicitudcredito_form.html'
-    success_url = reverse_lazy('socio:home')
+    success_url = reverse_lazy('asistente:home')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         clasecreditos = ClaseCredito.objects.all()
-        socios = Socio.objects.filter(is_garante=False)
+        garantes = Socio.objects.filter(is_garante=False)
         context["clasecreditos"] = clasecreditos
-        context["socios"] = socios
+        socio_usuario = Socio.objects.get(usuario_id=self.kwargs['usuario_id'])
+        context["socio"] = socio_usuario
+        context["garantes"] = garantes
         return context
 
     def form_valid(self, form):
         socio = Socio.objects.get(usuario_id=self.request.user.id)
+        if self.kwargs['usuario_id']:
+            print("entro", self.kwargs['usuario_id'])
+            socio = Socio.objects.get(usuario_id=self.kwargs['usuario_id'])
         data = form.cleaned_data
         # garante = Socio.objects.get(id=data['garante'])
         # solicitudcredito = form.save(commit=False)
@@ -210,3 +216,18 @@ class SocioListView(LoginRequiredMixin, ListView):
 class SocioDetailView(LoginRequiredMixin, DetailView):
     model = Socio
     template_name = 'asistente/socio_detail.html'
+
+
+def escoger_socio(request):
+    if request.method == 'POST':
+        cedula = request.POST['cedula']
+        if Usuario.objects.filter(username=cedula).exists():
+            usuario = Usuario.objects.get(username=cedula)
+            if Socio.objects.filter(usuario=usuario).exists():
+                socio = Socio.objects.get(usuario=usuario)
+                return redirect('asistente:solicitudcreditocreate', usuario_id=socio.usuario.id)
+            else:
+                messages.error(request, 'El socio no exsiste')
+        else:
+            messages.error(request, 'El socio no exsiste')
+    return render(request, 'asistente/escoger_socio.html')

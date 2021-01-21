@@ -92,7 +92,8 @@
             <div class="card bg-primary text-white mb-4">
                 <div class="card-body">Solicitar Crédito</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{% url 'sistema:clasecreditolist' %}">Ver</a>
+                    <a class="small text-white stretched-link"
+                       href="{% url 'asistente:solicitudcreditocreate' request.user.id %}">Ver</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
@@ -133,8 +134,8 @@
                     Solicitudes de Credito
                 </div>
                 <div class="col-6" align="right">
-                    <a class="btn" href="{% url 'asistente:solicitudcreditocreate' %}"><i class="fa fa-plus fa-fw"
-                                                                                          aria-hidden="true"></i>Añadir</a>
+                    <a class="btn" href="{% url 'asistente:escogersocio' %}"><i class="fa fa-plus fa-fw"
+                                                                                aria-hidden="true"></i>Añadir</a>
                 </div>
             </div>
         </div>
