@@ -324,48 +324,48 @@ class ClaseCreditoDelete(LoginRequiredMixin, DeleteView):
             messages.add_message(request, messages.ERROR, 'No se puede borrar el registro ya que existen dependencias')
         return HttpResponseRedirect(success_url)
 
+#
+# class ClaseSolicitudListView(LoginRequiredMixin, ListView):
+#     model = ClaseSolicitud
+#
+#
+# class ClaseSolicitudDetailView(LoginRequiredMixin, DetailView):
+#     model = ClaseSolicitud
+#
 
-class ClaseSolicitudListView(LoginRequiredMixin, ListView):
-    model = ClaseSolicitud
-
-
-class ClaseSolicitudDetailView(LoginRequiredMixin, DetailView):
-    model = ClaseSolicitud
-
-
-class ClaseSolicitudCreate(LoginRequiredMixin, CreateView):
-    model = ClaseSolicitud
-    fields = ['descripcion', 'estado']
-    success_url = reverse_lazy('sistema:clasesolicitudlist')
-
-
-class ClaseSolicitudUpdate(UpdateView):
-    model = ClaseSolicitud
-    fields = ['descripcion', 'estado']
-
-    def get_success_url(self):
-        return reverse_lazy('sistema:clasesolicitudupdate', args=[self.object.id]) + '?ok'
-
-
-class ClaseSolicitudDelete(DeleteView):
-    model = ClaseSolicitud
-
-    # success_url = reverse_lazy('sistema:clascrelist')
-
-    def delete(self, request, *args, **kwargs):
-        """
-        Call the delete() method on the fetched object and then redirect to the
-        success URL. If the object is protected, send an error message.
-        """
-        self.object = self.get_object()
-        success_url = reverse_lazy('sistema:clasesolicitudlist')
-
-        try:
-            self.object.delete()
-        except IntegrityError:
-            messages.add_message(request, messages.ERROR, 'No se puede borrar el registro ya que existen dependencias')
-        return HttpResponseRedirect(success_url)
-
+# class ClaseSolicitudCreate(LoginRequiredMixin, CreateView):
+#     model = ClaseSolicitud
+#     fields = ['descripcion', 'estado']
+#     success_url = reverse_lazy('sistema:clasesolicitudlist')
+#
+#
+# class ClaseSolicitudUpdate(UpdateView):
+#     model = ClaseSolicitud
+#     fields = ['descripcion', 'estado']
+#
+#     def get_success_url(self):
+#         return reverse_lazy('sistema:clasesolicitudupdate', args=[self.object.id]) + '?ok'
+#
+#
+# class ClaseSolicitudDelete(DeleteView):
+#     model = ClaseSolicitud
+#
+#     # success_url = reverse_lazy('sistema:clascrelist')
+#
+#     def delete(self, request, *args, **kwargs):
+#         """
+#         Call the delete() method on the fetched object and then redirect to the
+#         success URL. If the object is protected, send an error message.
+#         """
+#         self.object = self.get_object()
+#         success_url = reverse_lazy('sistema:clasesolicitudlist')
+#
+#         try:
+#             self.object.delete()
+#         except IntegrityError:
+#             messages.add_message(request, messages.ERROR, 'No se puede borrar el registro ya que existen dependencias')
+#         return HttpResponseRedirect(success_url)
+#
 
 class RestriccionesCreditoListView(ListView):
     model = RestriccionesCredito

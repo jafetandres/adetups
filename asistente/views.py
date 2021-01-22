@@ -4,15 +4,17 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView, ListView
+
+from asistente.forms import SolicitudCreditoForm
 from sistema.forms import UsuarioForm
-from sistema.models import SolicitudCredito, Usuario, Socio, ClaseCredito, RubroSocio
+from sistema.models import SolicitudCredito, Usuario, Socio, ClaseCredito, RubroSocio, Credito
 from django.shortcuts import redirect
 from pyexcel_xls import get_data as xls_get
 from pyexcel_xlsx import get_data as xlsx_get
 from django.utils.datastructures import MultiValueDictKeyError
 
 
-class HomePageView(TemplateView):
+class HomePageView(TemplateView, LoginRequiredMixin):
     template_name = "asistente/index.html"
 
     def get_context_data(self, **kwargs):
@@ -42,9 +44,17 @@ class SolicitudCreditoUpdate(LoginRequiredMixin, UpdateView):
 
 class SolicitudCreditoCreate(LoginRequiredMixin, CreateView):
     model = SolicitudCredito
-    fields = ['clasecredito', 'garante', 'monto', 'plazo']
+    form_class = SolicitudCreditoForm
     template_name = 'asistente/solicitudcredito_form.html'
     success_url = reverse_lazy('asistente:home')
+
+    def get(self, request, *args, **kwargs):
+        socio = Socio.objects.get(usuario_id=self.request.user.id)
+        if self.kwargs['usuario_id']:
+            socio = Socio.objects.get(usuario_id=self.kwargs['usuario_id'])
+        if Credito.objects.filter(socio=socio).exists():
+            messages.error(request, 'El socio ya tiene un prestamo activo y no puede solicitar otro')
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -59,15 +69,21 @@ class SolicitudCreditoCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         socio = Socio.objects.get(usuario_id=self.request.user.id)
         if self.kwargs['usuario_id']:
-            print("entro", self.kwargs['usuario_id'])
             socio = Socio.objects.get(usuario_id=self.kwargs['usuario_id'])
         data = form.cleaned_data
+        if Credito.objects.filter(socio=socio).exists():
+            messages.error(self.request, 'El socio ya tiene un prestamo activo y no puede solicitar otro')
+            return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
+        if socio.fecha_ingreso > data['clasecredito'].tiempo_minimo_servicio:
+            messages.error(self.request, 'El socio no cumple con el tiempo minimo de servicio para esta clase de prestamo')
+            return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
         # garante = Socio.objects.get(id=data['garante'])
         # solicitudcredito = form.save(commit=False)
         # solicitudcredito.garante = Socio.objects.get(id=data['garante'])
-        form.instance.cuota = 10.00
-        form.instance.interes = 10.00
-        form.instance.porcinteres = 10.00
+        # print(data['clasecredito'].)
+        # form.instance.cuota = 10.00
+        # form.instance.interes = 10.00
+        # form.instance.porcinteres = 10.00
         form.instance.socio = socio
         # form.instance.garante = Socio.objects.get(id=data['garante'])
         # form.instance.clasecredito = ClaseCredito.objects.get(id=1)
@@ -76,6 +92,31 @@ class SolicitudCreditoCreate(LoginRequiredMixin, CreateView):
         garante.is_garante = True
         garante.save()
         return super().form_valid(form)
+
+    # def post(self, request, *args, **kwargs):
+    #     form = self.get_form()
+    #     socio = Socio.objects.get(usuario_id=self.request.user.id)
+    #     if self.kwargs['usuario_id']:
+    #         socio = Socio.objects.get(usuario_id=self.kwargs['usuario_id'])
+    #     if Credito.objects.filter(socio=socio).exists():
+    #         messages.error(self.request, 'El socio ya tiene un prestamo activo y no puede solicitar otro')
+    #         return redirect('asistente:home')
+    #     else:
+    #         if form.is_valid():
+    #             return self.form_valid(form)
+    #         else:
+    #             return self.form_invalid(form)
+
+    # form = self.get_form()
+    # socio = Socio.objects.get(usuario_id=self.request.user.id)
+    # if self.kwargs['usuario_id']:
+    #     socio = Socio.objects.get(usuario_id=self.kwargs['usuario_id'])
+    # if Credito.objects.filter(socio=socio).exists():
+    #     messages.error(self.request, 'El socio ya tiene un prestamo activo y no puede solicitar otro')
+    #     return self.form_invalid(form)
+    # else:
+    #     if form.is_valid():
+    #         return self.form_valid(form)
 
 
 class UsuarioDetailView(LoginRequiredMixin, DetailView):
@@ -225,7 +266,10 @@ def escoger_socio(request):
             usuario = Usuario.objects.get(username=cedula)
             if Socio.objects.filter(usuario=usuario).exists():
                 socio = Socio.objects.get(usuario=usuario)
-                return redirect('asistente:solicitudcreditocreate', usuario_id=socio.usuario.id)
+                if Credito.objects.filter(socio=socio).exists():
+                    messages.error(request, 'El socio ya tiene un crédito aprobado')
+                else:
+                    return redirect('asistente:solicitudcreditocreate', usuario_id=socio.usuario.id)
             else:
                 messages.error(request, 'El socio no exsiste')
         else:

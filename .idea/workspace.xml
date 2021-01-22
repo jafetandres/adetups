@@ -2,15 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7f909e53-265b-4961-95e9-847068ff836c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/escoger_socio.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/asistente/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0002_auto_20210121_2043.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0003_auto_20210121_2044.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0004_auto_20210121_2048.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0005_auto_20210121_2051.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0006_auto_20210121_2052.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0007_auto_20210121_2219.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0008_clasecredito_tiempo_minimo_servicio.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/solicitudcredito_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/solicitudcredito_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/presidente/templates/presidente/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/presidente/templates/presidente/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0002_auto_20210116_1144.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0003_socio_rubros.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0004_archivostemporales.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0005_auto_20210118_1542.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0006_delete_archivotemporal.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0007_archivotemporal.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0008_auto_20210118_1716.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0009_auto_20210118_1717.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0010_delete_archivotemporal.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,8 +43,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -34,12 +53,16 @@
   </component>
   <component name="JupyterTrust" id="13c8a115-a75a-4570-a225-9309d742c47e" />
   <component name="ProjectId" id="1jQW8BYXzRHJK9GuR8RKp8oxoCL" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="DatabaseDriversLRU" value="mysql" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
@@ -118,14 +141,14 @@
         <env name="PYTHONUNBUFFERED" value="1" />
         <env name="DJANGO_SETTINGS_MODULE" value="adetups.settings" />
       </envs>
-      <option name="SDK_HOME" value="$PROJECT_DIR$/../../adetups/bin/python" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="launchJavascriptDebuger" value="false" />
       <option name="port" value="8000" />
-      <option name="host" value="192.168.1.23" />
+      <option name="host" value="" />
       <option name="additionalOptions" value="" />
       <option name="browserUrl" value="" />
       <option name="runTestServer" value="false" />
@@ -196,12 +219,16 @@
       <workItem from="1609212312528" duration="4037000" />
       <workItem from="1609300412916" duration="3721000" />
       <workItem from="1609951899661" duration="538000" />
-      <workItem from="1610554056125" duration="78951000" />
+      <workItem from="1610554056125" duration="83535000" />
+      <workItem from="1611278294033" duration="9611000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

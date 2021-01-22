@@ -23,7 +23,7 @@ class PersonalizadoBaseUserManager(BaseUserManager):
 class Usuario(AbstractBaseUser, PermissionsMixin):
     foto = models.ImageField(upload_to='img_perfil', null=True, blank=True, default='img_perfil/default-avatar.jpg')
     nombres = models.CharField(max_length=50, null=True, blank=True)
-    date_joined = models.DateTimeField(default=timezone.now)
+    date_joined = models.DateTimeField(default=timezone.now, null=True, blank=True)
     apellidos = models.CharField(max_length=50, null=True, blank=True)
     username = models.CharField(max_length=50, null=True, blank=True, unique=True)
     email = models.EmailField(unique=True, null=True, blank=True)
@@ -51,7 +51,6 @@ class Rubro(models.Model):
         return self.descripcion
 
 
-
 class RubroSocio(models.Model):
     rubro = models.ForeignKey(Rubro, models.DO_NOTHING)  # Field name made lowercase.
     descripcion = models.CharField(max_length=20, blank=True, null=True)  # Field name made lowercase.
@@ -71,13 +70,13 @@ class RubroSocio(models.Model):
 class Socio(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     # cedula = models.CharField(unique=True, max_length=10)  # Field name made lowercase.
-    direccion = models.CharField(max_length=80)  # Field name made lowercase.
-    telefono = models.CharField(max_length=15)  # Field name made lowercase.
-    celular = models.CharField(max_length=10)  # Field name made lowercase.
-    cargo = models.CharField(max_length=20)  # Field name made lowercase.
-    area = models.CharField(max_length=20)  # Field name made lowercase.
+    direccion = models.CharField(max_length=80, null=True, blank=True)  # Field name made lowercase.
+    telefono = models.CharField(max_length=15, null=True, blank=True)  # Field name made lowercase.
+    celular = models.CharField(max_length=10, null=True, blank=True)  # Field name made lowercase.
+    cargo = models.CharField(max_length=20, null=True, blank=True)  # Field name made lowercase.
+    area = models.CharField(max_length=20, null=True, blank=True)  # Field name made lowercase.
     fecha_ingreso = models.DateField(blank=True, null=True)  # Field name made lowercase.
-    is_garante = models.BooleanField(default=False)
+    is_garante = models.BooleanField(default=False, null=True, blank=True)
     rubros = models.ManyToManyField(RubroSocio, blank=True, null=True)
     # tiempo = models.SmallIntegerField()  # Field name made lowercase.
 
@@ -115,6 +114,7 @@ class ClaseCredito(models.Model):
     autorizacion = models.BooleanField(default=True, blank=True, null=True)  # Field name made lowercase.
     estado = models.CharField(max_length=10, blank=True, null=True)  # Field name made lowercase.
     plazomax = models.SmallIntegerField(blank=True, null=True)  # Field name made lowercase.
+    tiempo_minimo_servicio = models.IntegerField(blank=True, null=True)
     garante = models.BooleanField(default=True, blank=True, null=True)  # Field name made lowercase.
 
 
@@ -137,9 +137,9 @@ class Adtclasol(models.Model):
         db_table = 'ADTCLASOL'
 
 
-class ClaseSolicitud(models.Model):
-    descripcion = models.CharField(max_length=30)  # Field name made lowercase.
-    estado = models.CharField(max_length=10)  # Field name made lowercase.
+# class ClaseSolicitud(models.Model):
+#     descripcion = models.CharField(max_length=30)  # Field name made lowercase.
+#     estado = models.CharField(max_length=10)  # Field name made lowercase.
 
 
 class SolicitudCredito(models.Model):
@@ -150,9 +150,9 @@ class SolicitudCredito(models.Model):
     plazo = models.SmallIntegerField()
     estado = models.CharField(max_length=20, default='pendiente')
     socio = models.ForeignKey(Socio, models.DO_NOTHING, related_name='socio')
-    cuota = models.DecimalField(max_digits=9, decimal_places=2)
-    interes = models.DecimalField(max_digits=9, decimal_places=2)
-    porcinteres = models.DecimalField(max_digits=4, decimal_places=2)
+    # cuota = models.DecimalField(max_digits=9, decimal_places=2)
+    # interes = models.DecimalField(max_digits=9, decimal_places=2)
+    # porcinteres = models.DecimalField(max_digits=4, decimal_places=2)
     observaciones = models.TextField(blank=True, null=True)
 
 
@@ -216,18 +216,23 @@ class Adtcredito(models.Model):
         db_table = 'ADTCREDITO'
 
 
+class Cuota(models.Model):
+    estado = models.BooleanField(default=False, null=True, blank=True)
+    monto = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+
+
 class Credito(models.Model):
-    solicitud = models.ForeignKey(ClaseSolicitud, models.DO_NOTHING)  # Field name made lowercase.
+    solicitud = models.ForeignKey(SolicitudCredito, models.DO_NOTHING)  # Field name made lowercase.
     socio = models.ForeignKey(Socio, on_delete=models.DO_NOTHING)  # Field name made lowercase.
     monto = models.DecimalField(max_digits=9, decimal_places=2)  # Field name made lowercase.
-    cuota = models.DecimalField(max_digits=9, decimal_places=2)  # Field name made lowercase.
+    cuotas = models.ManyToManyField(Cuota)
     interes = models.DecimalField(max_digits=4, decimal_places=2)  # Field name made lowercase.
     plazo = models.SmallIntegerField()  # Field name made lowercase.
-    crenrocob = models.SmallIntegerField()  # Field name made lowercase.
-    pagado = models.DecimalField(max_digits=9, decimal_places=2)  # Field name made lowercase.
-    estado = models.CharField(db_column='CREESTADO', max_length=3)  # Field name made lowercase.
-    pendiente = models.DecimalField(db_column='CREPENDIEN', max_digits=9,
-                                    decimal_places=2)  # Field name made lowercase.
+    # crenrocob = models.SmallIntegerField()  # Field name made lowercase.
+    # pagado = models.DecimalField(max_digits=9, decimal_places=2)  # Field name made lowercase.
+    estado = models.CharField(max_length=3)  # Field name made lowercase.
+    # pendiente = models.DecimalField(db_column='CREPENDIEN', max_digits=9,
+    #                                 decimal_places=2)  # Field name made lowercase.
 
 
 class Adtdetrub(models.Model):

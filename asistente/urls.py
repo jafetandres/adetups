@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from .views import *
 
 app_name = 'asistente'
@@ -6,7 +6,7 @@ app_name = 'asistente'
 urlpatterns = [
     path('', HomePageView.as_view(), name="home"),
     path('solicitudcreditoupdate/<int:pk>/', SolicitudCreditoUpdate.as_view(), name="solicitudcreditoupdate"),
-    path('solicitudcreditocreate/(?P<usuario_id>\d+)/$', SolicitudCreditoCreate.as_view(),
+    re_path('solicitudcreditocreate/(?P<usuario_id>\d+)/$', SolicitudCreditoCreate.as_view(),
          name='solicitudcreditocreate'),
     # path('solicitudcreditocreate/<int:socio_id>/', SolicitudCreditoCreate.as_view(),
     #      name='solicitudcreditocreate'),
