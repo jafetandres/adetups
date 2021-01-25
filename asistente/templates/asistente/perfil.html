@@ -1,7 +1,8 @@
-<{% extends 'sistema/index.html' %}
+{% extends 'asistente/index.html' %}
 {% block content %}
     <div class="card shadow-lg border-0 rounded-lg mt-5">
-        <div class="card-header"><h3 class="text-center font-weight-light my-4">Presidente</h3></div>
+        <div class="card-header">
+            <h3 class="text-center font-weight-light my-4">Perfil</h3></div>
         <div class="card-body">
             <div id="alertsId">
                 {% if 'ok' in request.GET %}
@@ -32,40 +33,29 @@
             </div>
             <form method="post" id="formularioId">
                 {% csrf_token %}
-
                 <div class="form-row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="nombresId">Nombres</label>
                             <input class="form-control py-4" id="nombresId" name="nombres" type="text"
-                                   placeholder="Ingrese los nombres" value="{{ usuario.nombres }}" required/>
+                                   placeholder="Ingrese los nombres" value="{{ request.user.nombres }}" required/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="apellidosId">Apellidos</label>
                             <input class="form-control py-4" id="apellidosId" name="apellidos" type="text"
-                                   placeholder="Ingrese los apellidos" value="{{ usuario.apellidos }}" required/>
+                                   placeholder="Ingrese los apellidos" value="{{ request.user.apellidos }}" required/>
                         </div>
                     </div>
                 </div>
                 <div class="form-row">
-                    {% if usuario.username is null %}
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="small mb-1" for="usernameId">Cédula</label>
-                                <input class="form-control py-4" id="usernameId" name="username" type="text"
-                                       placeholder="Ingrese la cédula" value="{{ usuario.username }}"
-                                       onkeypress="return soloNumeros(event)" maxlength="10" minlength="10"
-                                       required/>
-                            </div>
-                        </div>
-                    {% endif %}
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="emailId">Correo electrónico</label>
                             <input class="form-control py-4" id="emailId" name="email" type="email"
-                                   placeholder="Ingrese el correo electrónico" value="{{ usuario.email }}" required/>
+                                   placeholder="Ingrese el correo electrónico" value="{{ request.user.email }}"
+                                   required/>
                         </div>
                     </div>
                 </div>
@@ -74,7 +64,7 @@
                         <label class="small mb-1" for="fecha_nacimientoId">Fecha de nacimiento</label>
                         <input pattern="(?:19|20)(?:(?:[13579][26]|[02468][048])-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))|(?:[0-9]{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-8])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:29|30))|(?:(?:0[13578]|1[02])-31)))"
                                class="form-control form-control-user" name="fecha_nacimiento"
-                               id="fecha_nacimientoId" value="{{ usuario.fecha_nacimiento }}"
+                               id="fecha_nacimientoId" value="{{ request.user.fecha_nacimiento }}"
                                placeholder="aaaa-mm-dd" autocomplete="off"
                                required/>
                     </div>
@@ -120,25 +110,7 @@
                         </div>
                     </div>
                 </div>
-                {% if usuario.password is null %}
-                    <div class="form-row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="small mb-1" for="passwordId">Contraseña</label>
-                                <input class="form-control py-4" id="passwordId" name="password" type="password"
-                                       placeholder="Ingrese la contraseña" required/>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="small mb-1" for="password2Id">Confirme la ontraseña</label>
-                                <input class="form-control py-4" id="password2Id" name="password2" type="password"
-                                       placeholder="Ingrese la confirmación de contraseña"
-                                       required/>
-                            </div>
-                        </div>
-                    </div>
-                {% else %}
+                <div class="form-row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <button type="button" class="btn btn-outline-primary m-4" data-toggle="modal"
@@ -146,7 +118,9 @@
                             </button>
                         </div>
                     </div>
-                {% endif %}
+                </div>
+
+
                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
                     <a href="{% url 'sistema:home' %}">
                         <svg class="svg-inline--fa fa-arrow-left fa-w-14 mr-1" aria-hidden="true" focusable="false"
@@ -197,49 +171,4 @@
             </div>
         </div>
     </div>
-
-{% endblock %}
-{% block js %}
-    {{ block.super }}
-    <script>
-        $("#formularioId").on('submit', function (evt) {
-            var password1 = document.getElementById('passwordId').value;
-            var password2 = document.getElementById('password2Id').value;
-            var cardBody = document.getElementById('alertsId');
-            if (password1 != password2) {
-                cardBody.innerHTML = '<div class="alert alert-danger" role="alert">Las contraseñas no coinciden<div>'
-                evt.preventDefault();
-            }
-
-        });
-
-
-    </script>
-    <script>
-        function soloNumeros(evt) {
-            var theEvent = evt || window.event;
-            var key = theEvent.keyCode || theEvent.which;
-            key = String.fromCharCode(key);
-            if (key.length == 0) return;
-            var regex = /^[0-9.,\b]+$/;
-            if (!regex.test(key)) {
-                theEvent.returnValue = false;
-                if (theEvent.preventDefault) theEvent.preventDefault();
-            }
-        }
-    </script>
-    <script>
-        $('#fecha_nacimientoId').datepicker({
-            language: 'es-ES',
-            format: 'yyyy-mm-dd',
-            autoHide: true
-        });
-    </script>
-    <script>
-        $('#fecha_ingresoId').datepicker({
-            language: 'es-ES',
-            format: 'yyyy-mm-dd',
-            autoHide: true
-        });
-    </script>
 {% endblock %}

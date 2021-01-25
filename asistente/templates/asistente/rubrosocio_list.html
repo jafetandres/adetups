@@ -1,12 +1,15 @@
 {% extends 'asistente/index.html' %}
-
 {% block content %}
     <div class="card mb-4 mt-4">
         <div class="card-header">
             <div class="row">
                 <div class="col-6">
                     <i class="fas fa-table mr-1"></i>
-                    Rubros
+                    Rubro Socio
+                </div>
+                <div class="col-6" align="right">
+                    <a class="btn" href="{% url 'asistente:rubrosociocreate' %}"><i class="fa fa-plus fa-fw"
+                                                                                    aria-hidden="true"></i>Añadir</a>
                 </div>
             </div>
         </div>
@@ -23,34 +26,82 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr>
-                        <th>Nombres</th>
-                        <th>Cedula</th>
-                        <th>Total debito</th>
+                        <th>Socio</th>
+                        <th>Rubro</th>
+                        <th>Valor</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                        <th>Nombres</th>
-                        <th>Cedula</th>
-                        <th>Total debito</th>
+                        <th>Socio</th>
+                        <th>Rubro</th>
+                        <th>Valor</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
                     </tr>
                     </tfoot>
                     <tbody>
-                    {% for socio in rubros_generados %}
-                        <tr>
-                            <th>{{ socio.1 }}</th>
-                            <td>{{ socio.2 }}</td>
-                            <td>{{ socio.12 }}</td>
-                        </tr>
+                    {% for socio in socios %}
+                        {% for rubrosocio in socio.rubros.all %}
+                            <tr>
+                                <td>{{ socio.usuario.nombres|title }}</td>
+                                <td>{{ rubrosocio.rubro.descripcion|title }}</td>
+                                <td>{{ rubrosocio.valor }}</td>
+                                <td>{{ rubrosocio.fecha_ingreso }}</td>
+                                <td class="text-center">
+                                    <form id="my_form{{ rubrosocio.id }}" method="post"
+                                          action="{% url 'asistente:rubrosociodelete' rubrosocio.id %}">
+                                        {% csrf_token %}
+                                    </form>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="modal{{ rubrosocio.id }}" tabindex="-1"
+                                         role="dialog"
+                                         aria-labelledby="exampleModalLabel"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Está seguro?</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Si elimina este registro se eliminar de la base de datos
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">
+                                                        Cancelar
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger"
+                                                            onclick="document.getElementById('my_form{{ rubrosocio.id }}').submit();">
+                                                        Eliminar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-danger"
+                                            aria-label="Delete" data-toggle="modal"
+                                            data-target="#modal{{ rubrosocio.id }}">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </button>
+                                    <a class="btn btn-warning"
+                                       href="{% url 'asistente:rubrosociolist' %}"
+                                       aria-label="Edit">
+                                        Editar
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
                     {% endfor %}
                     </tbody>
                 </table>
             </div>
-            <form method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-success">Guardar</button>
-            </form>
         </div>
     </div>
 {% endblock %}
-

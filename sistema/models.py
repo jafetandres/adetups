@@ -42,10 +42,11 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
 
 class Rubro(models.Model):
-    descripcion = models.CharField(max_length=50)  # Field name made lowercase.
-    tipo = models.CharField(max_length=3)  # Field name made lowercase.
-    estado = models.CharField(max_length=3)  # Field name made lowercase.
-    valor = models.DecimalField(max_digits=9, decimal_places=2)  # Field name made lowercase.
+    descripcion = models.CharField(max_length=50, null=True, blank=True)
+    tipo = models.CharField(max_length=10, null=True, blank=True)
+    estado = models.BooleanField(default=True, null=True, blank=True)
+    valor = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    abreviatura = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):
         return self.descripcion
@@ -116,6 +117,15 @@ class ClaseCredito(models.Model):
     plazomax = models.SmallIntegerField(blank=True, null=True)  # Field name made lowercase.
     tiempo_minimo_servicio = models.IntegerField(blank=True, null=True)
     garante = models.BooleanField(default=True, blank=True, null=True)  # Field name made lowercase.
+    # parametros = models.ManyToManyField(Parametro, blank=True, null=True)
+
+
+class Parametro(models.Model):
+    clasecredito = models.ForeignKey(ClaseCredito, models.CASCADE)
+    descripcion = models.CharField(max_length=100)  # Field name made lowercase.
+    valorcaracter = models.CharField(max_length=200)  # Field name made lowercase.
+    valornumerico = models.DecimalField(max_digits=9, decimal_places=2)  # Field name made lowercase.
+    estado = models.BooleanField(default=False)  # Field name made lowercase.
 
 
 class Adtclasol(models.Model):
@@ -177,16 +187,6 @@ class Adtclcreq(models.Model):
     class Meta:
         # managed = False
         db_table = 'ADTCLCREQ'
-
-
-class RestriccionesCredito(models.Model):
-    clasecredito = models.ForeignKey(ClaseCredito, on_delete=models.DO_NOTHING
-                                     )  # Field name made lowercase.
-    plazomax = models.SmallIntegerField()  # Field name made lowercase.
-    tiempodesde = models.SmallIntegerField()  # Field name made lowercase.
-    tiempohasta = models.SmallIntegerField()  # Field name made lowercase.
-    valhasta = models.DecimalField(max_digits=9, decimal_places=2)  # Field name made lowercase.
-    estado = models.CharField(max_length=3)  # Field name made lowercase.
 
 
 class Adtcredito(models.Model):
@@ -322,13 +322,6 @@ class Adtparam(models.Model):
     class Meta:
         # managed = False
         db_table = 'ADTPARAM'
-
-
-class Parametro(models.Model):
-    descripcion = models.CharField(max_length=100)  # Field name made lowercase.
-    valorcaracter = models.CharField(max_length=200)  # Field name made lowercase.
-    valornumerico = models.DecimalField(max_digits=9, decimal_places=2)  # Field name made lowercase.
-    estado = models.CharField(max_length=3)  # Field name made lowercase.
 
 
 class Adtperfil(models.Model):

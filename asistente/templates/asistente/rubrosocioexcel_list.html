@@ -1,0 +1,87 @@
+{% extends 'asistente/index.html' %}
+
+{% block content %}
+    <div class="card mb-4 mt-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <i class="fas fa-table mr-1"></i>
+                    Rubros
+                </div>
+            </div>
+        </div>
+        {% if 'ok' in request.GET %}
+            <div class="alert alert-success" role="alert">Registro creado correctamente</div>
+        {% endif %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Nro</th>
+                        <th>Nombres</th>
+                        <th>Cedula</th>
+                        <th>Total debito</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Nro</th>
+                        <th>Nombres</th>
+                        <th>Cedula</th>
+                        <th>Total debito</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for socio in rubros_generados %}
+                        <tr>
+                            <th>{{ forloop.counter  }}</th>
+                            <th>{{ socio.1 }}</th>
+                            <td>{{ socio.2 }}</td>
+                            <td>{{ socio.12 }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="text-right m-4">
+                    <button type="button" class="btn btn-adetups" data-toggle="modal" data-target="#exampleModal">
+                        Guardar Rubros
+                    </button>
+                </div>
+
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Estas seguro?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Si guardas los rubros se guardaran en la base de datos esperamos que hayas revisado la
+                                informacion
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+

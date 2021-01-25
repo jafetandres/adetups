@@ -1,15 +1,15 @@
-{% extends 'sistema/index.html' %}
+{% extends 'asistente/index.html' %}
 {% block content %}
     <div class="card mb-4 mt-4">
         <div class="card-header">
             <div class="row">
                 <div class="col-6">
                     <i class="fas fa-table mr-1"></i>
-                    Parámetros de Crédito
+                    Rubro
                 </div>
                 <div class="col-6" align="right">
-                    <a class="btn" href="{% url 'sistema:parametrocreate' %}"><i class="fa fa-plus fa-fw"
-                                                                                 aria-hidden="true"></i>Añadir</a>
+                    <a class="btn" href="{% url 'asistente:rubrocreate' %}"><i class="fa fa-plus fa-fw"
+                                                                               aria-hidden="true"></i>Añadir</a>
                 </div>
             </div>
         </div>
@@ -23,43 +23,43 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr>
-                        <th>Clase de Crédito</th>
                         <th>Descripción</th>
-                        <th>Valor nùmerico</th>
+                        <th>Tipo</th>
                         <th>Estado</th>
+                        <th>Abreviatura</th>
                         <th>Acciones</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                        <th>Clase de Crédito</th>
                         <th>Descripción</th>
-                        <th>Valor nùmerico</th>
+                        <th>Tipo</th>
                         <th>Estado</th>
+                        <th>Abreviatura</th>
                         <th>Acciones</th>
                     </tr>
                     </tfoot>
                     <tbody>
-                    {% for parametro in object_list %}
+                    {% for rubro in object_list %}
                         <tr>
-                            <td>{{ parametro.clasecredito.descripcion|title }}</td>
                             <td>
-                                <a href="{% url 'sistema:parametrodetail' parametro.id %}">{{ parametro.descripcion|title }}</a>
+                                <a href="{% url 'asistente:rubrodetail' rubro.id %}">{{ rubro.descripcion|title }}</a>
                             </td>
-                            <td>{{ parametro.valornumerico }}</td>
+                            <td>{{ rubro.tipo }}</td>
                             <td>
-                                {% if parametro.estado is True %} Activo
-                                {% elif parametro.estado is False %}
+                                {% if rubro.estado is True %} Activo
+                                {% elif rubro.estado is False %}
                                     Inactivo
                                 {% endif %}
                             </td>
-                            <td>
-                                <form id="my_form{{ parametro.id }}" method="post"
-                                      action="{% url 'sistema:parametrodelete' parametro.id %}">
+                            <td>{{ rubro.abreviatura }}</td>
+                            <td class="text-center">
+                                <form id="my_form{{ rubro.id }}" method="post"
+                                      action="{% url 'asistente:rubrodelete' rubro.id %}">
                                     {% csrf_token %}
                                 </form>
                                 <!-- Modal -->
-                                <div class="modal fade" id="modal{{ parametro.id }}" tabindex="-1" role="dialog"
+                                <div class="modal fade" id="modal{{ rubro.id }}" tabindex="-1" role="dialog"
                                      aria-labelledby="exampleModalLabel"
                                      aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -79,7 +79,7 @@
                                                     Cancelar
                                                 </button>
                                                 <button type="button" class="btn btn-danger"
-                                                        onclick="document.getElementById('my_form{{ parametro.id }}').submit();">
+                                                        onclick="document.getElementById('my_form{{ rubro.id }}').submit();">
                                                     Eliminar
                                                 </button>
                                             </div>
@@ -87,13 +87,14 @@
                                     </div>
                                 </div>
                                 <button type="button" class="btn btn-danger"
-                                        aria-label="Delete" data-toggle="modal" data-target="#modal{{ parametro.id }}">
+                                        aria-label="Delete" data-toggle="modal"
+                                        data-target="#modal{{ rubro.id }}">
                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                 </button>
                                 <a class="btn btn-warning"
-                                   href="{% url 'sistema:parametroupdate' parametro.id %}"
+                                   href="{% url 'asistente:rubroupdate' rubro.id %}"
                                    aria-label="Edit">
-                                    <i class="fa fa-clipboard" aria-hidden="true"></i>
+                                    Editar
                                 </a>
                             </td>
                         </tr>

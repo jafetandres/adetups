@@ -1,0 +1,60 @@
+{% extends 'asistente/index.html' %}
+{% block content %}
+    <div class="card mb-4 mt-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <i class="fas fa-table mr-1"></i>
+                    Parámetros de Crédito
+                </div>
+            </div>
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Clase de Crédito</th>
+                        <th>Descripción</th>
+                        <th>Valor nùmerico</th>
+                        <th>Estado</th>
+
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Clase de Crédito</th>
+                        <th>Descripción</th>
+                        <th>Valor nùmerico</th>
+                        <th>Estado</th>
+
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for parametro in object_list %}
+                        <tr>
+                            <td>{{ parametro.clasecredito.descripcion|title }}</td>
+                            <td>
+                                <a href="{% url 'asistente:parametrodetail' parametro.id %}">{{ parametro.descripcion|title }}</a>
+                            </td>
+                            <td>{{ parametro.valornumerico }}</td>
+                            <td>
+                                {% if parametro.estado is True %} Activo
+                                {% elif parametro.estado is False %}
+                                    Inactivo
+                                {% endif %}
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -2,32 +2,49 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7f909e53-265b-4961-95e9-847068ff836c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/asistente/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0002_auto_20210121_2043.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0003_auto_20210121_2044.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0004_auto_20210121_2048.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0005_auto_20210121_2051.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0006_auto_20210121_2052.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0007_auto_20210121_2219.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0008_clasecredito_tiempo_minimo_servicio.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/clasecredito_detail.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/clasecredito_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/escoger_archivo.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/liquidacioncredito_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/parametro_detail.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/parametro_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/perfil.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubro_detail.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubro_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubro_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubro_moviestar.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubrosocio_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubrosocioexcel_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0009_auto_20210123_0053.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0010_auto_20210123_0053.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0011_auto_20210123_1145.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0012_auto_20210123_1147.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0013_delete_restriccionescredito.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0014_auto_20210124_1319.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0015_remove_clasecredito_parametros.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0016_parametro_clasecredito.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2010745e-13a8-4a52-b9f4-ff6efdb45b3a.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/6970d0c8-8de7-4a6c-bd85-ae7b8664601b.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/d129e9b6-d5ee-4b24-baa1-948735c7294c.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/d129e9b6-d5ee-4b24-baa1-948735c7294c.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ddb125d3-c7be-4971-b11b-061db24268e9.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/f4d7d5f8-6e97-4ee9-9c80-d1de73a1d9c7.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/rubrosocio.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubro_general.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/rubrosocio_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubrosocio_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/solicitudcredito_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/solicitudcredito_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0002_auto_20210116_1144.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0003_socio_rubros.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0004_archivostemporales.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0005_auto_20210118_1542.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0006_delete_archivotemporal.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0007_archivotemporal.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0008_auto_20210118_1716.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0009_auto_20210118_1717.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0010_delete_archivotemporal.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/sistema/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/static/css/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/base.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/parametro_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/parametro_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/parametro_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/parametro_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/presidente_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/presidente_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sistema/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sistema/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/views.py" afterDir="false" />
     </list>
@@ -43,8 +60,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -68,7 +85,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="database.data.extractors.current.export.id" value="SQL Inserts" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/sistema/templates/sistema" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/asistente/templates/asistente" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -77,9 +94,9 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/asistente/templates/asistente" />
       <recent name="$PROJECT_DIR$/sistema/templates/sistema" />
       <recent name="$PROJECT_DIR$/registration/templates/registration" />
-      <recent name="$PROJECT_DIR$/asistente/templates/asistente" />
       <recent name="$PROJECT_DIR$/asistente/templates" />
       <recent name="$PROJECT_DIR$/socio/templates/socio" />
     </key>
@@ -220,7 +237,8 @@
       <workItem from="1609300412916" duration="3721000" />
       <workItem from="1609951899661" duration="538000" />
       <workItem from="1610554056125" duration="83535000" />
-      <workItem from="1611278294033" duration="9611000" />
+      <workItem from="1611278294033" duration="9938000" />
+      <workItem from="1611378535411" duration="44673000" />
     </task>
     <servers />
   </component>
@@ -237,6 +255,11 @@
           <url>file://$PROJECT_DIR$/../../adetups/lib/python3.7/site-packages/django/contrib/auth/urls.py</url>
           <line>5</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="django-line">
+          <url>file://$PROJECT_DIR$/asistente/templates/asistente/perfil.html</url>
+          <line>1</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

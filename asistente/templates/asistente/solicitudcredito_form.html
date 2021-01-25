@@ -40,6 +40,7 @@
             {% endif %}
             <form method="post">
                 {% csrf_token %}
+
                 <div class="form-group">
                     <label class="text-md-center font-weight-bold text-primary" for="clasecreditoId">Clase de
                         Crédito</label>
@@ -59,6 +60,7 @@
                         {% endif %}
                     </select>
                 </div>
+                <div id="infoCreditoId"></div>
                 <div class="form-row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -427,11 +429,32 @@
         function enviarParametros() {
             var monto = document.getElementById('montoRangoId');
             var plazo = document.getElementById('plazoRangoId');
+            var infoCredito = document.getElementById('infoCreditoId');
+            var listElement = document.createElement('ul');
             var creditos = document.getElementById('clasecreditoId')
+            infoCredito.innerHTML = '';
             {% for clasecredito in clasecreditos %}
                 if (creditos.value == {{ clasecredito.id }}) {
-                    monto.innerText = '(Desde $ {{ clasecredito.valdesde }} - Hasta $ {{ clasecredito.valhasta }} )';
-                    plazo.innerText = '( máximo {{ clasecredito.plazomax }} meses )';
+                    infoCredito.innerHTML='<h5 class="">Información sobre el Crédito {{ clasecredito.descripcion|title }} </h5>'
+                    infoCredito.appendChild(listElement);
+                    listItem1 = document.createElement('li');
+                    listItem2 = document.createElement('li');
+                    listItem3 = document.createElement('li');
+                    listItem1.className='text-secondary'
+                    listItem2.className='text-secondary'
+                    listItem3.className='text-secondary'
+
+                    listItem1.innerHTML = 'Puedes solicitar desde $ {{ clasecredito.valdesde }} hasta $ {{ clasecredito.valhasta }} ';
+                    listItem2.innerHTML = 'Plazo maximo de cuotas {{ clasecredito.plazomax }} meses';
+                    listItem3.innerHTML = 'Tiempo mínimo de servicio {{ clasecredito.tiempo_minimo_servicio }} años';
+
+                    listElement.appendChild(listItem1);
+                    listElement.appendChild(listItem2);
+                    listElement.appendChild(listItem3);
+
+                    {#listElement.appendChild(listItem3);#}
+                    {#monto.innerText = '(Desde $ {{ clasecredito.valdesde }} - Hasta $ {{ clasecredito.valhasta }} )';#}
+                    {#plazo.innerText = '( máximo {{ clasecredito.plazomax }} meses )';#}
 
                 }
             {% endfor %}

@@ -324,6 +324,7 @@ class ClaseCreditoDelete(LoginRequiredMixin, DeleteView):
             messages.add_message(request, messages.ERROR, 'No se puede borrar el registro ya que existen dependencias')
         return HttpResponseRedirect(success_url)
 
+
 #
 # class ClaseSolicitudListView(LoginRequiredMixin, ListView):
 #     model = ClaseSolicitud
@@ -367,59 +368,8 @@ class ClaseCreditoDelete(LoginRequiredMixin, DeleteView):
 #         return HttpResponseRedirect(success_url)
 #
 
-class RestriccionesCreditoListView(ListView):
-    model = RestriccionesCredito
 
-
-class RestriccionesCreditoDetailView(DetailView):
-    model = RestriccionesCredito
-
-
-class RestriccionesCreditoCreate(CreateView):
-    model = RestriccionesCredito
-    fields = ['clasecredito', 'plazomax', 'tiempodesde', 'tiempohasta', 'valhasta', 'estado']
-    success_url = reverse_lazy('sistema:restriccionescreditolist')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        clasecreditos = ClaseCredito.objects.all()
-        context["clasecreditos"] = clasecreditos
-        return context
-
-
-class RestriccionesCreditoUpdate(UpdateView):
-    model = RestriccionesCredito
-    fields = ['clasecredito', 'plazomax', 'tiempodesde', 'tiempohasta', 'valhasta', 'estado']
-
-    def get_success_url(self):
-        return reverse_lazy('sistema:restriccionescreditoupdate', args=[self.object.id]) + '?ok'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        clasecreditos = ClaseCredito.objects.all()
-        context["clasecreditos"] = clasecreditos
-        return context
-
-
-class RestriccionesCreditoDelete(DeleteView):
-    model = RestriccionesCredito
-
-    # success_url = reverse_lazy('sistema:clascrelist')
-
-    def delete(self, request, *args, **kwargs):
-        """
-        Call the delete() method on the fetched object and then redirect to the
-        success URL. If the object is protected, send an error message.
-        """
-        self.object = self.get_object()
-        success_url = reverse_lazy('sistema:restriccionescreditolist')
-
-        try:
-            self.object.delete()
-        except IntegrityError:
-            messages.add_message(request, messages.ERROR, 'No se puede borrar el registro ya que existen dependencias')
-        return HttpResponseRedirect(success_url)
-
+# success_url = reverse_lazy('sistema:clascrelist')
 
 class ParametroListView(ListView):
     model = Parametro
@@ -431,13 +381,21 @@ class ParametroDetailView(DetailView):
 
 class ParametroCreate(CreateView):
     model = Parametro
-    fields = ['descripcion', 'valorcaracter', 'valornumerico', 'estado']
+    fields = ['descripcion', 'valorcaracter', 'valornumerico', 'estado', 'clasecredito']
     success_url = reverse_lazy('sistema:parametrolist')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        clasecreditos = ClaseCredito.objects.all()
+        context["clasecreditos"] = clasecreditos
+        return context
 
 
 class ParametroUpdate(UpdateView):
     model = Parametro
     fields = ['descripcion', 'valorcaracter', 'valornumerico', 'estado']
+
+
 
     def get_success_url(self):
         return reverse_lazy('sistema:parametroupdate', args=[self.object.id]) + '?ok'

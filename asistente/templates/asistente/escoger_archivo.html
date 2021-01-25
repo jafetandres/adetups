@@ -1,0 +1,33 @@
+{% extends 'asistente/index.html' %}
+{% block content %}
+    <div class="card shadow-lg border-0 rounded-lg mt-5">
+        <div class="card-header"><h3 class="text-center font-weight-light my-4">Seleccione rubros a subir
+        </h3></div>
+        <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            <div class="form-row text-center" >
+                <div class="col-md-6">
+                    <a href="{% url 'asistente:cargarrubrosmoviestar' %}" class="btn btn-primary">Subir excel rubro Moviestar</a>
+                </div>
+                <div class="col-md-6">
+                    <a href="{% url 'asistente:cargarrubrosgeneral' %}" class="btn btn-success">Subir excel todos los Rubros</a>
+                </div>
+            </div>
+            <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                <a href="{% url 'asistente:home' %}">
+                    <svg class="svg-inline--fa fa-arrow-left fa-w-14 mr-1" aria-hidden="true" focusable="false"
+                         data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 448 512" data-fa-i2svg="">
+                        <path fill="currentColor"
+                              d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
+                    </svg>
+                    Volver
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}>
