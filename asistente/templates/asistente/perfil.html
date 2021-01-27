@@ -113,9 +113,7 @@
                 <div class="form-row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <button type="button" class="btn btn-outline-primary m-4" data-toggle="modal"
-                                    data-target="#exampleModal">Cambiar contraseña
-                            </button>
+                            <a href="{% url 'asistente:home' %}">Cambiar contraseña</a>
                         </div>
                     </div>
                 </div>
@@ -171,4 +169,14 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block js %}
+    {{ block.super }}
+    <script>
+        $('#fecha_nacimientoId').datepicker({
+            language: 'es-ES',
+            format: 'yyyy-mm-dd',
+            autoHide: true
+        });
+    </script>
 {% endblock %}

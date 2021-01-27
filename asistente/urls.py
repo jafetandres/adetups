@@ -16,6 +16,7 @@ urlpatterns = [
     path('cargarrubrosmoviestar/', cargar_rubros_moviestar, name='cargarrubrosmoviestar'),
     path('cargarrubrosgeneral/', cargar_rubros_general, name='cargarrubrosgeneral'),
     path('guardarrubrosmoviestar/', guardar_rubros_moviestar, name='guardarrubrosmoviestar'),
+    path('guardarrubrosgeneral/', guardar_rubros_general, name='guardarrubrosgeneral'),
     path('escogersocio/', escoger_socio, name='escogersocio'),
     path('sociolist/', SocioListView.as_view(), name="sociolist"),
     path('sociodetail/<int:pk>/', SocioDetailView.as_view(), name="sociodetail"),

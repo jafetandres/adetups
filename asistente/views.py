@@ -237,7 +237,7 @@ def cargar_rubros_moviestar(request):
                 return redirect('asistente:guardarrubrosmoviestar')
             else:
                 return redirect('asistente:home')
-    return render(request, 'asistente/rubro_moviestar.html')
+    return render(request, 'asistente/rubro_subirarchivo.html')
 
 
 def cargar_rubros_general(request):
@@ -248,24 +248,33 @@ def cargar_rubros_general(request):
             except MultiValueDictKeyError:
                 return redirect('asistente:home')
             if (str(excel_file).split('.')[-1] == "xls"):
-                data = xls_get(excel_file, column_limit=13)
+                data = xls_get(excel_file, column_limit=26)
             elif (str(excel_file).split('.')[-1] == "xlsx"):
-                data = xlsx_get(excel_file, column_limit=13)
+                data = xlsx_get(excel_file, column_limit=26)
                 rubros = data["Hoja1"]
                 size = len(rubros)
                 index = 0
-                for rubro in rubros:
-                    index = index + 1
-                    if index > 5 and index < size:
-                        if len(rubro[2]) > 0 and rubro[12] > 0:
-                            rubros_generados_general.append(rubro)
-                        # rubro_socio=RubroSocio.objects.create(rubro=1,
-                        #                                       descripcion='')
-                # return render(request, 'asistente/rubrosocioexcel_list.html', {'rubros_generados': rubros_generados})
-                return redirect('asistente:guardarrubros')
+                pos_movi = 0
+                pos_claro = 0
+                for i in range(len(rubros)):
+                    if i == 4:
+                        for j in range(len(rubros[i])):
+                            if rubros[i][j] == 'MOVI':
+                                pos_movi = j
+                            if rubros[i][j] == 'CLARO':
+                                pos_claro = j
+                    if i > 4:
+                        #     if rubros[i][pos_movi] != '':
+                        #         rubros[i].append('MOVI')
+                        #     if rubros[i][pos_claro] != '':
+                        #         rubros[i].append('CLARO')
+                        rubros_generados_general.append(rubros[i])
+
+                # return render(request, 'asistente/rubrosocioexcelmoviestar_list.html', {'rubros_generados': rubros_generados})
+                return redirect('asistente:guardarrubrosgeneral')
             else:
                 return redirect('asistente:home')
-    return render(request, 'asistente/rubro_general.html')
+    return render(request, 'asistente/rubro_subirarchivo.html')
 
 
 def guardar_rubros_moviestar(request):
@@ -281,7 +290,8 @@ def guardar_rubros_moviestar(request):
                 socio.rubros.add(rubro_generado)
                 socio.save()
 
-    return render(request, 'asistente/rubrosocioexcel_list.html', {'rubros_generados': rubros_generados_moviestar})
+    return render(request, 'asistente/rubrosocioexcelmoviestar_list.html',
+                  {'rubros_generados': rubros_generados_moviestar})
 
 
 def guardar_rubros_general(request):
@@ -301,7 +311,8 @@ def guardar_rubros_general(request):
                 socio.rubros.add(rubro_generado)
                 socio.save()
 
-    return render(request, 'asistente/rubrosocioexcel_list.html', {'rubros_generados': rubros_generados_general})
+    return render(request, 'asistente/rubrosocioexcelgeneral_list.html',
+                  {'rubros_generados_general': rubros_generados_general})
 
 
 class SocioUpdate(LoginRequiredMixin, UpdateView):
