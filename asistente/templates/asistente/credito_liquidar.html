@@ -1,0 +1,56 @@
+{% extends 'asistente/index.html' %}
+{% block content %}
+    <div class="card shadow-lg border-0 rounded-lg mt-5">
+        <div class="card-header"><h3 class="text-center font-weight-light my-4">Liquidar crédito</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" id="formularioId">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="socioId">Socio</label>
+                            <p id="socioId">{{ credito.socio.usuario.nombres|title }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="socioId">Valor pendiente</label>
+                            <p id="socioId">$ {{ valor_pendiente }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="valorId">Valor a liquidar</label>
+                            <input class="form-control py-4" id="valorId" name="valor" type="number"
+                                   placeholder="Ingrese el valor"
+                                   required/>
+                        </div>
+                    </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="observacionId">Observacion</label>
+                            <textarea class="form-control py-4" id="observacionId" name="observacion"
+                                   placeholder="Ingrese una observacion"
+                                      required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                    <a href="{% url 'asistente:creditodetail' credito.id %}">
+                        <svg class="svg-inline--fa fa-arrow-left fa-w-14 mr-1" aria-hidden="true" focusable="false"
+                             data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 448 512" data-fa-i2svg="">
+                            <path fill="currentColor"
+                                  d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
+                        </svg>
+                        Volver
+                    </a>
+                    <button type="submit" class="btn btn-primary">Liquidar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -15,6 +15,7 @@ urlpatterns = [
     path('sociocreate/', SocioCreate.as_view(), name='sociocreate'),
     path('cargarrubrosmoviestar/', cargar_rubros_moviestar, name='cargarrubrosmoviestar'),
     path('cargarrubrosgeneral/', cargar_rubros_general, name='cargarrubrosgeneral'),
+    path('cambiarpassword/', cambiar_password, name='cambiarpassword'),
     path('guardarrubrosmoviestar/', guardar_rubros_moviestar, name='guardarrubrosmoviestar'),
     path('guardarrubrosgeneral/', guardar_rubros_general, name='guardarrubrosgeneral'),
     path('escogersocio/', escoger_socio, name='escogersocio'),
@@ -40,5 +41,9 @@ urlpatterns = [
          name="rubrosociodelete"),
     path('usuarioupdate/<int:pk>/', UsuarioUpdate.as_view(),
          name="usuarioupdate"),
+    path('creditolist/', CreditoListView.as_view(), name="creditolist"),
+    path('creditodetail/<int:pk>/', CreditoDetail.as_view(), name="creditodetail"),
+    path('liquidacioncreditocreate/<int:credito_id>/', LicquidacionCreditoCreate.as_view(), name="liquidacioncreditocreate"),
+    path('consultarcuotas/', consultar_cuotas, name="consultarcuotas")
 
 ]

@@ -1,0 +1,62 @@
+{% extends 'asistente/index.html' %}
+{% block content %}
+    <div class="card mb-4 mt-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <i class="fas fa-table mr-1"></i>
+                    Créditos
+                </div>
+            </div>
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Socio</th>
+                        <th>Cédula</th>
+                        <th>Monto</th>
+                        <th>Fecha de ingreso</th>
+                        <th>Plazo</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Socio</th>
+                        <th>Cédula</th>
+                        <th>Monto</th>
+                        <th>Fecha de ingreso</th>
+                        <th>Plazo</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for credito in credito_list %}
+                        <tr>
+                            <td>{{ credito.socio.usuario.nombres|title }}</td>
+                            <td>{{ credito.socio.usuario.username }}</td>
+                            <td>{{ credito.monto }}</td>
+                            <td>{{ credito.fecha_ingreso }}</td>
+                            <td>{{ credito.plazo }}</td>
+                            <td class="text-center">
+                                <a class="btn btn-warning"
+                                   href="{% url 'asistente:creditodetail' credito.id %}"
+                                   aria-label="Edit">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

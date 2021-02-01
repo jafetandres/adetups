@@ -38,14 +38,14 @@
                         <div class="form-group">
                             <label class="small mb-1" for="nombresId">Nombres</label>
                             <input class="form-control py-4" id="nombresId" name="nombres" type="text"
-                                   placeholder="Ingrese los nombres" value="{{ request.user.nombres }}" required/>
+                                   placeholder="Ingrese los nombres" value="{{ request.user.nombres|default_if_none:""|title }}" required/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="apellidosId">Apellidos</label>
                             <input class="form-control py-4" id="apellidosId" name="apellidos" type="text"
-                                   placeholder="Ingrese los apellidos" value="{{ request.user.apellidos }}" required/>
+                                   placeholder="Ingrese los apellidos" value="{{ request.user.apellidos|default_if_none:""|title  }}" required/>
                         </div>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                         <div class="form-group">
                             <label class="small mb-1" for="emailId">Correo electrónico</label>
                             <input class="form-control py-4" id="emailId" name="email" type="email"
-                                   placeholder="Ingrese el correo electrónico" value="{{ request.user.email }}"
+                                   placeholder="Ingrese el correo electrónico" value="{{ request.user.email|default_if_none:"" }}"
                                    required/>
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                         <label class="small mb-1" for="fecha_nacimientoId">Fecha de nacimiento</label>
                         <input pattern="(?:19|20)(?:(?:[13579][26]|[02468][048])-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))|(?:[0-9]{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-8])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:29|30))|(?:(?:0[13578]|1[02])-31)))"
                                class="form-control form-control-user" name="fecha_nacimiento"
-                               id="fecha_nacimientoId" value="{{ request.user.fecha_nacimiento }}"
+                               id="fecha_nacimientoId" value="{{ request.user.fecha_nacimiento|default_if_none:"" }}"
                                placeholder="aaaa-mm-dd" autocomplete="off"
                                required/>
                     </div>
@@ -72,7 +72,7 @@
                         <div class="form-group">
                             <label class="small mb-1" for="direccionId">Dirección</label>
                             <input class="form-control py-4" id="direccionId" name="direccion" type="text"
-                                   placeholder="Ingrese la dirección" value="{{ socio.direccion }}" required/>
+                                   placeholder="Ingrese la dirección" value="{{ socio.direccion|default_if_none:"" }}" required/>
                         </div>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
                         <div class="form-group">
                             <label class="small mb-1" for="telefonoId">Teléfono</label>
                             <input class="form-control py-4" id="telefonoId" name="telefono" type="tel"
-                                   placeholder="Ingrese el teléfono" value="{{ socio.telefono }}"
+                                   placeholder="Ingrese el teléfono" value="{{ socio.telefono|default_if_none:"" }}"
                                    onkeypress="return soloNumeros(event)" required/>
                         </div>
                     </div>
@@ -89,7 +89,7 @@
                         <div class="form-group">
                             <label class="small mb-1" for="celularId">Celular</label>
                             <input class="form-control py-4" id="celularId" name="celular" type="tel"
-                                   placeholder="Ingrese el celular" value="{{ socio.celular }}"
+                                   placeholder="Ingrese el celular" value="{{ socio.celular|default_if_none:"" }}"
                                    onkeypress="return soloNumeros(event)" maxlength="10" minlength="10" required/>
                         </div>
                     </div>
@@ -99,81 +99,56 @@
                         <div class="form-group">
                             <label class="small mb-1" for="cargoId">Cargo</label>
                             <input class="form-control py-4" id="cargoId" name="cargo" type="text"
-                                   placeholder="Ingrese el cargo" value="{{ socio.cargo }}" required/>
+                                   placeholder="Ingrese el cargo" value="{{ socio.cargo|default_if_none:"" }}" required/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="areaId">Área</label>
                             <input class="form-control py-4" id="areaId" name="area" type="text"
-                                   placeholder="Ingrese el area" value="{{ socio.area }}" required/>
+                                   placeholder="Ingrese el area" value="{{ socio.area|default_if_none:"" }}" required/>
                         </div>
                     </div>
                 </div>
-                <div class="form-row">
+                   <div class="form-row">
+                    <div class="col-md-6">
+                        <label class="small mb-1" for="fecha_ingresoId">Fecha de ingreso</label>
+                        <input pattern="(?:19|20)(?:(?:[13579][26]|[02468][048])-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))|(?:[0-9]{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-8])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:29|30))|(?:(?:0[13578]|1[02])-31)))"
+                               class="form-control form-control-user" name="fecha_ingreso"
+                               id="fecha_ingresoId" value="{{ socio.fecha_ingreso|default_if_none:"" }}"
+                               placeholder="aaaa-mm-dd" autocomplete="off"
+                               required/>
+                    </div>
+                </div>
+                <div class="form-row mt-3">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <a href="{% url 'asistente:home' %}">Cambiar contraseña</a>
+                            <a href="{% url 'asistente:cambiarpassword' %}">Cambiar contraseña</a>
                         </div>
                     </div>
                 </div>
 
 
-                <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-                    <a href="{% url 'sistema:home' %}">
-                        <svg class="svg-inline--fa fa-arrow-left fa-w-14 mr-1" aria-hidden="true" focusable="false"
-                             data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg"
-                             viewBox="0 0 448 512" data-fa-i2svg="">
-                            <path fill="currentColor"
-                                  d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
-                        </svg>
-                        Volver
-                    </a>
+                <div class="form-group d-flex align-items-center justify-content-end mt-4 mb-0">
+
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Cambio de contraseña</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                            onclick="cancelarCambioPassword()">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="mensajes"></div>
-                    <form>
-                        <div class="form-group">
-                            <label for="recipient-name" class="col-form-label">Contraseña nueva:</label>
-                            <input type="password" class="form-control" name="new_password1" id="new_password1">
-                        </div>
-                        <div class="form-group">
-                            <label for="recipient-name" class="col-form-label">Contraseña nueva (confirmación):</label>
-                            <input type="password" class="form-control" name="new_password2" id="new_password2">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                            onclick="cancelarCambioPassword()">
-                        Cancelar
-                    </button>
-                    <button type="button" class="btn btn-success" id="cambiarPassword">Cambiar</button>
-                </div>
-            </div>
-        </div>
-    </div>
 {% endblock %}
 {% block js %}
     {{ block.super }}
     <script>
         $('#fecha_nacimientoId').datepicker({
+            language: 'es-ES',
+            format: 'yyyy-mm-dd',
+            autoHide: true
+        });
+    </script>
+      <script>
+        $('#fecha_ingresoId').datepicker({
             language: 'es-ES',
             format: 'yyyy-mm-dd',
             autoHide: true

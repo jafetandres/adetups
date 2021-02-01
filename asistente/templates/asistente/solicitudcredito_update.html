@@ -1,4 +1,4 @@
-{% extends 'presidente/index.html' %}
+{% extends 'asistente/index.html' %}
 {% block content %}
     <div class="card shadow-lg border-0 rounded-lg mt-5">
         <div class="card-header">
@@ -129,7 +129,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-4">
+                <div class="col-6">
                     <a href="{% url 'asistente:home' %}">
                         <svg class="svg-inline--fa fa-arrow-left fa-w-14 mr-1" aria-hidden="true" focusable="false"
                              data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg"
@@ -141,32 +141,28 @@
                     </a>
                 </div>
                 {% if solicitudcredito.estado == 'pendiente' %}
-                    <div class="col-8" align="right">
-                        <p class="text-warning"><i class="fa fa-check" aria-hidden="true"></i> Solicitud pendiente</p>
-                    </div>
-                {% elif solicitudcredito.estado == 'revisada' %}
-                    <div class="col-8" align="right">
-                        <p class="text-success"><i class="fa fa-check" aria-hidden="true"></i> Solicitud revisada</p>
-                        <button type="button" class="btn btn-outline-success" aria-label="Aprobada" data-toggle="modal"
-                                data-target="#modalAprobada"
-                                aria-label="Edit"><i class="fa fa-check" aria-hidden="true"></i><i class="fa fa-check"
-                                                                                                   aria-hidden="true"></i>
-                            Aprobar
+                    <div class="col-6" align="right">
+                        <button type="button" class="btn btn-outline-success" aria-label="Revisado" data-toggle="modal"
+                                data-target="#modalRevisada"
+                                aria-label="Edit"><i class="fa fa-check" aria-hidden="true"></i> Dar visto bueno
                         </button>
                         <button type="button" class="btn btn-outline-danger" aria-label="Negada" data-toggle="modal"
                                 data-target="#modalNegada"
                                 aria-label="Edit"><i class="fa fa-times" aria-hidden="true"></i> Negar
                         </button>
                     </div>
-
+                {% elif solicitudcredito.estado == 'revisada' %}
+                    <div class="col-6" align="right">
+                        <p class="text-success"><i class="fa fa-check" aria-hidden="true"></i> Solicitud revisada</p>
+                    </div>
                 {% elif solicitudcredito.estado == 'aprobada' %}
-                    <div class="col-8" align="right">
+                    <div class="col-6" align="right">
                         <p class="text-success"><i class="fa fa-check" aria-hidden="true"></i><i class="fa fa-check"
                                                                                                  aria-hidden="true"></i>
                             Solicitud aprobada</p>
                     </div>
                 {% elif solicitudcredito.estado == 'negada' %}
-                    <div class="col-8" align="right">
+                    <div class="col-6" align="right">
                         <p class="text-danger"><i class="fa fa-times" aria-hidden="true"></i> Solicitud negada</p>
                     </div>
                 {% endif %}
@@ -219,12 +215,12 @@
     </form>
 
 
-    <form id="my_formAprobada" method="post">
+    <form id="my_formRevisada" method="post">
         {% csrf_token %}
-        <input type="text" hidden name="estado" value="aprobada">
+        <input type="text" hidden name="estado" value="revisada">
 
         <!-- Modal -->
-        <div class="modal fade" id="modalAprobada" tabindex="-1" role="dialog"
+        <div class="modal fade" id="modalRevisada" tabindex="-1" role="dialog"
              aria-labelledby="exampleModalLabel"
              aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -252,7 +248,7 @@
                             Cancelar
                         </button>
                         <button type="button" class="btn btn-success"
-                                onclick="document.getElementById('my_formAprobada').submit();">
+                                onclick="document.getElementById('my_formRevisada').submit();">
                             Aceptar
                         </button>
                     </div>

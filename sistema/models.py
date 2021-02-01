@@ -46,7 +46,7 @@ class Rubro(models.Model):
     tipo = models.CharField(max_length=10, null=True, blank=True)
     estado = models.BooleanField(default=True, null=True, blank=True)
     valor = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
-    abreviatura = models.CharField(max_length=10, null=True, blank=True)
+    abreviatura = models.CharField(max_length=10, null=True, blank=True, unique=True)
 
     def __str__(self):
         return self.descripcion
@@ -115,6 +115,8 @@ class ClaseCredito(models.Model):
     autorizacion = models.BooleanField(default=True, blank=True, null=True)  # Field name made lowercase.
     estado = models.CharField(max_length=10, blank=True, null=True)  # Field name made lowercase.
     plazomax = models.SmallIntegerField(blank=True, null=True)  # Field name made lowercase.
+    porcentaje_interes = models.DecimalField(max_digits=4, decimal_places=2, blank=True,
+                                             null=True)  # Field name made lowercase.
     tiempo_minimo_servicio = models.IntegerField(blank=True, null=True)
     garante = models.BooleanField(default=True, blank=True, null=True)  # Field name made lowercase.
     # parametros = models.ManyToManyField(Parametro, blank=True, null=True)
@@ -162,7 +164,7 @@ class SolicitudCredito(models.Model):
     socio = models.ForeignKey(Socio, models.DO_NOTHING, related_name='socio')
     # cuota = models.DecimalField(max_digits=9, decimal_places=2)
     # interes = models.DecimalField(max_digits=9, decimal_places=2)
-    # porcinteres = models.DecimalField(max_digits=4, decimal_places=2)
+    porcentaje_interes = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     observaciones = models.TextField(blank=True, null=True)
 
 
@@ -218,7 +220,11 @@ class Adtcredito(models.Model):
 
 class Cuota(models.Model):
     estado = models.BooleanField(default=False, null=True, blank=True)
-    monto = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    capital = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    interes = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    saldo_capital = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    orden = models.SmallIntegerField()
+    valor_cuota = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
 
 
 class Credito(models.Model):
@@ -226,7 +232,8 @@ class Credito(models.Model):
     socio = models.ForeignKey(Socio, on_delete=models.DO_NOTHING)  # Field name made lowercase.
     monto = models.DecimalField(max_digits=9, decimal_places=2)  # Field name made lowercase.
     cuotas = models.ManyToManyField(Cuota)
-    interes = models.DecimalField(max_digits=4, decimal_places=2)  # Field name made lowercase.
+    porcentaje_interes = models.DecimalField(max_digits=4, decimal_places=2)  # Field name made lowercase.
+    fecha_ingreso = models.DateField(auto_now=True)
     plazo = models.SmallIntegerField()  # Field name made lowercase.
     # crenrocob = models.SmallIntegerField()  # Field name made lowercase.
     # pagado = models.DecimalField(max_digits=9, decimal_places=2)  # Field name made lowercase.
@@ -283,8 +290,7 @@ class LiquidacionCredito(models.Model):
     credito = models.ForeignKey(Credito, models.DO_NOTHING)  # Field name made lowercase.
     valor = models.DecimalField(max_digits=9, decimal_places=2)  # Field name made lowercase.
     observacion = models.CharField(max_length=200)  # Field name made lowercase.
-    estado = models.BooleanField(default=False)  # Field name made lowercase.
-    documento = models.TextField()  # Field name made lowercase.
+    documento = models.TextField(null=True,blank=True)  # Field name made lowercase.
 
 
 # class Adtlogsol(models.Model):

@@ -1,14 +1,17 @@
+import json
 from datetime import date
 from django.contrib import messages
+from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView, ListView, DeleteView
 from asistente.forms import SolicitudCreditoForm
 from sistema.forms import UsuarioForm
-from sistema.models import SolicitudCredito, Usuario, Socio, ClaseCredito, RubroSocio, Credito, Parametro, Rubro
+from sistema.models import SolicitudCredito, Usuario, Socio, ClaseCredito, RubroSocio, Credito, Parametro, Rubro, Cuota, \
+    LiquidacionCredito
 from django.shortcuts import redirect
 from pyexcel_xls import get_data as xls_get
 from pyexcel_xlsx import get_data as xlsx_get
@@ -115,7 +118,7 @@ class EscogerArchivoPageView(TemplateView, LoginRequiredMixin):
 class SolicitudCreditoUpdate(LoginRequiredMixin, UpdateView):
     model = SolicitudCredito
     fields = ['estado', 'observaciones']
-    template_name = 'asistente/solicitudcredito_form.html'
+    template_name = 'asistente/solicitudcredito_update.html'
 
     def get_success_url(self):
         return reverse_lazy('asistente:solicitudcreditoupdate', args=[self.object.id]) + '?ok'
@@ -154,6 +157,11 @@ class SolicitudCreditoCreate(LoginRequiredMixin, CreateView):
             messages.error(self.request, 'El socio ya tiene un prestamo activo y no puede solicitar otro')
             return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
 
+        if socio.fecha_ingreso is None:
+            messages.error(self.request,
+                           'El socio no tiene informacion sobre su fecha de ingreso.El socio primero debe actualizar toda su informacion en Cuenta')
+            return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
+
         fecha_actual = date.today()
         num_anios = diasHastaFecha(socio.fecha_ingreso.day, socio.fecha_ingreso.month, socio.fecha_ingreso.year,
                                    fecha_actual.day,
@@ -169,7 +177,8 @@ class SolicitudCreditoCreate(LoginRequiredMixin, CreateView):
         # print(data['clasecredito'].)
         # form.instance.cuota = 10.00
         # form.instance.interes = 10.00
-        # form.instance.porcinteres = 10.00
+        # para
+        form.instance.porcentaje_interes = data['clasecredito'].porcentaje_interes
         form.instance.socio = socio
         # form.instance.garante = Socio.objects.get(id=data['garante'])
         # form.instance.clasecredito = ClaseCredito.objects.get(id=1)
@@ -209,7 +218,6 @@ class SocioCreate(LoginRequiredMixin, CreateView):
 
 
 rubros_generados_moviestar = []
-rubros_generados_general = []
 
 
 def cargar_rubros_moviestar(request):
@@ -240,6 +248,10 @@ def cargar_rubros_moviestar(request):
     return render(request, 'asistente/rubro_subirarchivo.html')
 
 
+clases_rubros = []
+rubros_generados_general = []
+
+
 def cargar_rubros_general(request):
     if request.method == 'POST':
         if bool(request.FILES.get('archivo_rubros', False)):
@@ -253,16 +265,15 @@ def cargar_rubros_general(request):
                 data = xlsx_get(excel_file, column_limit=26)
                 rubros = data["Hoja1"]
                 size = len(rubros)
-                index = 0
-                pos_movi = 0
-                pos_claro = 0
                 for i in range(len(rubros)):
                     if i == 4:
+
                         for j in range(len(rubros[i])):
-                            if rubros[i][j] == 'MOVI':
-                                pos_movi = j
-                            if rubros[i][j] == 'CLARO':
-                                pos_claro = j
+                            abreviatura = rubros[i][j]
+                            if Rubro.objects.filter(abreviatura=abreviatura.strip(' ')).exists():
+                                aux = Rubro.objects.get(abreviatura=abreviatura.strip(' ')), j
+                                clases_rubros.append(aux)
+
                     if i > 4:
                         #     if rubros[i][pos_movi] != '':
                         #         rubros[i].append('MOVI')
@@ -278,6 +289,7 @@ def cargar_rubros_general(request):
 
 
 def guardar_rubros_moviestar(request):
+    global rubros_generados_moviestar
     if request.method == 'POST':
         for rubro in rubros_generados_moviestar:
             if Usuario.objects.filter(username=rubro[2]).exists():
@@ -289,28 +301,38 @@ def guardar_rubros_moviestar(request):
                 socio = Socio.objects.get(usuario_id=usuario.id)
                 socio.rubros.add(rubro_generado)
                 socio.save()
-
+        rubros_generados_moviestar = []
     return render(request, 'asistente/rubrosocioexcelmoviestar_list.html',
                   {'rubros_generados': rubros_generados_moviestar})
 
 
 def guardar_rubros_general(request):
+    global rubros_generados_general
+    global clases_rubros
     if request.method == 'POST':
-        print('entro guardar rubros')
-        for rubro in rubros_generados_moviestar:
+        for rubro in rubros_generados_general:
+            print(rubro)
             if Usuario.objects.filter(username=rubro[2]).exists():
                 usuario = Usuario.objects.get(username=rubro[2])
-                # if Socio.objects.filter(usuario_username=rubro[2]).exists():
+                if Socio.objects.filter(usuario_id=usuario.id).exists():
+                    socio = Socio.objects.get(usuario_id=usuario.id)
+                    for num, rubro_aux in enumerate(rubro, start=0):
+                        if num > 3:
+                            if isinstance(rubro_aux, float) or isinstance(rubro_aux, int):
+                                if rubro_aux > 0:
+                                    for clase in clases_rubros:
+                                        if num == clase[1]:
+                                            rubro_generado = RubroSocio.objects.create(rubro_id=clase[0].id,
+                                                                                       descripcion=clase[0].descripcion,
+                                                                                       valor=rubro_aux)
 
-                print("ceudla" + str(rubro[2]))
-                rubro_generado = RubroSocio.objects.create(rubro_id=1,
-                                                           descripcion='',
-                                                           valor=rubro[12])
+                                            socio.rubros.add(rubro_generado)
+                                            socio.save()
 
-                socio = Socio.objects.get(usuario_id=usuario.id)
-                socio.rubros.add(rubro_generado)
-                socio.save()
-
+        messages.success(request, 'Rubros generados correctamente')
+        rubros_generados_general = []
+        clases_rubros = []
+        return redirect('asistente:cargarrubrosgeneral')
     return render(request, 'asistente/rubrosocioexcelgeneral_list.html',
                   {'rubros_generados_general': rubros_generados_general})
 
@@ -499,9 +521,210 @@ class RubroSocioDelete(LoginRequiredMixin, DeleteView):
 class UsuarioUpdate(LoginRequiredMixin, UpdateView):
     model = Usuario
     template_name = 'asistente/perfil.html'
-    fields = ['nombres', 'apellidos']
+    fields = ['nombres', 'apellidos', 'fecha_nacimiento']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['socio'] = Socio.objects.get(usuario_id=self.request.user.id)
         return context
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        Socio.objects.update(
+            direccion=self.request.POST.get('direccion', ''),
+            telefono=self.request.POST.get('telefono', ''),
+            celular=self.request.POST.get('celular', ''),
+            cargo=self.request.POST.get('cargo', ''),
+            area=self.request.POST.get('area', ''),
+            fecha_ingreso=self.request.POST.get('fecha_ingreso', None)
+        )
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('asistente:usuarioupdate', args=[self.object.id]) + '?ok'
+
+
+def cambiar_password(request):
+    bandera = False
+    if request.method == 'POST':
+        if len(request.POST['new_password2']) < 8:
+            bandera = False
+            messages.warning(request, "La nueva contraseña debe tener minimo 8 caracteres")
+        else:
+            bandera = True
+        indice = 0
+        mayusculas = 0
+        minusculas = 0
+        while indice < len(request.POST['new_password2']):
+            letra = request.POST['new_password2'][indice]
+            if letra.isupper() == True:
+                mayusculas += 1
+            else:
+                minusculas += 1
+            indice += 1
+        if mayusculas < 1:
+            bandera = False
+            messages.warning(request, "La nueva contraseña debe tener minimo una letra en mayuscula")
+
+        else:
+            bandera = True
+        if minusculas < 1:
+            bandera = False
+            messages.warning(request, "La nueva contraseña debe tener minimo una letra en minuscula")
+
+        else:
+            bandera = True
+        if request.POST['new_password1'] != request.POST['new_password2']:
+            bandera = False
+            messages.warning(request, "La nueva contraseña no coicide con la confirmacion")
+
+        else:
+            bandera = True
+        if bandera is True:
+            usuario = Usuario.objects.get(id=request.user.id)
+            usuario.set_password(request.POST['new_password2'])
+            usuario.save()
+            messages.success(request, "Contraseña cambiada")
+            login(request, usuario)
+    return render(request, 'asistente/cambiar_password.html')
+
+
+class CreditoListView(LoginRequiredMixin, ListView):
+    model = Credito
+    template_name = 'asistente/credito_list.html'
+
+
+class CreditoDetail(LoginRequiredMixin, DetailView):
+    model = Credito
+    template_name = 'asistente/credito_detail.html'
+
+
+class LicquidacionCreditoCreate(LoginRequiredMixin, CreateView):
+    model = LiquidacionCredito
+    template_name = 'asistente/credito_liquidar.html'
+    fields = ['valor', 'observacion']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        credito = Credito.objects.get(id=self.kwargs['credito_id'])
+        valor_pendiente = 0
+        for cuota in credito.cuotas.all():
+            if cuota.estado == False:
+                valor_pendiente = cuota.valor_cuota + valor_pendiente
+
+        context['valor_pendiente'] = valor_pendiente
+        context['credito'] = credito
+        return context
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        credito = Credito.objects.get(id=self.kwargs['credito_id'])
+        valor = data["valor"]
+        liquidacioncredito = form.save(commit=False)
+        liquidacioncredito.credito=credito
+        liquidacioncredito.save()
+        # liquidacioncredito=LiquidacionCredito()
+        # liquidacioncredito.credito=credito
+        # liquidacioncredito.valor=valor
+        # liquidacioncredito.observacion=data["observacion"]
+        # liquidacioncredito.save()
+        # LiquidacionCredito.objects.create(
+        #     credito_id=credito.id,
+        #     valor=valor,
+        #     observacion=data["observacion"]
+        # )
+
+        for cuota in credito.cuotas.all().order_by('orden'):
+            if cuota.estado == False:
+                print("valor1 ", valor)
+                valor_anterior = cuota.valor_cuota
+                print("valor anterior", valor_anterior)
+                valor_actual = valor_anterior - valor
+                print("valor actual1", valor_actual)
+                valor = abs(valor_actual)
+                if valor_actual <= 0:
+                    print("valor actual2", valor_actual)
+                    cuota.estado = True
+                    cuota.save()
+                    print(cuota.estado)
+
+                if valor > 0 and cuota.estado == False:
+                    print("valor 2", valor)
+                    cuota.valor_cuota = valor_actual
+                    cuota.save()
+                    if valor > 0:
+                        valor = 0
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        credito = Credito.objects.get(id=self.kwargs['credito_id'])
+        return reverse_lazy('asistente:creditodetail', args=[credito.id]) + '?ok'
+
+
+# class CreditoUpdate(LoginRequiredMixin, UpdateView):
+#     model = Credito
+#     template_name = 'asistente/credito_liquidar.html'
+#     fields = ['estado']
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         credito = self.object
+#         valor_pendiente = 0
+#         for cuota in credito.cuotas.all():
+#             if cuota.estado == False:
+#                 valor_pendiente = cuota.valor_cuota + valor_pendiente
+#
+#         context['valor_pendiente'] = valor_pendiente
+#
+#         return context
+#
+#     def form_valid(self, form):
+#         data = form.cleaned_data
+#         if data["estado"] == 'liquidado':
+#             LiquidacionCredito.objects.create(
+#                 credito=self.object,
+#                 direccion=self.request.POST.get('valor', ''),
+#                 observacion=self.request.POST.get('observacion', '')
+#             )
+#
+#         return super().form_valid(form)
+#
+#     def get_success_url(self):
+#         return reverse_lazy('asistente:creditoupdate', args=[self.object.id]) + '?ok'
+
+
+def consultar_cuotas(request):
+    cuotas = []
+    socio = None
+    if request.method == 'POST':
+        username = request.POST['username']
+        if Usuario.objects.filter(username=username).exists():
+            usuario = Usuario.objects.get(username=username)
+            if Socio.objects.filter(usuario_id=usuario.id).exists():
+                socio = Socio.objects.get(usuario_id=usuario.id)
+                if Credito.objects.filter(socio_id=socio.id).exists():
+                    credito = Credito.objects.get(socio_id=socio.id)
+                    for cuota in credito.cuotas.all():
+                        cuotas.append(cuota)
+                else:
+                    messages.error(request, 'El socio no mantiene ningun credito')
+        else:
+            messages.error(request, 'El socio no existe')
+        # return redirect('asistente:consultarcuotas')
+    return render(request, 'asistente/consultar_cuotas.html', {'cuotas': cuotas, 'socio': socio})
+    # data = []
+    # print(request.GET['username'])
+    # print(request.is_ajax)
+    # if request.method == 'GET':
+    #     username = request.GET['username']
+    #     if Usuario.objects.filter(username=username).exists():
+    #         usuario = Usuario.objects.get(username=username)
+    #         if Socio.objects.filter(usuario_id=usuario.id).exists():
+    #             socio = Socio.objects.get(usuario_id=usuario.id)
+    #             if Credito.objects.filter(socio_id=socio.id).exists():
+    #                 credito = Credito.objects.get(socio_id=socio.id)
+    #                 for cuota in credito.cuotas:
+    #                     data.append(cuota)
+    #
+    #     json_dump = json.dumps(data)
+    #     return HttpResponse(json_dump, content_type='application/json')

@@ -1,0 +1,94 @@
+{% extends 'asistente/index.html' %}
+{% block content %}
+    <div class="card mb-4 mt-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <i class="fas fa-table mr-1"></i>
+                    Cuotas
+                </div>
+            </div>
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger m-3" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input type="text" placeholder="Ingrese el numero de cedula del socio" name="username"
+                                   class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-adetups">Buscar</button>
+                    </div>
+                    <div class="col-md-6">
+                        {% if socio %}
+                            <p>{{ socio.usuario.nombres|title }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="tablaCuotas" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Capital</th>
+                        <th>Interes</th>
+                        <th>Saldo Capital</th>
+                        <th>Valor cuota</th>
+                        <th>Estado</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>N°</th>
+                        <th>Capital</th>
+                        <th>Interes</th>
+                        <th>Saldo Capital</th>
+                        <th>Valor cuota</th>
+                        <th>Estado</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for cuota in cuotas %}
+                        <tr>
+                            <td>{{ cuota.orden }}</td>
+                            <td>$ {{ cuota.capital }}</td>
+                            <td>$ {{ cuota.interes }}</td>
+                            <td>$ {{ cuota.saldo_capital }}</td>
+                            <td>$ {{ cuota.valor_cuota }}</td>
+                            {% if cuota.estado %}
+                                <td class="text-success">
+                                    Pagado
+
+                                </td>
+                            {% endif %}
+                           {% if cuota.estado == False %}
+                                <td class="text-warning">
+                                    Pendiente
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block btn_imprimir %}
+    dom: 'Bfrtip',
+    buttons: [
+    {
+    extend: 'print',
+    text: 'Imprimir'
+    }],
+{% endblock %}
+
