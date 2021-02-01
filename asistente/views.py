@@ -102,7 +102,7 @@ def diasHastaFecha(day1, month1, year1, day2, month2, year2):
             return total
 
 
-class HomePageView(LoginRequiredMixin,TemplateView):
+class HomePageView(LoginRequiredMixin, TemplateView):
     template_name = "asistente/index.html"
 
     def get_context_data(self, **kwargs):
@@ -111,7 +111,7 @@ class HomePageView(LoginRequiredMixin,TemplateView):
         return context
 
 
-class EscogerArchivoPageView(LoginRequiredMixin,TemplateView ):
+class EscogerArchivoPageView(LoginRequiredMixin, TemplateView):
     template_name = "asistente/escoger_archivo.html"
 
 
@@ -189,9 +189,6 @@ class SolicitudCreditoCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-
-
-
 class SocioCreate(LoginRequiredMixin, CreateView):
     model = Usuario
     template_name = 'asistente/socio_form.html'
@@ -219,32 +216,40 @@ rubros_generados_moviestar = []
 
 
 def cargar_rubros_moviestar(request):
-    titulo=' Rubros Moviestar unicamente'
+    titulo = ' Rubros Moviestar unicamente'
     if request.method == 'POST':
         if bool(request.FILES.get('archivo_rubros', False)):
             try:
                 excel_file = request.FILES['archivo_rubros']
+
+                if (str(excel_file).split('.')[-1] == "xls"):
+                    data = xls_get(excel_file, column_limit=13)
+                elif (str(excel_file).split('.')[-1] == "xlsx"):
+                    data = xlsx_get(excel_file, column_limit=13)
+                    rubros = data["Hoja1"]
+                    size = len(rubros)
+                    index = 0
+                    for rubro in rubros:
+                        index = index + 1
+                        if index > 5 and index < size:
+
+                            if len(rubro[2]) > 0 and rubro[12] > 0:
+                                if Usuario.objects.filter(username=rubro[2]).exists():
+                                    usuario = Usuario.objects.get(username=rubro[2])
+                                    if Socio.objects.filter(usuario_id=usuario.id).exists():
+                                        rubros_generados_moviestar.append(rubro)
+
+                    return redirect('asistente:guardarrubrosmoviestar')
+
             except MultiValueDictKeyError:
                 return redirect('asistente:home')
-            if (str(excel_file).split('.')[-1] == "xls"):
-                data = xls_get(excel_file, column_limit=13)
-            elif (str(excel_file).split('.')[-1] == "xlsx"):
-                data = xlsx_get(excel_file, column_limit=13)
-                rubros = data["Hoja1"]
-                size = len(rubros)
-                index = 0
-                for rubro in rubros:
-                    index = index + 1
-                    if index > 5 and index < size:
-                        if len(rubro[2]) > 0 and rubro[12] > 0:
-                            if Usuario.objects.filter(username=rubro[2]).exists():
-                                usuario = Usuario.objects.get(username=rubro[2])
-                                if Socio.objects.filter(usuario_id=usuario.id).exists():
-                                    rubros_generados_moviestar.append(rubro)
-                return redirect('asistente:guardarrubrosmoviestar')
+            except IndexError:
+                messages.error(request, "Error al cargar el archivo pueda que no cumpla con el formato establecido.")
+            except TypeError:
+                messages.error(request, "Error al cargar el archivo pueda que no cumpla con el formato establecido.")
             else:
                 return redirect('asistente:home')
-    return render(request, 'asistente/rubro_subirarchivo.html',{'titulo':titulo})
+    return render(request, 'asistente/rubro_subirarchivo.html', {'titulo': titulo})
 
 
 clases_rubros = []
@@ -252,40 +257,44 @@ rubros_generados_general = []
 
 
 def cargar_rubros_general(request):
-    titulo='Rubros en general'
+    titulo = 'Rubros en general'
     if request.method == 'POST':
         if bool(request.FILES.get('archivo_rubros', False)):
             try:
                 excel_file = request.FILES['archivo_rubros']
+                if (str(excel_file).split('.')[-1] == "xls"):
+                    data = xls_get(excel_file, column_limit=26)
+                elif (str(excel_file).split('.')[-1] == "xlsx"):
+                    data = xlsx_get(excel_file, column_limit=26)
+                    rubros = data["Hoja1"]
+                    size = len(rubros)
+                    for i in range(len(rubros)):
+                        if i == 4:
+
+                            for j in range(len(rubros[i])):
+                                abreviatura = rubros[i][j]
+                                if Rubro.objects.filter(abreviatura=abreviatura.strip(' ')).exists():
+                                    aux = Rubro.objects.get(abreviatura=abreviatura.strip(' ')), j
+                                    clases_rubros.append(aux)
+
+                        if i > 4:
+                            #     if rubros[i][pos_movi] != '':
+                            #         rubros[i].append('MOVI')
+                            #     if rubros[i][pos_claro] != '':
+                            #         rubros[i].append('CLARO')
+                            rubros_generados_general.append(rubros[i])
+
+                    # return render(request, 'asistente/rubrosocioexcelmoviestar_list.html', {'rubros_generados': rubros_generados})
+                    return redirect('asistente:guardarrubrosgeneral')
             except MultiValueDictKeyError:
                 return redirect('asistente:home')
-            if (str(excel_file).split('.')[-1] == "xls"):
-                data = xls_get(excel_file, column_limit=26)
-            elif (str(excel_file).split('.')[-1] == "xlsx"):
-                data = xlsx_get(excel_file, column_limit=26)
-                rubros = data["Hoja1"]
-                size = len(rubros)
-                for i in range(len(rubros)):
-                    if i == 4:
-
-                        for j in range(len(rubros[i])):
-                            abreviatura = rubros[i][j]
-                            if Rubro.objects.filter(abreviatura=abreviatura.strip(' ')).exists():
-                                aux = Rubro.objects.get(abreviatura=abreviatura.strip(' ')), j
-                                clases_rubros.append(aux)
-
-                    if i > 4:
-                        #     if rubros[i][pos_movi] != '':
-                        #         rubros[i].append('MOVI')
-                        #     if rubros[i][pos_claro] != '':
-                        #         rubros[i].append('CLARO')
-                        rubros_generados_general.append(rubros[i])
-
-                # return render(request, 'asistente/rubrosocioexcelmoviestar_list.html', {'rubros_generados': rubros_generados})
-                return redirect('asistente:guardarrubrosgeneral')
+            except IndexError:
+                messages.error(request, "Error al cargar el archivo pueda que no cumpla con el formato establecido.")
+            except TypeError:
+                messages.error(request, "Error al cargar el archivo pueda que no cumpla con el formato establecido.")
             else:
                 return redirect('asistente:home')
-    return render(request, 'asistente/rubro_subirarchivo.html',{'titulo':titulo})
+    return render(request, 'asistente/rubro_subirarchivo.html', {'titulo': titulo})
 
 
 def guardar_rubros_moviestar(request):
@@ -371,7 +380,6 @@ class SocioListView(LoginRequiredMixin, ListView):
 class SocioDetailView(LoginRequiredMixin, DetailView):
     model = Socio
     template_name = 'asistente/socio_detail.html'
-
 
 
 def escoger_socio(request):
@@ -622,7 +630,7 @@ class LicquidacionCreditoCreate(LoginRequiredMixin, CreateView):
         credito = Credito.objects.get(id=self.kwargs['credito_id'])
         valor = data["valor"]
         liquidacioncredito = form.save(commit=False)
-        liquidacioncredito.credito=credito
+        liquidacioncredito.credito = credito
         liquidacioncredito.save()
         # liquidacioncredito=LiquidacionCredito()
         # liquidacioncredito.credito=credito
