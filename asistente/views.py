@@ -189,9 +189,7 @@ class SolicitudCreditoCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class UsuarioDetailView(LoginRequiredMixin, DetailView):
-    model = Usuario
-    template_name = 'asistente/socio_detail.html'
+
 
 
 class SocioCreate(LoginRequiredMixin, CreateView):
@@ -221,6 +219,7 @@ rubros_generados_moviestar = []
 
 
 def cargar_rubros_moviestar(request):
+    titulo=' Rubros Moviestar unicamente'
     if request.method == 'POST':
         if bool(request.FILES.get('archivo_rubros', False)):
             try:
@@ -245,7 +244,7 @@ def cargar_rubros_moviestar(request):
                 return redirect('asistente:guardarrubrosmoviestar')
             else:
                 return redirect('asistente:home')
-    return render(request, 'asistente/rubro_subirarchivo.html')
+    return render(request, 'asistente/rubro_subirarchivo.html',{'titulo':titulo})
 
 
 clases_rubros = []
@@ -253,6 +252,7 @@ rubros_generados_general = []
 
 
 def cargar_rubros_general(request):
+    titulo='Rubros en general'
     if request.method == 'POST':
         if bool(request.FILES.get('archivo_rubros', False)):
             try:
@@ -285,7 +285,7 @@ def cargar_rubros_general(request):
                 return redirect('asistente:guardarrubrosgeneral')
             else:
                 return redirect('asistente:home')
-    return render(request, 'asistente/rubro_subirarchivo.html')
+    return render(request, 'asistente/rubro_subirarchivo.html',{'titulo':titulo})
 
 
 def guardar_rubros_moviestar(request):
@@ -371,6 +371,7 @@ class SocioListView(LoginRequiredMixin, ListView):
 class SocioDetailView(LoginRequiredMixin, DetailView):
     model = Socio
     template_name = 'asistente/socio_detail.html'
+
 
 
 def escoger_socio(request):

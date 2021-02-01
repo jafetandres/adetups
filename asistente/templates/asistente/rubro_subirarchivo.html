@@ -1,7 +1,7 @@
 {% extends 'asistente/index.html' %}
 {% block content %}
     <div class="card mb-4 mt-4">
-        <div class="card-header"><h3 class="text-center font-weight-light my-4">Seleccione archivo excel a subir
+        <div class="card-header"><h3 class="text-center font-weight-light my-4">Seleccione archivo excel a subir para {{ titulo }}
         </h3></div>
         <div class="card-body">
             {% if messages %}
@@ -9,6 +9,7 @@
                     <div class="alert alert-{{ message.tags }} m-6" role="alert">{{ message }}</div>
                 {% endfor %}
             {% endif %}
+        <p>Recuerde que la clase de rubro debe de estar registrada antes de cargar el archivo de lo contrario no se guardaran los rubros de la clase no registrada. </p>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-row">
@@ -17,7 +18,7 @@
                             <input type="file" class="custom-file-input" id="customFileLang" lang="es"
                                    name="archivo_rubros"
                                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-                            <label class="custom-file-label" for="customFileLang">Ninguno</label>
+                            <label class="custom-file-label" for="customFileLang">Click aqui para escoger archivo</label>
                         </div>
                     </div>
                     <div class="col-md-6">

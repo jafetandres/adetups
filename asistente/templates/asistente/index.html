@@ -45,7 +45,7 @@
                  data-parent="#sidenavAccordionPages">
                 <nav class="sb-sidenav-menu-nested nav">
                     <a class="nav-link" href="{% url 'asistente:consultarcuotas' %}">Consultar cuotas</a>
-                    <a class="nav-link" href="{% url 'asistente:creditolist' %}">Consultar credito</a>
+                    <a class="nav-link" href="{% url 'asistente:creditolist' %}">Consultar crédito</a>
                 </nav>
             </div>
             <a class="nav-link collapsed" href="#" data-toggle="collapse"
@@ -105,7 +105,7 @@
         </div>
         <div class="col-xl-3 col-md-6">
             <div class="card bg-success text-white mb-4">
-                <div class="card-body">Creditos</div>
+                <div class="card-body">Créditos</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
                     <a class="small text-white stretched-link" href="{% url 'asistente:creditolist' %}">Ver</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
@@ -131,7 +131,7 @@
                 </div>
                 <div class="col-6" align="right">
                     <a class="btn" href="{% url 'asistente:escogersocio' %}"><i class="fa fa-plus fa-fw"
-                                                                                aria-hidden="true"></i>Añadir</a>
+                                                                                aria-hidden="true"></i>Añadir solicitud de crédito</a>
                 </div>
             </div>
         </div>
@@ -169,7 +169,7 @@
                     {% for solicitudcredito in solicitudescredito %}
                         <tr>
                             <td>
-                                <a href="{% url 'asistente:usuariodetail' solicitudcredito.socio.usuario.id %}">{{ solicitudcredito.socio.usuario.nombres|title }} {{ solicitudcredito.socio.usuario.apellidos|title }}</a>
+                                <a href="{% url 'asistente:sociodetail' solicitudcredito.socio.id %}">{{ solicitudcredito.socio.usuario.nombres|title }} {{ solicitudcredito.socio.usuario.apellidos|title }}</a>
                             </td>
                             <td>{{ solicitudcredito.fecha_ingreso }}</td>
                             <td>
@@ -187,7 +187,6 @@
                                 {% elif solicitudcredito.estado == 'revisada' %}
                                     <p class="text-success">Revisada</p>
                                 {% endif %}
-
                             </td>
                             <td class="text-center">
                                 <a class="btn btn-warning"

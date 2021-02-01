@@ -11,7 +11,7 @@ urlpatterns = [
             name='solicitudcreditocreate'),
     # path('solicitudcreditocreate/<int:socio_id>/', SolicitudCreditoCreate.as_view(),
     #      name='solicitudcreditocreate'),
-    path('usuariodetail/<int:pk>/', UsuarioDetailView.as_view(), name="usuariodetail"),
+
     path('sociocreate/', SocioCreate.as_view(), name='sociocreate'),
     path('cargarrubrosmoviestar/', cargar_rubros_moviestar, name='cargarrubrosmoviestar'),
     path('cargarrubrosgeneral/', cargar_rubros_general, name='cargarrubrosgeneral'),

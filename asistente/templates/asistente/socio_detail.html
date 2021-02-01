@@ -1,7 +1,7 @@
 {% extends 'asistente/index.html' %}
 {% block content %}
     <div class="card shadow-lg border-0 rounded-lg mt-5">
-        <div class="card-header"><h3 class="text-center font-weight-light my-4">{{ user.nombres|title }}</h3>
+        <div class="card-header"><h3 class="text-center font-weight-light my-4">{{ socio.usuario.nombres|title }}</h3>
         </div>
         <div class="card-body">
             <form>
@@ -9,28 +9,28 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="nombresId">Nombres</label>
-                            <p id="nombresId">{{ user.nombres|title }}</p>
+                            <p id="nombresId">{{ socio.usuario.nombres|title }}</p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="apellidosId">Apellidos</label>
-                            <p id="apellidosId">{{ user.apellidos|title }}</p>
+                            <p id="apellidosId">{{ socio.usuario.apellidos|title }}</p>
                         </div>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="small mb-1" for="usernameId">Username</label>
-                            <p id="usernameId">{{ user.username }}</p>
+                            <label class="small mb-1" for="usernameId">Cédula</label>
+                            <p id="usernameId">{{ socio.usuario.username }}</p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="small mb-1" for="date_joinedId">Fecha de creación</label>
+                            <label class="small mb-1" for="date_joinedId">Fecha de ingreso</label>
                             <p id="date_joinedId">
-                                {{ user.date_joined }}
+                                {{ socio.fecha_ingreso }}
                             </p>
                         </div>
                     </div>
@@ -40,14 +40,14 @@
                         <div class="form-group">
                             <label class="small mb-1" for="emailId">Correo electrónico</label>
                             <p id="emailId">
-                                {{ user.email }}
+                                {{ socio.usuario.email }}
                             </p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="fecha_nacimientoId">Fecha de nacimiento</label>
-                            <p id="fecha_nacimientoId">{{ user.fecha_nacimiento }}</p>
+                            <p id="fecha_nacimientoId">{{ socio.usuario.fecha_nacimiento }}</p>
                         </div>
                     </div>
                 </div>
@@ -56,19 +56,13 @@
                         <div class="form-group">
                             <label class="small mb-1" for="is_activeId">Estado</label>
                             <p id="is_activeId">
-                                {% if user.is_active %}
+                                {% if socio.usuario.is_active %}
                                     Activo
                                 {% else %}
                                     Desactivado
                                 {% endif %}
 
                             </p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="small mb-1" for="tipoId">Tipo</label>
-                            <p id="tipoId">{{ user.tipo }}</p>
                         </div>
                     </div>
                 </div>

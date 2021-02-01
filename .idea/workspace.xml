@@ -2,36 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7f909e53-265b-4961-95e9-847068ff836c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/consultar_cuotas.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/credito_detail.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/credito_liquidar.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/credito_list.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/solicitudcredito_update.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0017_auto_20210127_1608.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0018_credito_fecha_ingreso.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0019_clasecredito_porcentaje_interes.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0020_auto_20210129_1250.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0021_auto_20210129_1535.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0022_auto_20210129_1704.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0023_cuota_orden.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0024_remove_liquidacioncredito_estado.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0025_auto_20210130_2042.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/cambiar_password.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/cambiar_password.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/perfil.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/perfil.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/rubro_subirarchivo.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubro_subirarchivo.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/rubrosocioexcelgeneral_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubrosocioexcelgeneral_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/socio_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/socio_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/solicitudcredito_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/solicitudcredito_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/socio_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/socio_detail.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/presidente/templates/presidente/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/presidente/templates/presidente/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/presidente/templates/presidente/solicitudcredito_update.html" beforeDir="false" afterPath="$PROJECT_DIR$/presidente/templates/presidente/solicitudcredito_update.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/presidente/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/presidente/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/base.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -223,7 +200,7 @@
       <workItem from="1609951899661" duration="538000" />
       <workItem from="1610554056125" duration="83535000" />
       <workItem from="1611278294033" duration="9938000" />
-      <workItem from="1611378535411" duration="134218000" />
+      <workItem from="1611378535411" duration="136022000" />
     </task>
     <servers />
   </component>
