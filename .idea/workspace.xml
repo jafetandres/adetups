@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7f909e53-265b-4961-95e9-847068ff836c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/rubro_subirarchivo.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubro_subirarchivo.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/socio_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/socio_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-    </list>
+    <list default="true" id="7f909e53-265b-4961-95e9-847068ff836c" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -200,7 +192,7 @@
       <workItem from="1609951899661" duration="538000" />
       <workItem from="1610554056125" duration="83535000" />
       <workItem from="1611278294033" duration="9938000" />
-      <workItem from="1611378535411" duration="136022000" />
+      <workItem from="1611378535411" duration="136318000" />
     </task>
     <servers />
   </component>

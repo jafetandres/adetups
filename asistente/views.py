@@ -102,7 +102,7 @@ def diasHastaFecha(day1, month1, year1, day2, month2, year2):
             return total
 
 
-class HomePageView(TemplateView, LoginRequiredMixin):
+class HomePageView(LoginRequiredMixin,TemplateView):
     template_name = "asistente/index.html"
 
     def get_context_data(self, **kwargs):
@@ -111,7 +111,7 @@ class HomePageView(TemplateView, LoginRequiredMixin):
         return context
 
 
-class EscogerArchivoPageView(TemplateView, LoginRequiredMixin):
+class EscogerArchivoPageView(LoginRequiredMixin,TemplateView ):
     template_name = "asistente/escoger_archivo.html"
 
 
