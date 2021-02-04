@@ -35,7 +35,7 @@ urlpatterns = [
          name="rubroupdate"),
     path('rubrodelete/<int:pk>/', RubroDelete.as_view(),
          name="rubrodelete"),
-    path('rubrosociolist/', RubroSocioListView.as_view(), name="rubrosociolist"),
+    path('consultarrubros/', consultar_rubros, name="consultar_rubros"),
     path('rubrosociocreate/', RubroSocioCreate.as_view(), name="rubrosociocreate"),
     path('rubrosociodelete/<int:pk>/', RubroSocioDelete.as_view(),
          name="rubrosociodelete"),
@@ -43,7 +43,9 @@ urlpatterns = [
          name="usuarioupdate"),
     path('creditolist/', CreditoListView.as_view(), name="creditolist"),
     path('creditodetail/<int:pk>/', CreditoDetail.as_view(), name="creditodetail"),
-    path('liquidacioncreditocreate/<int:credito_id>/', LicquidacionCreditoCreate.as_view(), name="liquidacioncreditocreate"),
-    path('consultarcuotas/', consultar_cuotas, name="consultarcuotas")
+    path('liquidacioncreditocreate/<int:credito_id>/', LicquidacionCreditoCreate.as_view(),
+         name="liquidacioncreditocreate"),
+    path('consultarcuotas/', consultar_cuotas, name="consultarcuotas"),
+    path('restriccionclasecreditolist/', RestriccionClaseCreditoList.as_view(), name="restriccionclasecreditolist")
 
 ]

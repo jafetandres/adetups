@@ -21,8 +21,19 @@
     <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne"
          data-parent="#sidenavAccordion">
         <nav class="sb-sidenav-menu-nested nav">
-            <a class="nav-link" href="{% url 'asistente:clasecreditolist' %}">Clase de Créditos</a>
-            <a class="nav-link" href="{% url 'asistente:parametrolist' %}">Parámetros de Crédito</a>
+            <a class="nav-link collapsed" href="#" data-toggle="collapse"
+               data-target="#mantenimientosCollapseClaseCreditos" aria-expanded="false"
+               aria-controls="mantenimientosCollapseClaseCreditos">Clase de Créditos
+                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+            </a>
+            <div class="collapse" id="mantenimientosCollapseClaseCreditos" aria-labelledby="headingOne"
+                 data-parent="#sidenavAccordionPages">
+                <nav class="sb-sidenav-menu-nested nav">
+                    <a class="nav-link" href="{% url 'asistente:clasecreditolist' %}">Lista Clase de Crédito</a>
+                    <a class="nav-link" href="{% url 'asistente:restriccionclasecreditolist' %}">Resctricciones de Clase
+                        de Crédito</a>
+                </nav>
+            </div>
             <a class="nav-link" href="{% url 'asistente:rubrolist' %}">Rubros</a>
             <a class="nav-link" href="{% url 'asistente:sociolist' %}">Socios</a>
         </nav>
@@ -57,7 +68,7 @@
             <div class="collapse" id="procesosCollapseRubros" aria-labelledby="headingOne"
                  data-parent="#sidenavAccordionPages">
                 <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link" href="{% url 'asistente:rubrosociolist' %}">Rubros del Socio</a>
+                    <a class="nav-link" href="{% url 'asistente:consultar_rubros' %}">Rubros del Socio</a>
                     <a class="nav-link" href="{% url 'asistente:escogerarchivo' %}">Subir Rubros mediante excel</a>
                     {#                    <a class="nav-link" href="password.html">Consultar Rubros del Socio</a>#}
                 </nav>
@@ -131,7 +142,8 @@
                 </div>
                 <div class="col-6" align="right">
                     <a class="btn" href="{% url 'asistente:escogersocio' %}"><i class="fa fa-plus fa-fw"
-                                                                                aria-hidden="true"></i>Añadir solicitud de crédito</a>
+                                                                                aria-hidden="true"></i>Añadir solicitud
+                        de crédito</a>
                 </div>
             </div>
         </div>

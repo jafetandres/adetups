@@ -122,6 +122,17 @@ class ClaseCredito(models.Model):
     # parametros = models.ManyToManyField(Parametro, blank=True, null=True)
 
 
+class RestriccionClaseCredito(models.Model):
+    clasecredito = models.ForeignKey(ClaseCredito, models.DO_NOTHING)
+    tiempo_desde = models.IntegerField(blank=True,
+                                       null=True)  # Field name made lowercase.
+    tiempo_hasta = models.IntegerField(blank=True,
+                                       null=True)  # Field name made lowercase.
+    valhasta = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    estado = models.BooleanField(default=True, blank=True, null=True)  # Field name made lowercase.
+    fecha_creacion = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+
 class Parametro(models.Model):
     clasecredito = models.ForeignKey(ClaseCredito, models.CASCADE)
     descripcion = models.CharField(max_length=100)  # Field name made lowercase.
@@ -229,7 +240,7 @@ class Cuota(models.Model):
 
 class Credito(models.Model):
     solicitud = models.ForeignKey(SolicitudCredito, models.DO_NOTHING)  # Field name made lowercase.
-    socio = models.ForeignKey(Socio, on_delete=models.DO_NOTHING)  # Field name made lowercase.
+    socio = models.ForeignKey(Socio, on_delete=models.CASCADE, db_constraint=False)  # Field name made lowercase.
     monto = models.DecimalField(max_digits=9, decimal_places=2)  # Field name made lowercase.
     cuotas = models.ManyToManyField(Cuota)
     porcentaje_interes = models.DecimalField(max_digits=4, decimal_places=2)  # Field name made lowercase.
@@ -290,7 +301,7 @@ class LiquidacionCredito(models.Model):
     credito = models.ForeignKey(Credito, models.DO_NOTHING)  # Field name made lowercase.
     valor = models.DecimalField(max_digits=9, decimal_places=2)  # Field name made lowercase.
     observacion = models.CharField(max_length=200)  # Field name made lowercase.
-    documento = models.TextField(null=True,blank=True)  # Field name made lowercase.
+    documento = models.TextField(null=True, blank=True)  # Field name made lowercase.
 
 
 # class Adtlogsol(models.Model):

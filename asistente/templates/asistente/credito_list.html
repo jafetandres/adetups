@@ -42,9 +42,9 @@
                         <tr>
                             <td>{{ credito.socio.usuario.nombres|title }}</td>
                             <td>{{ credito.socio.usuario.username }}</td>
-                            <td>{{ credito.monto }}</td>
-                            <td>{{ credito.fecha_ingreso }}</td>
-                            <td>{{ credito.plazo }}</td>
+                            <td>$ {{ credito.monto }}</td>
+                            <td>{{ credito.fecha_ingreso|date:"D d M Y" }}</td>
+                            <td>{{ credito.plazo }} meses</td>
                             <td class="text-center">
                                 <a class="btn btn-warning"
                                    href="{% url 'asistente:creditodetail' credito.id %}"

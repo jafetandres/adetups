@@ -11,7 +11,7 @@ from django.views.generic import TemplateView, DetailView, UpdateView, CreateVie
 from asistente.forms import SolicitudCreditoForm
 from sistema.forms import UsuarioForm
 from sistema.models import SolicitudCredito, Usuario, Socio, ClaseCredito, RubroSocio, Credito, Parametro, Rubro, Cuota, \
-    LiquidacionCredito
+    LiquidacionCredito, RestriccionClaseCredito
 from django.shortcuts import redirect
 from pyexcel_xls import get_data as xls_get
 from pyexcel_xlsx import get_data as xlsx_get
@@ -464,15 +464,17 @@ class RubroDelete(LoginRequiredMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class RubroSocioListView(TemplateView):
-    template_name = 'asistente/rubrosocio_list.html'
+# class RubroSocioListView(ListView):
+#     model = Socio
+#     template_name = 'asistente/consultar_rubros.html'
+#     paginate_by = 1
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['socios'] = Socio.objects.all()
-
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #
+    #     context['socios'] = Socio.objects.all()
+    #
+    #     return context
 
 
 class RubroSocioCreate(LoginRequiredMixin, CreateView):
@@ -721,19 +723,47 @@ def consultar_cuotas(request):
             messages.error(request, 'El socio no existe')
         # return redirect('asistente:consultarcuotas')
     return render(request, 'asistente/consultar_cuotas.html', {'cuotas': cuotas, 'socio': socio})
-    # data = []
-    # print(request.GET['username'])
-    # print(request.is_ajax)
-    # if request.method == 'GET':
-    #     username = request.GET['username']
-    #     if Usuario.objects.filter(username=username).exists():
-    #         usuario = Usuario.objects.get(username=username)
-    #         if Socio.objects.filter(usuario_id=usuario.id).exists():
-    #             socio = Socio.objects.get(usuario_id=usuario.id)
-    #             if Credito.objects.filter(socio_id=socio.id).exists():
-    #                 credito = Credito.objects.get(socio_id=socio.id)
-    #                 for cuota in credito.cuotas:
-    #                     data.append(cuota)
-    #
-    #     json_dump = json.dumps(data)
-    #     return HttpResponse(json_dump, content_type='application/json')
+
+
+def consultar_rubros(request):
+    rubros = []
+    socio = None
+    if request.method == 'POST':
+        username = request.POST['username']
+        if Usuario.objects.filter(username=username).exists():
+            usuario = Usuario.objects.get(username=username)
+            if Socio.objects.filter(usuario_id=usuario.id).exists():
+                socio = Socio.objects.get(usuario_id=usuario.id)
+                for rubro in socio.rubros.all():
+                    rubros.append(rubro)
+                # if Credito.objects.filter(socio_id=socio.id).exists():
+                #     credito = Credito.objects.get(socio_id=socio.id)
+                #     for cuota in credito.cuotas.all():
+                #         cuotas.append(cuota)
+                # else:
+                #     messages.error(request, 'El socio no mantiene ningun credito')
+        else:
+            messages.error(request, 'El socio no existe')
+        # return redirect('asistente:consultarcuotas')
+    return render(request, 'asistente/consultar_rubros.html', {'rubros': rubros, 'socio': socio})
+
+# data = []
+# print(request.GET['username'])
+# print(request.is_ajax)
+# if request.method == 'GET':
+#     username = request.GET['username']
+#     if Usuario.objects.filter(username=username).exists():
+#         usuario = Usuario.objects.get(username=username)
+#         if Socio.objects.filter(usuario_id=usuario.id).exists():
+#             socio = Socio.objects.get(usuario_id=usuario.id)
+#             if Credito.objects.filter(socio_id=socio.id).exists():
+#                 credito = Credito.objects.get(socio_id=socio.id)
+#                 for cuota in credito.cuotas:
+#                     data.append(cuota)
+#
+#     json_dump = json.dumps(data)
+#     return HttpResponse(json_dump, content_type='application/json')
+
+class RestriccionClaseCreditoList(LoginRequiredMixin,ListView):
+    model = RestriccionClaseCredito
+    template_name = 'asistente/restriccionclasecredito_list.html'
