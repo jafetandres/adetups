@@ -24,6 +24,7 @@
                         <th>Monto</th>
                         <th>Fecha de ingreso</th>
                         <th>Plazo</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                     </thead>
@@ -34,6 +35,7 @@
                         <th>Monto</th>
                         <th>Fecha de ingreso</th>
                         <th>Plazo</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                     </tfoot>
@@ -45,6 +47,7 @@
                             <td>$ {{ credito.monto }}</td>
                             <td>{{ credito.fecha_ingreso|date:"D d M Y" }}</td>
                             <td>{{ credito.plazo }} meses</td>
+                            <td>{{ credito.estado|title }} </td>
                             <td class="text-center">
                                 <a class="btn btn-warning"
                                    href="{% url 'asistente:creditodetail' credito.id %}"

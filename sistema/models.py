@@ -166,13 +166,13 @@ class Adtclasol(models.Model):
 
 
 class SolicitudCredito(models.Model):
-    clasecredito = models.ForeignKey(ClaseCredito, models.DO_NOTHING)
-    fecha_ingreso = models.DateTimeField(auto_now=True)
-    garante = models.ForeignKey(Socio, models.DO_NOTHING, related_name='garante')
-    monto = models.DecimalField(max_digits=9, decimal_places=2)
-    plazo = models.SmallIntegerField()
-    estado = models.CharField(max_length=20, default='pendiente')
-    socio = models.ForeignKey(Socio, models.DO_NOTHING, related_name='socio')
+    clasecredito = models.ForeignKey(ClaseCredito, models.CASCADE, blank=True, null=True)
+    fecha_ingreso = models.DateField(auto_now=True)
+    garante = models.ForeignKey(Socio, models.DO_NOTHING, related_name='garante', blank=True, null=True)
+    monto = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
+    plazo = models.SmallIntegerField(blank=True, null=True)
+    estado = models.CharField(max_length=20, default='pendiente', blank=True, null=True)
+    socio = models.ForeignKey(Socio, models.DO_NOTHING, related_name='socio', blank=True, null=True)
     # cuota = models.DecimalField(max_digits=9, decimal_places=2)
     # interes = models.DecimalField(max_digits=9, decimal_places=2)
     porcentaje_interes = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)

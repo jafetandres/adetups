@@ -158,7 +158,7 @@
                     <thead>
                     <tr>
                         <th>Socio</th>
-                        <th>Fecha de creación</th>
+                        <th>Fecha de ingreso</th>
                         <th>Garante</th>
                         <th>Monto</th>
                         <th>Clase de Credito</th>
@@ -198,7 +198,10 @@
                                     <p class="text-danger">Negada</p>
                                 {% elif solicitudcredito.estado == 'revisada' %}
                                     <p class="text-success">Revisada</p>
+                                {% else %}
+                                    {{ solicitudcredito.estado|title }}
                                 {% endif %}
+
                             </td>
                             <td class="text-center">
                                 <a class="btn btn-warning"

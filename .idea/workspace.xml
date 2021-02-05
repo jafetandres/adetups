@@ -2,45 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7f909e53-265b-4961-95e9-847068ff836c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/restriccionclasecredito_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0002_auto_20210205_1500.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/d129e9b6-d5ee-4b24-baa1-948735c7294c.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/d129e9b6-d5ee-4b24-baa1-948735c7294c.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/credito_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/credito_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/rubrosocio_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubrosocio_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/rubrosocio_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/consultar_rubros.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/socio_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/socio_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/socio_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/socio_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sistema/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0002_auto_20210121_2043.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0003_auto_20210121_2044.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0004_auto_20210121_2048.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0005_auto_20210121_2051.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0006_auto_20210121_2052.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0007_auto_20210121_2219.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0008_clasecredito_tiempo_minimo_servicio.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0009_auto_20210123_0053.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0010_auto_20210123_0053.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0011_auto_20210123_1145.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0012_auto_20210123_1147.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0013_delete_restriccionescredito.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0014_auto_20210124_1319.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0015_remove_clasecredito_parametros.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0016_parametro_clasecredito.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0017_auto_20210127_1608.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0018_credito_fecha_ingreso.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0019_clasecredito_porcentaje_interes.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0020_auto_20210129_1250.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0021_auto_20210129_1535.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0022_auto_20210129_1704.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0023_cuota_orden.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0024_remove_liquidacioncredito_estado.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/migrations/0025_auto_20210130_2042.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/sistema/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/clasecredito_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/clasecredito_list.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -189,6 +159,11 @@
     </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="StructuralSearchPlugin">
+    <searchConfiguration name="Unnamed" created="1612480558190" text="|date" recursive="false" caseInsensitive="false" type="XML" scope_type="NAMED" scope_descriptor="All Places" history="1">
+      <constraint name="__context__" within="" contains="" />
+    </searchConfiguration>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="7f909e53-265b-4961-95e9-847068ff836c" name="Default Changelist" comment="" />
@@ -244,7 +219,7 @@
       <workItem from="1611278294033" duration="9938000" />
       <workItem from="1611378535411" duration="166410000" />
       <workItem from="1612386583661" duration="11235000" />
-      <workItem from="1612461725329" duration="9197000" />
+      <workItem from="1612461725329" duration="20782000" />
     </task>
     <servers />
   </component>
