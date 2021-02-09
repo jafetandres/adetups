@@ -1,7 +1,7 @@
 {% extends 'sistema/index.html' %}
 {% block content %}
     <div class="card shadow-lg border-0 rounded-lg mt-5">
-        <div class="card-header"><h3 class="text-center font-weight-light my-4">Añadir Clase de Crédito</h3></div>
+        <div class="card-header"><h3 class="text-center font-weight-light my-4">Clase de Crédito</h3></div>
         <div class="card-body">
             {% if 'ok' in request.GET %}
                 <div class="alert alert-success" role="alert">Registro actualizado correctamente</div>
@@ -42,21 +42,18 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="valdesdeId">Valor desde</label>
-                            <input class="form-control py-4" id="valdesdeId" name="valdesde" type="text"
-                                   placeholder="Ingrese la valor" value="{{ clasecredito.valdesde }}" onkeypress="return soloNumeros(event)" required/>
-                            {#                            <input type="text" class="form-control py-4" name="valdesde" id="valdesdeId"#}
-                            {#                                   pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency"#}
-                            {#                                   placeholder="$1,000,000.00" required/>#}
+                            <input class="form-control py-4" id="valdesdeId" name="valdesde" type="number"
+                                   placeholder="Ingrese la valor" value="{{ clasecredito.valdesde }}"
+                                   onkeypress="return soloNumeros(event)" required/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="valhastaId">Valor hasta</label>
-                            <input class="form-control py-4" id="valhastaId" name="valhasta" type="text"
-                                   placeholder="Ingrese la valor" value="{{ clasecredito.valhasta }}" onkeypress="return soloNumeros(event)" required/>
-                            {#                            <input type="text" class="form-control py-4" name="valhasta" id="valhastaId"#}
-                            {#                                   pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency"#}
-                            {#                                   placeholder="$1,000,000.00" required/>#}
+                            <input class="form-control py-4" id="valhastaId" name="valhasta" type="number"
+                                   placeholder="Ingrese la valor" value="{{ clasecredito.valhasta }}"
+                                   onkeypress="return soloNumeros(event)" required/>
+
                         </div>
                     </div>
                 </div>
@@ -114,7 +111,8 @@
                             <br>
                             {% if clasecredito.autorizacion != null %}
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="autorizacion" id="autorizacionId1"
+                                    <input class="form-check-input" type="radio" name="autorizacion"
+                                           id="autorizacionId1"
                                            value="True" {% if clasecredito.autorizacion %} checked{% endif %}>
                                     <label class="form-check-label" for="autorizacionId1">
                                         SI
@@ -130,14 +128,16 @@
                                 </div>
                             {% else %}
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="autorizacion" id="autorizacionId1"
+                                    <input class="form-check-input" type="radio" name="autorizacion"
+                                           id="autorizacionId1"
                                            value="True" checked>
                                     <label class="form-check-label" for="autorizacionId1">
                                         SI
                                     </label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="autorizacion" id="autorizacionId2"
+                                    <input class="form-check-input" type="radio" name="autorizacion"
+                                           id="autorizacionId2"
                                            value="False">
                                     <label class="form-check-label" for="autorizacionId2">
                                         NO
@@ -152,14 +152,16 @@
                         {% if clasecredito.estado %}
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="estado" id="estadoId1"
-                                       value="act" {% if clasecredito.estado == 'act' or clasecredito.estado == 'ACT' %}checked{% endif %}/>
+                                       value="act"
+                                       {% if clasecredito.estado == 'act' or clasecredito.estado == 'ACT' %}checked{% endif %}/>
                                 <label class="form-check-label" for="estadoId1">
                                     Activo
                                 </label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="estado" id="estadoId2"
-                                       value="ina" {% if clasecredito.estado == 'ina' or clasecredito.estado == 'INA' %}checked{% endif %}/>
+                                       value="ina"
+                                       {% if clasecredito.estado == 'ina' or clasecredito.estado == 'INA' %}checked{% endif %}/>
                                 <label class="form-check-label" for="estadoId2">
                                     Inactivo
                                 </label>
@@ -287,27 +289,27 @@
             input[0].setSelectionRange(caret_pos, caret_pos);
         }
     </script>
-{#    <script>#}
-{#        function soloNumeros(evt) {#}
-{#            var charCode = (evt.which) ? evt.which : event.keyCode;#}
-{#            if (charCode > 31 && (charCode < 48 || charCode > 57)) {#}
-{#                return false;#}
-{#            } else {#}
-{#                return true;#}
-{#            }#}
-{#        }#}
-{#    </script>#}
+    {#    <script>#}
+    {#        function soloNumeros(evt) {#}
+    {#            var charCode = (evt.which) ? evt.which : event.keyCode;#}
+    {#            if (charCode > 31 && (charCode < 48 || charCode > 57)) {#}
+    {#                return false;#}
+    {#            } else {#}
+    {#                return true;#}
+    {#            }#}
+    {#        }#}
+    {#    </script>#}
     <script>
-    function soloNumeros(evt) {
-          var theEvent = evt || window.event;
-          var key = theEvent.keyCode || theEvent.which;
-          key = String.fromCharCode(key);
-          if (key.length == 0) return;
-          var regex = /^[0-9.,\b]+$/;
-          if (!regex.test(key)) {
-              theEvent.returnValue = false;
-              if (theEvent.preventDefault) theEvent.preventDefault();
-          }
-}
+        function soloNumeros(evt) {
+            var theEvent = evt || window.event;
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+            if (key.length == 0) return;
+            var regex = /^[0-9.,\b]+$/;
+            if (!regex.test(key)) {
+                theEvent.returnValue = false;
+                if (theEvent.preventDefault) theEvent.preventDefault();
+            }
+        }
     </script>
 {% endblock %}

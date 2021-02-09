@@ -13,17 +13,20 @@
                 </div>
             </div>
         </div>
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
         <div class="card-body">
+            {% if 'ok' in request.GET %}
+                <div class="alert alert-success" role="alert">Registro creado correctamente</div>
+            {% endif %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr>
-                        <th>Descripcion</th>
+                        <th>Descripción</th>
                         <th>Valor desde</th>
                         <th>Valor hasta</th>
                         <th>Autorizar</th>
@@ -35,7 +38,7 @@
                     </thead>
                     <tfoot>
                     <tr>
-                        <th>Descripcion</th>
+                        <th>Descripción</th>
                         <th>Valor desde</th>
                         <th>Valor hasta</th>
                         <th>Autorizar</th>
@@ -90,7 +93,9 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                Si elimina este registro se eliminar de la base de datos
+                                                Si elimina el registro <strong
+                                                    class="text-adetups"> {{ clascredito.descripcion|title }} </strong>se
+                                                eliminar de la base de datos
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
@@ -104,12 +109,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-danger"
+                                <button type="button" class="btn btn-danger p-1"
                                         aria-label="Delete" data-toggle="modal"
                                         data-target="#modal{{ clascredito.id }}">
                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                 </button>
-                                <a class="btn btn-warning" href="{% url 'sistema:clasecreditoupdate' clascredito.id %}"
+                                <a class="btn btn-warning p-1"
+                                   href="{% url 'sistema:clasecreditoupdate' clascredito.id %}"
                                    aria-label="Edit">
                                     Editar
                                 </a>

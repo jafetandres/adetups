@@ -1,0 +1,107 @@
+{% extends 'sistema/index.html' %}
+{% block content %}
+    <div class="card mb-4 mt-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <i class="fas fa-table mr-1"></i>
+                    Rubro
+                </div>
+                <div class="col-6" align="right">
+                    <a class="btn" href="{% url 'sistema:rubrocreate' %}"><i class="fa fa-plus fa-fw"
+                                                                             aria-hidden="true"></i>Añadir</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} m-1" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Descripción</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th>Abreviatura</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Descripción</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th>Abreviatura</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for rubro in object_list %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'asistente:rubrodetail' rubro.id %}">{{ rubro.descripcion|title }}</a>
+                            </td>
+                            <td>{{ rubro.tipo }}</td>
+                            <td>
+                                {% if rubro.estado is True %} Activo
+                                {% elif rubro.estado is False %}
+                                    Inactivo
+                                {% endif %}
+                            </td>
+                            <td>{{ rubro.abreviatura }}</td>
+                            <td class="text-center">
+                                <form id="my_form{{ rubro.id }}" method="post"
+                                      action="{% url 'sistema:rubrodelete' rubro.id %}">
+                                    {% csrf_token %}
+                                </form>
+                                <!-- Modal -->
+                                <div class="modal fade" id="modal{{ rubro.id }}" tabindex="-1" role="dialog"
+                                     aria-labelledby="exampleModalLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Está seguro?</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Si elimina el registro <strong class="text-adetups">{{ rubro.descripcion|title }} </strong>  se eliminar de la base de datos
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                    Cancelar
+                                                </button>
+                                                <button type="button" class="btn btn-danger"
+                                                        onclick="document.getElementById('my_form{{ rubro.id }}').submit();">
+                                                    Eliminar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-danger p-1"
+                                        aria-label="Delete" data-toggle="modal"
+                                        data-target="#modal{{ rubro.id }}">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                                <a class="btn btn-warning p-1"
+                                   href="{% url 'sistema:rubroupdate' rubro.id %}"
+                                   aria-label="Edit">
+                                    Editar
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

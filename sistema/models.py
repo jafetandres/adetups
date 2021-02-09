@@ -124,9 +124,9 @@ class ClaseCredito(models.Model):
 
 class RestriccionClaseCredito(models.Model):
     clasecredito = models.ForeignKey(ClaseCredito, models.DO_NOTHING)
-    tiempo_desde = models.IntegerField(blank=True,
+    tiempo_desde = models.SmallIntegerField(blank=True,
                                        null=True)  # Field name made lowercase.
-    tiempo_hasta = models.IntegerField(blank=True,
+    tiempo_hasta = models.SmallIntegerField(blank=True,
                                        null=True)  # Field name made lowercase.
     valhasta = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     estado = models.BooleanField(default=True, blank=True, null=True)  # Field name made lowercase.

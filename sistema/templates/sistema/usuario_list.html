@@ -102,7 +102,7 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                Si elimina este registro se eliminar de la base de datos
+                                                Si elimina el registro <strong class="text-adetups">{{ usuario.nombres|title }}</strong> se eliminar de la base de datos
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
@@ -116,11 +116,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-danger"
+                                <button type="button" class="btn btn-danger p-1"
                                         aria-label="Delete" data-toggle="modal" data-target="#modal{{ usuario.id }}">
                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                 </button>
-                                <a class="btn btn-warning"
+                                <a class="btn btn-warning p-1"
                                         {% if usuario.tipo == 'socio' %}
                                    href="{% url 'sistema:socioupdate' usuario.id %}"
 

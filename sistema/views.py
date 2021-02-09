@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -73,6 +74,15 @@ class UsuarioDetailView(LoginRequiredMixin, DetailView):
 
 class UsuarioListView(LoginRequiredMixin, ListView):
     model = Usuario
+
+
+class UsuarioUpdate(LoginRequiredMixin, UpdateView):
+    model = Usuario
+    template_name = 'sistema/perfil.html'
+    fields = ['nombres', 'apellidos', 'fecha_nacimiento', 'email']
+
+    def get_success_url(self):
+        return reverse_lazy('sistema:usuarioupdate', args=[self.object.id]) + '?ok'
 
 
 class AdministradorCreate(LoginRequiredMixin, CreateView):
@@ -296,6 +306,9 @@ class ClaseCreditoCreate(LoginRequiredMixin, CreateView):
     fields = ['descripcion', 'valdesde', 'valhasta', 'autorizacion', 'plazomax', 'garante', 'estado']
     success_url = reverse_lazy('sistema:clasecreditolist')
 
+    def get_success_url(self):
+        return reverse_lazy('sistema:clasecreditolist') + '?ok'
+
 
 class ClaseCreditoUpdate(LoginRequiredMixin, UpdateView):
     model = ClaseCredito
@@ -371,18 +384,13 @@ class ClaseCreditoDelete(LoginRequiredMixin, DeleteView):
 
 # success_url = reverse_lazy('sistema:clascrelist')
 
-class ParametroListView(ListView):
-    model = Parametro
+class RestriccionClaseCreditoListView(ListView):
+    model = RestriccionClaseCredito
 
 
-class ParametroDetailView(DetailView):
-    model = Parametro
-
-
-class ParametroCreate(CreateView):
-    model = Parametro
-    fields = ['descripcion', 'valorcaracter', 'valornumerico', 'estado', 'clasecredito']
-    success_url = reverse_lazy('sistema:parametrolist')
+class RestriccionClaseCreditoCreate(CreateView):
+    model = RestriccionClaseCredito
+    fields = ['clasecredito', 'tiempo_desde', 'tiempo_hasta', 'valhasta', 'estado']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -390,21 +398,28 @@ class ParametroCreate(CreateView):
         context["clasecreditos"] = clasecreditos
         return context
 
+    def get_success_url(self):
+        messages.success(self.request, 'Registro creado correctamente')
+        return reverse_lazy('sistema:restriccionclasecreditocreate')
 
-class ParametroUpdate(UpdateView):
-    model = Parametro
-    fields = ['descripcion', 'valorcaracter', 'valornumerico', 'estado']
 
+class RestriccionClaseCreditoUpdate(UpdateView):
+    model = RestriccionClaseCredito
+    fields = ['clasecredito', 'tiempo_desde', 'tiempo_hasta', 'valhasta', 'estado']
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        clasecreditos = ClaseCredito.objects.all()
+        context["clasecreditos"] = clasecreditos
+        return context
 
     def get_success_url(self):
-        return reverse_lazy('sistema:parametroupdate', args=[self.object.id]) + '?ok'
+        messages.success(self.request, 'Registro actualizado correctamente')
+        return reverse_lazy('sistema:restriccionclasecreditoupdate', args=[self.object.id])
 
 
-class ParametroDelete(DeleteView):
-    model = Parametro
-
-    # success_url = reverse_lazy('sistema:clascrelist')
+class RestriccionClaseCreditoDelete(DeleteView):
+    model = RestriccionClaseCredito
 
     def delete(self, request, *args, **kwargs):
         """
@@ -412,10 +427,99 @@ class ParametroDelete(DeleteView):
         success URL. If the object is protected, send an error message.
         """
         self.object = self.get_object()
-        success_url = reverse_lazy('sistema:parametrolist')
+        success_url = reverse_lazy('sistema:restriccionclasecreditolist')
 
         try:
             self.object.delete()
         except IntegrityError:
             messages.add_message(request, messages.ERROR, 'No se puede borrar el registro ya que existen dependencias')
         return HttpResponseRedirect(success_url)
+
+
+class RubroListView(ListView):
+    model = Rubro
+
+
+class RubroDetailView(DetailView):
+    model = Rubro
+
+
+class RubroCreate(LoginRequiredMixin, CreateView):
+    model = Rubro
+    fields = ['descripcion', 'tipo', 'estado', 'valor', 'abreviatura']
+
+    def get_success_url(self):
+        messages.success(self.request, 'Registro creado correctamente')
+        return reverse_lazy('sistema:rubrocreate')
+
+
+class RubroUpdate(LoginRequiredMixin, UpdateView):
+    model = Rubro
+    fields = ['descripcion', 'tipo', 'estado', 'valor', 'abreviatura']
+
+    def get_success_url(self):
+        messages.success(self.request, 'Registro actualizado correctamente')
+        return reverse_lazy('sistema:rubroupdate', args=[self.object.id])
+
+
+class RubroDelete(LoginRequiredMixin, DeleteView):
+    model = Rubro
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Call the delete() method on the fetched object and then redirect to the
+        success URL. If the object is protected, send an error message.
+        """
+        self.object = self.get_object()
+        success_url = reverse_lazy('sistema:rubrolist')
+
+        try:
+            self.object.delete()
+        except IntegrityError:
+            messages.add_message(request, messages.ERROR, 'No se puede borrar el registro ya que existen dependencias')
+        return HttpResponseRedirect(success_url)
+
+
+def cambiar_password(request):
+    bandera = False
+    if request.method == 'POST':
+        if len(request.POST['new_password2']) < 8:
+            bandera = False
+            messages.warning(request, "La nueva contraseña debe tener minimo 8 caracteres")
+            return redirect('sistema:cambiarpassword')
+        else:
+            bandera = True
+        indice = 0
+        mayusculas = 0
+        minusculas = 0
+        while indice < len(request.POST['new_password2']):
+            letra = request.POST['new_password2'][indice]
+            if letra.isupper() == True:
+                mayusculas += 1
+            else:
+                minusculas += 1
+            indice += 1
+        if mayusculas < 1:
+            bandera = False
+            messages.warning(request, "La nueva contraseña debe tener minimo una letra en mayuscula")
+        else:
+            bandera = True
+        if minusculas < 1:
+            bandera = False
+            messages.warning(request, "La nueva contraseña debe tener minimo una letra en minuscula")
+
+        else:
+            bandera = True
+        if request.POST['new_password1'] != request.POST['new_password2']:
+            bandera = False
+            messages.warning(request, "La nueva contraseña no coicide con la confirmacion")
+
+        else:
+            bandera = True
+        if bandera is True:
+            usuario = Usuario.objects.get(id=request.user.id)
+            usuario.set_password(request.POST['new_password2'])
+            usuario.save()
+            messages.success(request, "Contraseña cambiada")
+            login(request, usuario)
+    return render(request, 'sistema/cambiar_password.html')
