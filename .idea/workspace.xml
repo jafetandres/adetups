@@ -2,24 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7f909e53-265b-4961-95e9-847068ff836c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0003_auto_20210209_1007.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0004_auto_20210209_1008.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/templates/sistema/cambiar_password.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/templates/sistema/perfil.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/templates/sistema/rubro_detail.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/templates/sistema/rubro_form.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/templates/sistema/rubro_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/cambiar_password.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/clasecredito_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/clasecredito_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/consultar_rubros.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/credito_detail.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/credito_liquidar.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/credito_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/perfil.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/reportes_credito.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/restriccionclasecredito_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/restriccionclasecredito_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/rubro_detail.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/rubro_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/rubro_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/socio_detail.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/socio_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/socio_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/presidente/templates/presidente/solicitudcredito_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/presidente/templates/presidente/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/presidente/templates/presidente/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/presidente/templates/presidente/solicitudcredito_update.html" beforeDir="false" afterPath="$PROJECT_DIR$/presidente/templates/presidente/solicitudcredito_update.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/presidente/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/presidente/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/presidente/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/presidente/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/clasecredito_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/clasecredito_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/clasecredito_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/clasecredito_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/parametro_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/restriccionclasecredito_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/parametro_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/restriccionclasecredito_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/rubro_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/rubro_detail.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/usuario_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/usuario_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +78,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="database.data.extractors.current.export.id" value="SQL Inserts" />
     <property name="database.data.extractors.current.id" value="SQL Inserts" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/sistema/templates/sistema" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/presidente/templates/presidente" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -77,11 +87,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/presidente/templates/presidente" />
       <recent name="$PROJECT_DIR$/sistema/templates/sistema" />
       <recent name="$PROJECT_DIR$/asistente/templates/asistente" />
       <recent name="$PROJECT_DIR$/registration/templates/registration" />
       <recent name="$PROJECT_DIR$/asistente/templates" />
-      <recent name="$PROJECT_DIR$/socio/templates/socio" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/asistente/templates/asistente" />
@@ -228,7 +238,7 @@
       <workItem from="1611278294033" duration="9938000" />
       <workItem from="1611378535411" duration="166410000" />
       <workItem from="1612386583661" duration="11235000" />
-      <workItem from="1612461725329" duration="34930000" />
+      <workItem from="1612461725329" duration="58527000" />
     </task>
     <servers />
   </component>

@@ -2,9 +2,13 @@
 {% block titulo_pagina %}
     Adetups Presidente
 {% endblock %}
+{% block cuenta %}
+    href="{% url 'presidente:usuarioupdate' request.user.id %}"
+
+{% endblock %}
 {% block navbar %}
     <div class="sb-sidenav-menu-heading">Principal</div>
-    <a class="nav-link" href="{% url 'asistente:home' %}">
+    <a class="nav-link" href="{% url 'presidente:home' %}">
         <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
         Inicio
     </a>
@@ -18,12 +22,12 @@
     <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne"
          data-parent="#sidenavAccordion">
         <nav class="sb-sidenav-menu-nested nav">
-            <a class="nav-link" href="{% url 'sistema:clasecreditolist' %}">Clase de Créditos</a>
+            <a class="nav-link" href="{% url 'presidente:clasecreditolist' %}">Clase de Créditos</a>
 
-            <a class="nav-link" href="{% url 'sistema:parametrolist' %}">Parámetros</a>
-            <a class="nav-link" href="layout-sidenav-light.html">Perfiles</a>
-            <a class="nav-link" href="layout-sidenav-light.html">Rubros</a>
-            <a class="nav-link" href="layout-sidenav-light.html">Socios</a>
+            <a class="nav-link" href="{% url 'presidente:restriccionclasecreditolist' %}">Restriccion de Clase de
+                Crédito</a>
+            <a class="nav-link" href="{% url 'presidente:rubrolist' %}">Rubros</a>
+            <a class="nav-link" href="{% url 'presidente:sociolist' %}">Socios</a>
         </nav>
     </div>
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProcesos"
@@ -35,35 +39,18 @@
     <div class="collapse" id="collapseProcesos" aria-labelledby="headingTwo"
          data-parent="#sidenavAccordion">
         <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-            <a class="nav-link" href="">Liquidación de Créditos</a>
             <a class="nav-link collapsed" href="#" data-toggle="collapse"
-               data-target="#procesosCollapseRubros" aria-expanded="false"
-               aria-controls="procesosCollapseRubros">
-                Rubros
+               data-target="#procesosCollapseCredito" aria-expanded="false"
+               aria-controls="procesosCollapseCredito">Créditos
                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse" id="procesosCollapseRubros" aria-labelledby="headingOne"
+            <div class="collapse" id="procesosCollapseCredito" aria-labelledby="headingOne"
                  data-parent="#sidenavAccordionPages">
                 <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link" href="login.html">Detalle Rubros</a>
-                    <a class="nav-link" href="register.html">Subir Rubros</a>
-                    <a class="nav-link" href="password.html">Rubros Socios</a>
+                    <a class="nav-link" href="{% url 'presidente:creditolist' %}">Lista de Créditos</a>
                 </nav>
             </div>
-            <a class="nav-link collapsed" href="#" data-toggle="collapse"
-               data-target="#pagesCollapseError" aria-expanded="false"
-               aria-controls="pagesCollapseError">
-                Error
-                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-            </a>
-            <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne"
-                 data-parent="#sidenavAccordionPages">
-                <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link" href="401.html">401 Page</a>
-                    <a class="nav-link" href="404.html">404 Page</a>
-                    <a class="nav-link" href="500.html">500 Page</a>
-                </nav>
-            </div>
+            <a class="nav-link" href="{% url 'presidente:solicitudcreditolist' %}">Solicitudes de Crédito</a>
         </nav>
     </div>
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReportes"
@@ -75,8 +62,7 @@
     <div class="collapse" id="collapseReportes" aria-labelledby="headingTwo"
          data-parent="#sidenavAccordion">
         <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-            <a class="nav-link" href="">Créditos</a>
-            <a class="nav-link" href="">Solicitudes de Créditos</a>
+            <a class="nav-link" href="{% url 'presidente:reportecredito' %}">Créditos</a>
         </nav>
     </div>
 {% endblock %}
@@ -87,19 +73,10 @@
     </ol>
     <div class="row">
         <div class="col-xl-3 col-md-6">
-            <div class="card bg-primary text-white mb-4">
-                <div class="card-body">Solicitar Crédito</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{% url 'sistema:clasecreditolist' %}">Ver</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
             <div class="card bg-warning text-white mb-4">
-                <div class="card-body">Consultar Aportes</div>
+                <div class="card-body">Rubros del socio</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link">Ver</a>
+                    <a class="small text-white stretched-link" href="{% url 'presidente:consultar_rubros' %}">Ver</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
@@ -121,18 +98,14 @@
                     <i class="fas fa-table mr-1"></i>
                     Solicitudes de Credito
                 </div>
-                <div class="col-6" align="right">
-                    <a class="btn" href=""><i class="fa fa-plus fa-fw"
-                                              aria-hidden="true"></i>Añadir</a>
-                </div>
             </div>
         </div>
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
         <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} m-1" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
@@ -161,13 +134,12 @@
                     {% for solicitudcredito in solicitudescredito %}
                         <tr>
                             <td>
-                                <a href="{% url 'asistente:usuariodetail' solicitudcredito.socio.usuario.id %}">{{ solicitudcredito.socio.usuario.nombres|title }} {{ solicitudcredito.socio.usuario.apellidos|title }}</a>
+                                <a href="{% url 'presidente:sociodetail' solicitudcredito.socio.usuario.id %}">{{ solicitudcredito.socio.usuario.nombres|title }} {{ solicitudcredito.socio.usuario.apellidos|title }}</a>
                             </td>
-                            <td>{{ solicitudcredito.fecha_ingreso }}</td>
-                            <td>
-                                <a href="{% url 'asistente:usuariodetail' solicitudcredito.garante.usuario.id %}">{{ solicitudcredito.garante.usuario.nombres|title }} {{ solicitudcredito.garante.usuario.apellidos|title }}</a>
+                            <td>{{ solicitudcredito.fecha_ingreso|date:"D d M Y" }}</td>
+                            <td>{{ solicitudcredito.garante.usuario.nombres|title }} {{ solicitudcredito.garante.usuario.apellidos|title }}
                             </td>
-                            <td>{{ solicitudcredito.monto }}</td>
+                            <td>$ {{ solicitudcredito.monto }}</td>
                             <td>{{ solicitudcredito.clasecredito.descripcion|title }}</td>
                             <td>
                                 {% if solicitudcredito.estado == 'pendiente' %}
@@ -178,6 +150,8 @@
                                     <p class="text-danger">Negada</p>
                                 {% elif solicitudcredito.estado == 'revisada' %}
                                     <p class="text-success">Revisada</p>
+                                {% else %}
+                                    {{ solicitudcredito.estado|title }}
                                 {% endif %}
 
                             </td>

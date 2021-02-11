@@ -83,7 +83,7 @@
                                     Desactivado
                                 {% endif %}
                             </td>
-                            <td class="text-center">
+                            <td>
                                 <form id="my_form{{ usuario.id }}" method="post"
                                       action="{% url 'sistema:usuariodelete' usuario.id %}">
                                     {% csrf_token %}

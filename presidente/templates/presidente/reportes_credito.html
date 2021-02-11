@@ -1,0 +1,120 @@
+{% extends 'presidente/index.html' %}
+{% block content %}
+    <div class="card shadow-lg border-0 rounded-lg mt-5">
+        <div class="card-header"><h3 class="text-center font-weight-light my-4">Reportes de Créditos
+        </h3></div>
+        <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <h4 class="m-2">Desde:</h4>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="text-md-center font-weight-light text-primary"
+                                           for="anioId">Año</label>
+                                    <select class="selectpicker" name="anio" id="anioId" data-width="fit"
+                                            required>
+                                        <option value="todos" {% if  anioActual == 'todos' %} selected {% endif %}>Todos
+                                        </option>
+                                        {% if anios is not None %}
+                                            {% for anio in anios %}
+                                                <option value="{{ anio }}"  {% if anio == anioActual %}
+                                                        selected {% endif %}>{{ anio }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="text-md-center font-weight-light text-primary"
+                                           for="mesId">Mes</label>
+                                    <select class="selectpicker" name="mes" id="mesId" data-width="fit"
+                                            required>
+                                        <option value="todos" {% if  mesActual == 'todos' %} selected {% endif %}>Todos
+                                        </option>
+                                        <option value="1" {% if  mesActual == 1 %} selected {% endif %}>Enero</option>
+                                        <option value="2" {% if  mesActual == 2 %} selected {% endif %}>Febrero</option>
+                                        <option value="3" {% if  mesActual == 3 %} selected {% endif %}>Marzo</option>
+                                        <option value="4" {% if  mesActual == 4 %} selected {% endif %}>Abril</option>
+                                        <option value="5" {% if  mesActual == 5 %} selected {% endif %}>Mayo</option>
+                                        <option value="6" {% if  mesActual == 6 %} selected {% endif %}>Junio</option>
+                                        <option value="7" {% if  mesActual == 7 %} selected {% endif %}>Julio</option>
+                                        <option value="8" {% if  mesActual == 8 %} selected {% endif %}>Agosto</option>
+                                        <option value="9" {% if  mesActual == 9 %} selected {% endif %}>Septiembre
+                                        </option>
+                                        <option value="10" {% if  mesActual == 10 %} selected {% endif %}>Octubre
+                                        </option>
+                                        <option value="11" {% if  mesActual == 11 %} selected {% endif %}>Noviembre
+                                        </option>
+                                        <option value="11" {% if  mesActual == 12 %} selected {% endif %}>Diciembre
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 class="m-2">Hasta:</h4>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="text-md-center font-weight-light text-primary"
+                                           for="anioId">Año</label>
+                                    <select class="selectpicker" name="anio" id="anioId" data-width="fit"
+                                            required>
+                                        <option value="todos" {% if  anioActual == 'todos' %} selected {% endif %}>Todos
+                                        </option>
+                                        {% if anios is not None %}
+                                            {% for anio in anios %}
+                                                <option value="{{ anio }}"  {% if anio == anioActual %}
+                                                        selected {% endif %}>{{ anio }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="text-md-center font-weight-light text-primary"
+                                           for="mesId">Mes</label>
+                                    <select class="selectpicker" name="mes" id="mesId" data-width="fit"
+                                            required>
+                                        <option value="todos" {% if  mesActual == 'todos' %} selected {% endif %}>Todos
+                                        </option>
+                                        <option value="1" {% if  mesActual == 1 %} selected {% endif %}>Enero</option>
+                                        <option value="2" {% if  mesActual == 2 %} selected {% endif %}>Febrero</option>
+                                        <option value="3" {% if  mesActual == 3 %} selected {% endif %}>Marzo</option>
+                                        <option value="4" {% if  mesActual == 4 %} selected {% endif %}>Abril</option>
+                                        <option value="5" {% if  mesActual == 5 %} selected {% endif %}>Mayo</option>
+                                        <option value="6" {% if  mesActual == 6 %} selected {% endif %}>Junio</option>
+                                        <option value="7" {% if  mesActual == 7 %} selected {% endif %}>Julio</option>
+                                        <option value="8" {% if  mesActual == 8 %} selected {% endif %}>Agosto</option>
+                                        <option value="9" {% if  mesActual == 9 %} selected {% endif %}>Septiembre
+                                        </option>
+                                        <option value="10" {% if  mesActual == 10 %} selected {% endif %}>Octubre
+                                        </option>
+                                        <option value="11" {% if  mesActual == 11 %} selected {% endif %}>Noviembre
+                                        </option>
+                                        <option value="11" {% if  mesActual == 12 %} selected {% endif %}>Diciembre
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <div class="text-center">
+                    <button type="submit" class="btn btn-adetups" disabled>Generar PDF</button>
+            </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -14,12 +14,9 @@
             </div>
         </div>
         <div class="card-body">
-            {% if 'ok' in request.GET %}
-                <div class="alert alert-success" role="alert">Registro creado correctamente</div>
-            {% endif %}
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
+                    <div class="alert alert-danger m-3" role="alert">{{ message }}</div>
                 {% endfor %}
             {% endif %}
             <div class="table-responsive">

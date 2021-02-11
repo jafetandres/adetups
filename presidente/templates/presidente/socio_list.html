@@ -1,0 +1,108 @@
+{% extends 'presidente/index.html' %}
+{% block content %}
+    <div class="card mb-4 mt-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <i class="fas fa-table mr-1"></i>
+                    Socios
+                </div>
+            </div>
+        </div>
+        {% if 'ok' in request.GET %}
+            <div class="alert alert-success" role="alert">Registro creado correctamente</div>
+        {% endif %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Cedula</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Cedula</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for socio in socio_list %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'presidente:sociodetail' socio.id %}">{{ socio.usuario.nombres|title }}</a>
+                            </td>
+                            <td>{{ socio.usuario.apellidos|title }}</td>
+                            <td>{{ socio.usuario.username }}</td>
+                            <td>
+                                {% if socio.usuario.is_active %}
+                                    Activo
+                                {% endif %}
+                                {% if socio.usuario.is_active is False %}
+                                    Desactivo
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <form id="my_form{{ socio.usuario.id }}" method="post"
+                                      action="{% url 'presidente:sociodelete' socio.usuario.id %}">
+                                    {% csrf_token %}
+                                </form>
+                                <!-- Modal -->
+                                <div class="modal fade" id="modal{{ socio.usuario.id }}" tabindex="-1" role="dialog"
+                                     aria-labelledby="exampleModalLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Está seguro?</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Si elimina el registro <strong
+                                                    class="text-adetups">{{ socio.usuario.nombres|title }}</strong> se
+                                                eliminar de la base de datos
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                    Cancelar
+                                                </button>
+                                                <button type="button" class="btn btn-danger"
+                                                        onclick="document.getElementById('my_form{{ socio.usuario.id }}').submit();">
+                                                    Eliminar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-danger"
+                                        aria-label="Delete" data-toggle="modal"
+                                        data-target="#modal{{ socio.usuario.id }}">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block btn_imprimir %}
+{% endblock %}

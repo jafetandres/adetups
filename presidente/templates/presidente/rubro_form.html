@@ -1,0 +1,171 @@
+<{% extends 'presidente/index.html' %}
+{% block content %}
+    <div class="card shadow-lg border-0 rounded-lg mt-5">
+        <div class="card-header"><h3 class="text-center font-weight-light my-4">Rubro</h3></div>
+        <div class="card-body">
+            <div id="alertsId">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} m-1" role="alert">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% if form.errors %}
+                    <div class="alert alert-warning" role="alert">
+                        {% if form.nombres.errors %}
+                            Nombres {{ form.nombres.errors }}
+                        {% endif %}
+                        {% if form.apellidos.errors %}
+                            Apellidos {{ form.apellidos.errors }}
+                        {% endif %}
+                        {% if form.username.errors %}
+                            Username{{ form.username.errors }}
+                        {% endif %}
+                        {% if form.email.errors %}
+                            Email{{ form.email.errors }}
+                        {% endif %}
+                        {% if form.fecha_nacimiento.errors %}
+                            Fecha de nacimiento {{ form.fecha_nacimiento.errors }}
+                        {% endif %}
+                        {% if form.passsword.errors %}
+                            Contraseña {{ form.passsword.errors }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            <form method="post" id="formularioId">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="descripcionId">Descripcion</label>
+                            <input class="form-control py-4" id="descripcionId" name="descripcion" type="text"
+                                   placeholder="Ingrese la descripcion" value="{{ rubro.descripcion }}" required/>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="tipoId">Tipo</label>
+                            <input class="form-control py-4" id="tipoId" name="tipo" type="text"
+                                   placeholder="Ingrese el tipo" value="{{ rubro.tipo }}" required/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="valorId">Valor</label>
+                            <input class="form-control py-4" id="valorId" name="valor" type="number"
+                                   placeholder="Ingrese el valor" value="{{ rubro.valor }}"
+                                   required/>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="abreviaturaId">Abreviatura</label>
+                            <input class="form-control py-4" id="abreviaturaId" name="abreviatura" type="text"
+                                   placeholder="Ingrese la abreviatura" value="{{ rubro.abreviatura }}" required/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <label class="small mb-1">Estado</label>
+                        <br>
+                        {% if rubro.estado is not None %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="estado" id="estadoId1" value="True"
+                                       {% if rubro.estado is True %}checked{% endif %} required/>
+                                <label class="form-check-label" for="estadoId1">
+                                    Activo
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="estado" id="estadoId2"  value="False"
+                                       {% if rubro.estado is False %}checked{% endif %}/>
+                                <label class="form-check-label" for="estadoId2">
+                                    Inactivo
+                                </label>
+                            </div>
+                        {% else %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="estado" id="estadoId1"  value="True"
+                                       checked required>
+                                <label class="form-check-label" for="estadoId1">
+                                    Activo
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="estado" id="estadoId2"  value="False">
+                                <label class="form-check-label" for="estadoId2">
+                                    Inactivo
+                                </label>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                    <a href="{% url 'presidente:rubrolist' %}">
+                        <svg class="svg-inline--fa fa-arrow-left fa-w-14 mr-1" aria-hidden="true" focusable="false"
+                             data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 448 512" data-fa-i2svg="">
+                            <path fill="currentColor"
+                                  d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
+                        </svg>
+                        Volver
+                    </a>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+{% block js %}
+    {{ block.super }}
+    <script>
+
+        $("#formularioId").on('submit', function (evt) {
+            var password1 = document.getElementById('passwordId').value;
+            var password2 = document.getElementById('password2Id').value;
+            var cardBody = document.getElementById('alertsId');
+            if (password1 != password2) {
+                cardBody.innerHTML = '<div class="alert alert-danger" role="alert">Las contraseñas no coinciden<div>'
+                evt.preventDefault();
+            }
+
+        });
+
+
+    </script>
+    <script>
+        function soloNumeros(evt) {
+            var theEvent = evt || window.event;
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+            if (key.length == 0) return;
+            var regex = /^[0-9.,\b]+$/;
+            if (!regex.test(key)) {
+                theEvent.returnValue = false;
+                if (theEvent.preventDefault) theEvent.preventDefault();
+            }
+        }
+    </script>
+    <script>
+        $('#fecha_nacimientoId').datepicker({
+            language: 'es-ES',
+            format: 'yyyy-mm-dd',
+            autoHide: true
+        });
+    </script>
+    <script>
+        $('#fecha_ingresoId').datepicker({
+            language: 'es-ES',
+            format: 'yyyy-mm-dd',
+            autoHide: true
+        });
+    </script>
+{% endblock %}
