@@ -8,10 +8,11 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, TemplateView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 
-from sistema.models import Adtsolcre, Adtclascre, Adtsocios, Adtclasol, SolicitudCredito, Socio, ClaseCredito, Credito
+from sistema.models import Adtsolcre, Adtclascre, Adtsocios, Adtclasol, SolicitudCredito, Socio, ClaseCredito, Credito, \
+    Usuario
 
 #
 # @login_required
@@ -31,12 +32,9 @@ class HomePageView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class SolicitudCreditoListView(LoginRequiredMixin, ListView):
-    model = SolicitudCredito
-
-
 class SolicitudCreditoDetailView(LoginRequiredMixin, DetailView):
     model = SolicitudCredito
+    template_name = 'socio/solicitudcredito_detail.html'
 
 
 def diasHastaFecha(day1, month1, year1, day2, month2, year2):
@@ -178,3 +176,50 @@ class SolicitudCreditoCreate(LoginRequiredMixin, CreateView):
         garante.is_garante = True
         garante.save()
         return super().form_valid(form)
+
+
+def cuota_list(request):
+    cuotas = []
+    socio = Socio.objects.get(usuario_id=request.user.id)
+    if Credito.objects.filter(socio_id=socio.id).exists():
+        credito = Credito.objects.get(socio_id=socio.id)
+        for cuota in credito.cuotas.all():
+            cuotas.append(cuota)
+    else:
+        messages.error(request, 'El socio no mantiene ningún crédito', extra_tags='danger')
+    return render(request, 'socio/cuotas_list.html', {'cuotas': cuotas, 'socio': socio})
+
+
+def rubro_list(request):
+    rubros = []
+    socio = Socio.objects.get(usuario_id=request.user.id)
+    for rubro in socio.rubros.all():
+        rubros.append(rubro)
+    return render(request, 'socio/consultar_rubros.html', {'rubros': rubros})
+
+
+class UsuarioUpdate(LoginRequiredMixin, UpdateView):
+    model = Usuario
+    template_name = 'socio/perfil.html'
+    fields = ['nombres', 'apellidos', 'fecha_nacimiento']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['socio'] = Socio.objects.get(usuario_id=self.request.user.id)
+        return context
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        Socio.objects.update(
+            direccion=self.request.POST.get('direccion', ''),
+            telefono=self.request.POST.get('telefono', ''),
+            celular=self.request.POST.get('celular', ''),
+            cargo=self.request.POST.get('cargo', ''),
+            area=self.request.POST.get('area', ''),
+            fecha_ingreso=self.request.POST.get('fecha_ingreso', None)
+        )
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        messages.success(self.request, "Información actualizada correctamente")
+        return reverse_lazy('socio:usuarioupdate', args=[self.object.id])

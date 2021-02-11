@@ -1,0 +1,86 @@
+{% extends 'socio/index.html' %}
+{% block content %}
+    <div class="card mb-4 mt-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <i class="fas fa-table mr-1"></i>
+                    Cuotas
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} m-3" role="alert">
+                        {% if message.tags == 'danger error' %}
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                        {% endif %}
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+            </form>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="tablaCuotas" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Capital</th>
+                        <th>Interes</th>
+                        <th>Saldo Capital</th>
+                        <th>Valor cuota</th>
+                        <th>Fecha de pago</th>
+                        <th>Estado</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>N°</th>
+                        <th>Capital</th>
+                        <th>Interes</th>
+                        <th>Saldo Capital</th>
+                        <th>Valor cuota</th>
+                        <th>Fecha de pago</th>
+                        <th>Estado</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for cuota in cuotas %}
+                        <tr>
+                            <td>{{ cuota.orden }}</td>
+                            <td>$ {{ cuota.capital }}</td>
+                            <td>$ {{ cuota.interes }}</td>
+                            <td>$ {{ cuota.saldo_capital }}</td>
+                            <td>$ {{ cuota.valor_cuota }}</td>
+                        <td>{{ cuota.fecha_pago|date:"D d M Y" }}</td>
+                            {% if cuota.estado %}
+                                <td class="text-success">
+                                    Pagado
+
+                                </td>
+                            {% endif %}
+                            {% if cuota.estado == False %}
+                                <td class="text-warning">
+                                    Pendiente
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block btn_imprimir %}
+    dom: 'Bfrtip',
+    buttons: [
+    {
+    extend: 'print',
+    text: 'Imprimir'
+    }],
+{% endblock %}
+

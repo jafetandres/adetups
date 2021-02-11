@@ -2,6 +2,9 @@
 {% block titulo_pagina %}
     Adetups Socio
 {% endblock %}
+{% block cuenta %}
+    href="{% url 'socio:usuarioupdate' request.user.id %}"
+{% endblock %}
 {% block navbar %}
     <div class="sb-sidenav-menu-heading">Principal</div>
     <a class="nav-link" href="{% url 'socio:home' %}">
@@ -17,7 +20,7 @@
     <div class="collapse" id="collapseProcesos" aria-labelledby="headingTwo"
          data-parent="#sidenavAccordion">
         <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-            <a class="nav-link" href="">Mis Rubros</a>
+            <a class="nav-link" href="{% url 'socio:rubrolist' %}">Mis Rubros</a>
 
             <a class="nav-link collapsed" href="#" data-toggle="collapse"
                data-target="#procesosCollapseMisRubros" aria-expanded="false"
@@ -28,7 +31,7 @@
             <div class="collapse" id="procesosCollapseMisRubros" aria-labelledby="headingOne"
                  data-parent="#sidenavAccordionPages">
                 <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link" href="401.html">Consultar cuotas</a>
+                    <a class="nav-link" href="{% url 'socio:cuotalist' %}">Consultar cuotas</a>
                 </nav>
             </div>
         </nav>
@@ -65,7 +68,7 @@
             <div class="card bg-adetups text-white mb-4">
                 <div class="card-body">Consultar Cuotas</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{% url 'sistema:clasecreditolist' %}">Ver</a>
+                    <a class="small text-white stretched-link" href="{% url 'socio:cuotalist' %}">Ver</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
@@ -104,7 +107,7 @@
         </div>
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
+                <div class="alert alert-{{ message.tags }} m-1" role="alert">{{ message }}</div>
             {% endfor %}
         {% endif %}
         <div class="card-body">
@@ -154,8 +157,8 @@
                             </td>
                             <td class="text-center">
                                 <a class="btn btn-warning"
-                                   href="{% url 'socio:solicitudcreditocreate' %}"
-                                   aria-label="Edit">
+                                   href="{% url 'socio:solicitudcreditodetail' solicitudcredito.id %}"
+                                   aria-label="View">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
                             </td>

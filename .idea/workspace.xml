@@ -2,14 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7f909e53-265b-4961-95e9-847068ff836c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0005_auto_20210210_2011.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0006_auto_20210210_2018.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/socio/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0002_remove_cuota_fecha_pago.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0003_cuota_fecha_pago.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/socio/templates/socio/consultar_rubros.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/socio/templates/socio/cuotas_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/socio/templates/socio/perfil.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/socio/templates/socio/solicitudcredito_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/presidente/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/presidente/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0002_auto_20210205_1500.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0003_auto_20210209_1007.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0004_auto_20210209_1008.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0005_auto_20210210_2011.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/migrations/0006_auto_20210210_2018.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/sistema/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/socio/templates/socio/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/socio/templates/socio/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/socio/templates/socio/solicitudcredito_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/socio/templates/socio/solicitudcredito_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/socio/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/socio/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/socio/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/socio/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -59,7 +71,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="database.data.extractors.current.export.id" value="SQL Inserts" />
     <property name="database.data.extractors.current.id" value="SQL Inserts" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/socio" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/socio/templates/socio" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -68,11 +80,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/socio/templates/socio" />
       <recent name="$PROJECT_DIR$/socio" />
       <recent name="$PROJECT_DIR$/presidente/templates/presidente" />
       <recent name="$PROJECT_DIR$/sistema/templates/sistema" />
       <recent name="$PROJECT_DIR$/asistente/templates/asistente" />
-      <recent name="$PROJECT_DIR$/registration/templates/registration" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/asistente/templates/asistente" />
@@ -219,7 +231,7 @@
       <workItem from="1611278294033" duration="9938000" />
       <workItem from="1611378535411" duration="166410000" />
       <workItem from="1612386583661" duration="11235000" />
-      <workItem from="1612461725329" duration="62190000" />
+      <workItem from="1612461725329" duration="69344000" />
     </task>
     <servers />
   </component>

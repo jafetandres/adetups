@@ -2,7 +2,9 @@ import decimal
 import io
 import numpy as np
 import numpy_financial as npf
+import datetime
 from django.contrib import messages
+from dateutil import relativedelta
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError
@@ -62,6 +64,8 @@ class SolicitudCreditoUpdate(LoginRequiredMixin, UpdateView):
                                                    interes=abs(round(ipmt[index], 2)),
                                                    saldo_capital=abs(round(monto, 2)),
                                                    orden=payment,
+                                                   fecha_pago=datetime.date.today() + relativedelta.relativedelta(
+                                                       months=payment),
                                                    valor_cuota=abs(round(ppmt[index], 2)) + abs(round(ipmt[index], 2))))
             # print(abs(round(payment, 2)), abs(round(ppmt[index], 2)), abs(round(ipmt[index], 2)),
             #       abs(round(principal, 2)))

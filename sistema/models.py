@@ -125,9 +125,9 @@ class ClaseCredito(models.Model):
 class RestriccionClaseCredito(models.Model):
     clasecredito = models.ForeignKey(ClaseCredito, models.DO_NOTHING)
     tiempo_desde = models.SmallIntegerField(blank=True,
-                                       null=True)  # Field name made lowercase.
+                                            null=True)  # Field name made lowercase.
     tiempo_hasta = models.SmallIntegerField(blank=True,
-                                       null=True)  # Field name made lowercase.
+                                            null=True)  # Field name made lowercase.
     valhasta = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     estado = models.BooleanField(default=True, blank=True, null=True)  # Field name made lowercase.
     fecha_creacion = models.DateTimeField(auto_now=True, blank=True, null=True)
@@ -235,6 +235,7 @@ class Cuota(models.Model):
     interes = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
     saldo_capital = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
     orden = models.SmallIntegerField()
+    fecha_pago = models.DateField()
     valor_cuota = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
 
 

@@ -1,0 +1,128 @@
+{% extends 'socio/index.html' %}
+{% block content %}
+    <div class="card mb-4 mt-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <i class="fas fa-table mr-1"></i>
+                    Rubro Socio
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} m-1" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            <div class="table-responsive">
+                <table class="table table-bordered" id="tablaRubrosSocio" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Rubro</th>
+                        <th>Valor</th>
+                        <th>Fecha de ingreso</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Rubro</th>
+                        <th>Valor</th>
+                        <th>Fecha de ingreso</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for rubrosocio in rubros %}
+                        <tr>
+
+                            <td>{{ rubrosocio.rubro.descripcion|title }}</td>
+                            <td>$ {{ rubrosocio.valor }}</td>
+                            <td>{{ rubrosocio.fecha_ingreso|date:"D d M Y" }}</td>
+                            <td class="text-center">
+                                <form id="my_form{{ rubrosocio.id }}" method="post"
+                                      action="{% url 'asistente:rubrosociodelete' rubrosocio.id %}">
+                                    {% csrf_token %}
+                                </form>
+                                <!-- Modal -->
+                                <div class="modal fade" id="modal{{ rubrosocio.id }}" tabindex="-1"
+                                     role="dialog"
+                                     aria-labelledby="exampleModalLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Está seguro?</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Si elimina este registro se eliminar de la base de datos
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">
+                                                    Cancelar
+                                                </button>
+                                                <button type="button" class="btn btn-danger"
+                                                        onclick="document.getElementById('my_form{{ rubrosocio.id }}').submit();">
+                                                    Eliminar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-danger"
+                                        aria-label="Delete" data-toggle="modal"
+                                        data-target="#modal{{ rubrosocio.id }}">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                                <a class="btn btn-warning"
+                                   href="{% url 'asistente:home' %}"
+                                   aria-label="Edit">
+                                    Editar
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        $('#tablaRubrosSocio').dataTable({
+            paging: true,
+            searching: true,
+            pageLength: 20,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'print',
+                    text: 'Imprimir'
+                }],
+            language: {
+                search: "Buscar:",
+                lengthMenu: "Mostrar _MENU_ registros",
+                info: "Se muestra de _START_ a _END_ registros de _TOTAL_ registros en total",
+                infoEmpty: "Se muestra 0 registros de 0 ",
+                infoFiltered: "(Hay _MAX_ registros en total)",
+                infoPostFix: "",
+                loadingRecords: "Cargando...",
+                zeroRecords: "No existen registros",
+                paginate: {
+                    first: "Primero",
+                    previous: "Previo",
+                    next: "Siguiente",
+                    last: "Anterior"
+                },
+            },
+        });
+    </script>
+{% endblock %}
