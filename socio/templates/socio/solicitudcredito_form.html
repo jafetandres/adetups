@@ -2,10 +2,13 @@
 {% block content %}
     <div class="card shadow-lg border-0 rounded-lg mt-5">
         <div class="card-header"><h3 class="text-center font-weight-light my-4">Registro de Solicitud
-            de Crédito</h3></div>
+            de crédito para <strong>{{ socio.usuario.nombres|title }} {{ socio.usuario.apellidos|title }}</strong></h3>
+        </div>
         <div class="card-body">
-            {% if 'ok' in request.GET %}
-                <div class="alert alert-success" role="alert">Registro actualizado correctamente</div>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} m-3" role="alert">{{ message }}</div>
+                {% endfor %}
             {% endif %}
             {% if form.errors %}
                 <div class="alert alert-warning" role="alert">
@@ -37,7 +40,8 @@
                 <div class="form-group">
                     <label class="text-md-center font-weight-bold text-primary" for="clasecreditoId">Clase de
                         Crédito</label>
-                    <select class="selectpicker" name="clasecredito" id="clasecreditoId" required>
+                    <select class="selectpicker" name="clasecredito" id="clasecreditoId" onchange="enviarParametros()"
+                            required>
                         <option value="" disabled selected>Escoger una opción</option>
                         {% if clasecreditos %}
                             {% for clasecredito in clasecreditos %}
@@ -52,21 +56,23 @@
                         {% endif %}
                     </select>
                 </div>
+                <div id="infoCreditoId"></div>
                 <div class="form-row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="small mb-1" for="montoId">Monto Solicitado</label>
+                            <label class="small mb-1" for="montoId">Monto Solicitado <strong id="montoRangoId"></strong></label>
                             <input class="form-control py-4" id="montoId" name="monto" type="number"
                                    placeholder="Ingrese el valor del monto" value="{{ solicitudcredito.monto }}"
-                                   onkeyup="return soloNumeros(event)" required/>
+                                   onkeypress="return soloNumeros(event)" required/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="small mb-1" for="plazoId">Plazo (meses)</label>
+                            <label class="small mb-1" for="plazoId">Plazo (meses)<strong
+                                    id="plazoRangoId"></strong></label>
                             <input class="form-control py-4" id="plazoId" name="plazo" type="number"
                                    placeholder="Ingrese la cantidad de meses plazo" value="{{ solicitudcredito.plazo }}"
-                                   onkeyup="return soloNumeros(event)" required/>
+                                   onkeypress="return soloNumeros(event)" maxlength="3" minlength="1" required/>
                         </div>
                     </div>
                 </div>
@@ -97,7 +103,7 @@
                                  viewBox="0 0 448 512" data-fa-i2svg="">
                                 <path fill="currentColor"
                                       d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
-                            </svg><!-- <i class="fas fa-arrow-left mr-1"></i> -->
+                            </svg>
                             Volver
                         </a>
                     </div>
@@ -150,12 +156,12 @@
                                     </tr>
                                     </tfoot>
                                     <tbody>
-                                    {% for socio in socios %}
+                                    {% for garante in garantes %}
                                         <tr>
-                                            <td>{{ socio.id }}</td>
-                                            <td>{{ socio.usuario.username }}</td>
-                                            <td>{{ socio.usuario.nombres|title }}</td>
-                                            <td>{{ socio.usuario.apellidos|title }}</td>
+                                            <td>{{ garante.id }}</td>
+                                            <td>{{ garante.usuario.username }}</td>
+                                            <td>{{ garante.usuario.nombres|title }}</td>
+                                            <td>{{ garante.usuario.apellidos|title }}</td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
@@ -414,5 +420,52 @@
 
 
         }
+    </script>
+    <script>
+        $(document).ready(function () {
+            enviarParametros();
+        });
+    </script>
+    <script>
+
+        function enviarParametros() {
+
+            var infoCredito = document.getElementById('infoCreditoId');
+            var listElement = document.createElement('ul');
+            var creditos = document.getElementById('clasecreditoId')
+            infoCredito.innerHTML = '';
+            {% for clasecredito in clasecreditos %}
+                if (creditos.value == {{ clasecredito.id }}) {
+                    infoCredito.innerHTML = '<h5 class="">Información sobre el Crédito {{ clasecredito.descripcion|title }} </h5>'
+                    infoCredito.appendChild(listElement);
+                    listItem1 = document.createElement('li');
+                    listItem2 = document.createElement('li');
+                    listItem3 = document.createElement('li');
+                    listItem4 = document.createElement('li');
+                    listItem1.className = 'text-secondary'
+                    listItem2.className = 'text-secondary'
+                    listItem3.className = 'text-secondary'
+                    listItem4.className = 'text-secondary'
+
+                    listItem1.innerHTML = 'Puedes solicitar desde $ {{ clasecredito.valdesde }} hasta $ {{ clasecredito.valhasta }} ';
+                    listItem2.innerHTML = 'Plazo maximo de cuotas {{ clasecredito.plazomax }} meses';
+                    listItem3.innerHTML = 'Tiempo mínimo de servicio {{ clasecredito.tiempo_minimo_servicio }} años';
+                    listItem4.innerHTML = 'Interes {{ clasecredito.porcentaje_interes }} %';
+
+                    listElement.appendChild(listItem1);
+                    listElement.appendChild(listItem2);
+                    listElement.appendChild(listItem3);
+                    listElement.appendChild(listItem4);
+
+                    {#listElement.appendChild(listItem3);#}
+                    {#monto.innerText = '(Desde $ {{ clasecredito.valdesde }} - Hasta $ {{ clasecredito.valhasta }} )';#}
+                    {#plazo.innerText = '( máximo {{ clasecredito.plazomax }} meses )';#}
+
+                }
+            {% endfor %}
+
+
+        }
+
     </script>
 {% endblock %}

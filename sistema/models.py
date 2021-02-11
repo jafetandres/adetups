@@ -167,8 +167,8 @@ class Adtclasol(models.Model):
 
 class SolicitudCredito(models.Model):
     clasecredito = models.ForeignKey(ClaseCredito, models.CASCADE, blank=True, null=True)
-    fecha_ingreso = models.DateField(auto_now=True)
-    garante = models.ForeignKey(Socio, models.DO_NOTHING, related_name='garante', blank=True, null=True)
+    fecha_ingreso = models.DateTimeField(auto_now=True)
+    garante = models.ForeignKey(Socio, models.DO_NOTHING, related_name='garante')
     monto = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
     plazo = models.SmallIntegerField(blank=True, null=True)
     estado = models.CharField(max_length=20, default='pendiente', blank=True, null=True)

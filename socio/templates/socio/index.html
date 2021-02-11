@@ -8,26 +8,6 @@
         <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
         Inicio
     </a>
-    <div class="sb-sidenav-menu-heading">Interfaces</div>
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts"
-       aria-expanded="false" aria-controls="collapseLayouts">
-        <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
-        Mantenimientos
-        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-    </a>
-    <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne"
-         data-parent="#sidenavAccordion">
-        <nav class="sb-sidenav-menu-nested nav">
-            <a class="nav-link" href="{% url 'sistema:clasecreditolist' %}">Clase de Créditos</a>
-            <a class="nav-link" href="{% url 'sistema:clasesolicitudlist' %}">Clase de Solicitudes</a>
-            <a class="nav-link" href="{% url 'sistema:restriccionescreditolist' %}">Restricciones de
-                Crédito</a>
-            <a class="nav-link" href="{% url 'sistema:parametrolist' %}">Parámetros</a>
-            <a class="nav-link" href="layout-sidenav-light.html">Perfiles</a>
-            <a class="nav-link" href="layout-sidenav-light.html">Rubros</a>
-            <a class="nav-link" href="layout-sidenav-light.html">Socios</a>
-        </nav>
-    </div>
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProcesos"
        aria-expanded="false" aria-controls="collapseProcesos">
         <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
@@ -37,33 +17,18 @@
     <div class="collapse" id="collapseProcesos" aria-labelledby="headingTwo"
          data-parent="#sidenavAccordion">
         <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-            <a class="nav-link" href="">Liquidación de Créditos</a>
+            <a class="nav-link" href="">Mis Rubros</a>
+
             <a class="nav-link collapsed" href="#" data-toggle="collapse"
-               data-target="#procesosCollapseRubros" aria-expanded="false"
-               aria-controls="procesosCollapseRubros">
-                Rubros
+               data-target="#procesosCollapseMisRubros" aria-expanded="false"
+               aria-controls="procesosCollapseMisRubros">
+                Mis Créditos
                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse" id="procesosCollapseRubros" aria-labelledby="headingOne"
+            <div class="collapse" id="procesosCollapseMisRubros" aria-labelledby="headingOne"
                  data-parent="#sidenavAccordionPages">
                 <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link" href="login.html">Detalle Rubros</a>
-                    <a class="nav-link" href="register.html">Subir Rubros</a>
-                    <a class="nav-link" href="password.html">Rubros Socios</a>
-                </nav>
-            </div>
-            <a class="nav-link collapsed" href="#" data-toggle="collapse"
-               data-target="#pagesCollapseError" aria-expanded="false"
-               aria-controls="pagesCollapseError">
-                Error
-                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-            </a>
-            <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne"
-                 data-parent="#sidenavAccordionPages">
-                <nav class="sb-sidenav-menu-nested nav">
-                    <a class="nav-link" href="401.html">401 Page</a>
-                    <a class="nav-link" href="404.html">404 Page</a>
-                    <a class="nav-link" href="500.html">500 Page</a>
+                    <a class="nav-link" href="401.html">Consultar cuotas</a>
                 </nav>
             </div>
         </nav>
@@ -77,8 +42,7 @@
     <div class="collapse" id="collapseReportes" aria-labelledby="headingTwo"
          data-parent="#sidenavAccordion">
         <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-            <a class="nav-link" href="">Créditos</a>
-            <a class="nav-link" href="">Solicitudes de Créditos</a>
+            <a class="nav-link" href="">Mis Rubros</a>
         </nav>
     </div>
 {% endblock %}
@@ -92,6 +56,15 @@
             <div class="card bg-primary text-white mb-4">
                 <div class="card-body">Solicitar Crédito</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="{% url 'socio:solicitudcreditocreate' %}">Ver</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-adetups text-white mb-4">
+                <div class="card-body">Consultar Cuotas</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
                     <a class="small text-white stretched-link" href="{% url 'sistema:clasecreditolist' %}">Ver</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
@@ -99,9 +72,9 @@
         </div>
         <div class="col-xl-3 col-md-6">
             <div class="card bg-warning text-white mb-4">
-                <div class="card-body">Consultar Aportes</div>
+                <div class="card-body">Consultar Mis Rubros</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{% url 'sistema:clasesolicitudlist' %}">Ver</a>
+                    <a class="small text-white stretched-link" href="{% url 'sistema:home' %}">Ver</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
@@ -125,7 +98,7 @@
                 </div>
                 <div class="col-6" align="right">
                     <a class="btn" href="{% url 'socio:solicitudcreditocreate' %}"><i class="fa fa-plus fa-fw"
-                                                                               aria-hidden="true"></i>Añadir</a>
+                                                                                      aria-hidden="true"></i>Añadir</a>
                 </div>
             </div>
         </div>
@@ -140,7 +113,7 @@
                     <thead>
                     <tr>
                         <th>Socio</th>
-                        <th>Fecha de creación</th>
+                        <th>Fecha de ingreso</th>
                         <th>Garante</th>
                         <th>Monto</th>
                         <th>Clase de Credito</th>
@@ -162,14 +135,12 @@
                     <tbody>
                     {% for solicitudcredito in solicitudescredito %}
                         <tr>
-                            <td>
-                                <a href="{% url 'asistente:usuariodetail' solicitudcredito.socio.usuario.id %}">{{ solicitudcredito.socio.usuario.nombres|title }} {{ solicitudcredito.socio.usuario.apellidos|title }}</a>
+                            <td>{{ solicitudcredito.socio.usuario.nombres|title }} {{ solicitudcredito.socio.usuario.apellidos|title }}
                             </td>
                             <td>{{ solicitudcredito.fecha_ingreso }}</td>
-                            <td>
-                                <a href="{% url 'asistente:usuariodetail' solicitudcredito.garante.usuario.id %}">{{ solicitudcredito.garante.usuario.nombres|title }} {{ solicitudcredito.garante.usuario.apellidos|title }}</a>
+                            <td>{{ solicitudcredito.garante.usuario.nombres|title }} {{ solicitudcredito.garante.usuario.apellidos|title }}
                             </td>
-                            <td>{{ solicitudcredito.monto }}</td>
+                            <td>$ {{ solicitudcredito.monto }}</td>
                             <td>{{ solicitudcredito.clasecredito.descripcion|title }}</td>
                             <td>
                                 {% if solicitudcredito.estado == 'pendiente' %}
@@ -183,7 +154,7 @@
                             </td>
                             <td class="text-center">
                                 <a class="btn btn-warning"
-                                   href="{% url 'asistente:solicitudcreditoupdate' solicitudcredito.id %}"
+                                   href="{% url 'socio:solicitudcreditocreate' %}"
                                    aria-label="Edit">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
