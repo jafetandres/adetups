@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'k#vl*#66^)ntotmaz)e9zvu!=8r^_ex!w9y6syg4vgix+sajle'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 ADMINS = [('Jafet', 'jafetandres@hotmail.com')]

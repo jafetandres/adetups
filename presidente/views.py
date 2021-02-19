@@ -1,4 +1,3 @@
-import decimal
 import io
 import numpy as np
 import numpy_financial as npf
@@ -6,7 +5,7 @@ import datetime
 from django.contrib import messages
 from dateutil import relativedelta
 from django.contrib.auth import login
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import  AccessMixin
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect, FileResponse
 from django.shortcuts import redirect, render
@@ -21,7 +20,20 @@ from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Spacer, Paragraph, ListFlowable, ListItem
 
 
-class HomePageView(TemplateView):
+class PresidenteRequiredMixin(AccessMixin):
+    """
+    Este mixin requerira que el usuario sea de tipo presidente
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        if request.user.tipo != 'presidente':
+            return redirect(reverse_lazy('registration:login'))
+        return super(PresidenteRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+
+class HomePageView(PresidenteRequiredMixin,TemplateView):
     template_name = "presidente/index.html"
 
     def get_context_data(self, **kwargs):
@@ -30,12 +42,12 @@ class HomePageView(TemplateView):
         return context
 
 
-class SolicitudCreditoList(LoginRequiredMixin, ListView):
+class SolicitudCreditoList(PresidenteRequiredMixin, ListView):
     model = SolicitudCredito
     template_name = 'presidente/solicitudcredito_list.html'
 
 
-class SolicitudCreditoUpdate(LoginRequiredMixin, UpdateView):
+class SolicitudCreditoUpdate(PresidenteRequiredMixin, UpdateView):
     model = SolicitudCredito
     fields = ['estado', 'observaciones']
     template_name = 'presidente/solicitudcredito_update.html'
@@ -94,17 +106,17 @@ class SolicitudCreditoUpdate(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class SocioListView(LoginRequiredMixin, ListView):
+class SocioListView(PresidenteRequiredMixin, ListView):
     model = Socio
     template_name = 'presidente/socio_list.html'
 
 
-class SocioDetailView(LoginRequiredMixin, DetailView):
+class SocioDetailView(PresidenteRequiredMixin, DetailView):
     model = Socio
     template_name = 'presidente/socio_detail.html'
 
 
-class SocioDelete(LoginRequiredMixin, DeleteView):
+class SocioDelete(PresidenteRequiredMixin, DeleteView):
     model = Socio
 
     def delete(self, request, *args, **kwargs):
@@ -167,7 +179,7 @@ def cambiar_password(request):
     return render(request, 'presidente/cambiar_password.html')
 
 
-class UsuarioUpdate(LoginRequiredMixin, UpdateView):
+class UsuarioUpdate(PresidenteRequiredMixin, UpdateView):
     model = Usuario
     template_name = 'presidente/perfil.html'
     fields = ['nombres', 'apellidos', 'fecha_nacimiento']
@@ -256,17 +268,17 @@ def consultar_rubros(request):
                   {'rubros': rubros, 'socio': socio, 'anios': anios, 'mesActual': mesActual, 'anioActual': anioActual})
 
 
-class ClaseCreditoListView(LoginRequiredMixin, ListView):
+class ClaseCreditoListView(PresidenteRequiredMixin, ListView):
     model = ClaseCredito
     template_name = 'presidente/clasecredito_list.html'
 
 
-class ClaseCreditoDetailView(LoginRequiredMixin, DetailView):
+class ClaseCreditoDetailView(PresidenteRequiredMixin, DetailView):
     model = ClaseCredito
     template_name = 'presidente/clasesolicitud_detail.html'
 
 
-class ClaseCreditoCreate(LoginRequiredMixin, CreateView):
+class ClaseCreditoCreate(PresidenteRequiredMixin, CreateView):
     model = ClaseCredito
     fields = ['descripcion', 'valdesde', 'valhasta', 'autorizacion', 'plazomax', 'garante', 'estado']
     template_name = 'presidente/clasecredito_form.html'
@@ -276,7 +288,7 @@ class ClaseCreditoCreate(LoginRequiredMixin, CreateView):
         return reverse_lazy('presidente:clasecreditolist')
 
 
-class ClaseCreditoUpdate(LoginRequiredMixin, UpdateView):
+class ClaseCreditoUpdate(PresidenteRequiredMixin, UpdateView):
     model = ClaseCredito
     fields = ['descripcion', 'valdesde', 'valhasta', 'autorizacion', 'plazomax', 'garante', 'estado']
     template_name = 'presidente/clasecredito_form.html'
@@ -286,7 +298,7 @@ class ClaseCreditoUpdate(LoginRequiredMixin, UpdateView):
         return reverse_lazy('presidente:clasecreditoupdate', args=[self.object.id])
 
 
-class ClaseCreditoDelete(LoginRequiredMixin, DeleteView):
+class ClaseCreditoDelete(PresidenteRequiredMixin, DeleteView):
     model = ClaseCredito
 
     def delete(self, request, *args, **kwargs):
@@ -369,7 +381,7 @@ class RubroDetailView(DetailView):
     template_name = 'presidente/rubro_detail.html'
 
 
-class RubroCreate(LoginRequiredMixin, CreateView):
+class RubroCreate(PresidenteRequiredMixin, CreateView):
     model = Rubro
     fields = ['descripcion', 'tipo', 'estado', 'valor', 'abreviatura']
     template_name = 'presidente/rubro_form.html'
@@ -379,7 +391,7 @@ class RubroCreate(LoginRequiredMixin, CreateView):
         return reverse_lazy('presidente:rubrocreate')
 
 
-class RubroUpdate(LoginRequiredMixin, UpdateView):
+class RubroUpdate(PresidenteRequiredMixin, UpdateView):
     model = Rubro
     fields = ['descripcion', 'tipo', 'estado', 'valor', 'abreviatura']
     template_name = 'presidente/rubro_form.html'
@@ -389,7 +401,7 @@ class RubroUpdate(LoginRequiredMixin, UpdateView):
         return reverse_lazy('presidente:rubroupdate', args=[self.object.id])
 
 
-class RubroDelete(LoginRequiredMixin, DeleteView):
+class RubroDelete(PresidenteRequiredMixin, DeleteView):
     model = Rubro
 
     def delete(self, request, *args, **kwargs):
@@ -407,17 +419,17 @@ class RubroDelete(LoginRequiredMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class CreditoListView(LoginRequiredMixin, ListView):
+class CreditoListView(PresidenteRequiredMixin, ListView):
     model = Credito
     template_name = 'presidente/credito_list.html'
 
 
-class CreditoDetail(LoginRequiredMixin, DetailView):
+class CreditoDetail(PresidenteRequiredMixin, DetailView):
     model = Credito
     template_name = 'presidente/credito_detail.html'
 
 
-class LicquidacionCreditoCreate(LoginRequiredMixin, CreateView):
+class LicquidacionCreditoCreate(PresidenteRequiredMixin, CreateView):
     model = LiquidacionCredito
     template_name = 'presidente/credito_liquidar.html'
     fields = ['valor', 'observacion']

@@ -2,15 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7f909e53-265b-4961-95e9-847068ff836c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0004_auto_20210211_2336.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/socio/templates/socio/cambiar_password.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/d129e9b6-d5ee-4b24-baa1-948735c7294c.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/404.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asistente/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asistente/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/socio/templates/socio/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/socio/templates/socio/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/socio/templates/socio/perfil.html" beforeDir="false" afterPath="$PROJECT_DIR$/socio/templates/socio/perfil.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/socio/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/socio/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/presidente/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/presidente/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/socio/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/socio/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -60,7 +58,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="database.data.extractors.current.export.id" value="SQL Inserts" />
     <property name="database.data.extractors.current.id" value="SQL Inserts" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/socio/templates/socio" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/asistente/templates/asistente" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -69,11 +67,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/asistente/templates/asistente" />
       <recent name="$PROJECT_DIR$/socio/templates/socio" />
       <recent name="$PROJECT_DIR$/socio" />
       <recent name="$PROJECT_DIR$/presidente/templates/presidente" />
       <recent name="$PROJECT_DIR$/sistema/templates/sistema" />
-      <recent name="$PROJECT_DIR$/asistente/templates/asistente" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/asistente/templates/asistente" />
@@ -221,7 +219,11 @@
       <workItem from="1611378535411" duration="166410000" />
       <workItem from="1612386583661" duration="11235000" />
       <workItem from="1612461725329" duration="70215000" />
-      <workItem from="1613103619435" duration="2030000" />
+      <workItem from="1613103619435" duration="2474000" />
+      <workItem from="1613239989825" duration="3749000" />
+      <workItem from="1613351331792" duration="136000" />
+      <workItem from="1613352067308" duration="2072000" />
+      <workItem from="1613680892484" duration="5978000" />
     </task>
     <servers />
   </component>

@@ -1,11 +1,10 @@
-import json
 from datetime import date
 from django.contrib import messages
 from django.contrib.auth import login
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import AccessMixin
 from django.db import IntegrityError
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView, ListView, DeleteView
 from asistente.forms import SolicitudCreditoForm
@@ -16,6 +15,22 @@ from django.shortcuts import redirect
 from pyexcel_xls import get_data as xls_get
 from pyexcel_xlsx import get_data as xlsx_get
 from django.utils.datastructures import MultiValueDictKeyError
+from django.views.defaults import page_not_found
+
+class AsistenteRequiredMixin(AccessMixin):
+    """
+    Este mixin requerira que el usuario sea de tipo asistente
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            print('entro')
+            return self.handle_no_permission()
+        if request.user.tipo != 'asistente':
+            return redirect(reverse_lazy('registration:login'))
+        return super(AsistenteRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+
 
 
 def diasHastaFecha(day1, month1, year1, day2, month2, year2):
@@ -102,7 +117,7 @@ def diasHastaFecha(day1, month1, year1, day2, month2, year2):
             return total
 
 
-class HomePageView(LoginRequiredMixin, TemplateView):
+class HomePageView(AsistenteRequiredMixin, TemplateView):
     template_name = "asistente/index.html"
 
     def get_context_data(self, **kwargs):
@@ -111,11 +126,11 @@ class HomePageView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class EscogerArchivoPageView(LoginRequiredMixin, TemplateView):
+class EscogerArchivoPageView(AsistenteRequiredMixin, TemplateView):
     template_name = "asistente/escoger_archivo.html"
 
 
-class SolicitudCreditoUpdate(LoginRequiredMixin, UpdateView):
+class SolicitudCreditoUpdate(AsistenteRequiredMixin, UpdateView):
     model = SolicitudCredito
     fields = ['estado', 'observaciones']
     template_name = 'asistente/solicitudcredito_update.html'
@@ -124,7 +139,7 @@ class SolicitudCreditoUpdate(LoginRequiredMixin, UpdateView):
         return reverse_lazy('asistente:solicitudcreditoupdate', args=[self.object.id]) + '?ok'
 
 
-class SolicitudCreditoCreate(LoginRequiredMixin, CreateView):
+class SolicitudCreditoCreate(AsistenteRequiredMixin, CreateView):
     model = SolicitudCredito
     form_class = SolicitudCreditoForm
     template_name = 'asistente/solicitudcredito_form.html'
@@ -189,7 +204,7 @@ class SolicitudCreditoCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class SocioCreate(LoginRequiredMixin, CreateView):
+class SocioCreate(AsistenteRequiredMixin, CreateView):
     model = Usuario
     template_name = 'asistente/socio_form.html'
     form_class = UsuarioForm
@@ -346,7 +361,7 @@ def guardar_rubros_general(request):
                   {'rubros_generados_general': rubros_generados_general})
 
 
-class SocioUpdate(LoginRequiredMixin, UpdateView):
+class SocioUpdate(AsistenteRequiredMixin, UpdateView):
     model = Usuario
     fields = ['nombres', 'apellidos', 'email', 'fecha_nacimiento', 'tipo']
     template_name = 'asistente/socio_form.html'
@@ -372,12 +387,12 @@ class SocioUpdate(LoginRequiredMixin, UpdateView):
         return reverse_lazy('sistema:socioupdate', args=[self.object.id]) + '?ok'
 
 
-class SocioListView(LoginRequiredMixin, ListView):
+class SocioListView(AsistenteRequiredMixin, ListView):
     model = Socio
     template_name = 'asistente/socio_list.html'
 
 
-class SocioDetailView(LoginRequiredMixin, DetailView):
+class SocioDetailView(AsistenteRequiredMixin, DetailView):
     model = Socio
     template_name = 'asistente/socio_detail.html'
 
@@ -400,12 +415,12 @@ def escoger_socio(request):
     return render(request, 'asistente/escoger_socio.html')
 
 
-class ClaseCreditoListView(LoginRequiredMixin, ListView):
+class ClaseCreditoListView(AsistenteRequiredMixin, ListView):
     model = ClaseCredito
     template_name = 'asistente/clasecredito_list.html'
 
 
-class ClaseCreditoDetailView(LoginRequiredMixin, DetailView):
+class ClaseCreditoDetailView(AsistenteRequiredMixin, DetailView):
     model = ClaseCredito
     template_name = 'asistente/clasecredito_detail.html'
 
@@ -430,14 +445,14 @@ class RubroDetailView(DetailView):
     template_name = 'asistente/rubro_detail.html'
 
 
-class RubroCreate(LoginRequiredMixin, CreateView):
+class RubroCreate(AsistenteRequiredMixin, CreateView):
     model = Rubro
     fields = ['descripcion', 'tipo', 'estado', 'valor', 'abreviatura']
     success_url = reverse_lazy('asistente:rubrolist')
     template_name = 'asistente/rubro_form.html'
 
 
-class RubroUpdate(LoginRequiredMixin, UpdateView):
+class RubroUpdate(AsistenteRequiredMixin, UpdateView):
     model = Rubro
     fields = ['descripcion', 'tipo', 'estado', 'valor', 'abreviatura']
     template_name = 'asistente/rubro_form.html'
@@ -446,7 +461,7 @@ class RubroUpdate(LoginRequiredMixin, UpdateView):
         return reverse_lazy('asistente:rubroupdate', args=[self.object.id]) + '?ok'
 
 
-class RubroDelete(LoginRequiredMixin, DeleteView):
+class RubroDelete(AsistenteRequiredMixin, DeleteView):
     model = Rubro
 
     def delete(self, request, *args, **kwargs):
@@ -469,15 +484,15 @@ class RubroDelete(LoginRequiredMixin, DeleteView):
 #     template_name = 'asistente/consultar_rubros.html'
 #     paginate_by = 1
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #
-    #     context['socios'] = Socio.objects.all()
-    #
-    #     return context
+# def get_context_data(self, **kwargs):
+#     context = super().get_context_data(**kwargs)
+#
+#     context['socios'] = Socio.objects.all()
+#
+#     return context
 
 
-class RubroSocioCreate(LoginRequiredMixin, CreateView):
+class RubroSocioCreate(AsistenteRequiredMixin, CreateView):
     model = RubroSocio
     fields = ['rubro', 'descripcion', 'servicio', 'valor']
     success_url = reverse_lazy('asistente:rubrosociolist')
@@ -511,7 +526,7 @@ class RubroSocioCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class RubroSocioDelete(LoginRequiredMixin, DeleteView):
+class RubroSocioDelete(AsistenteRequiredMixin, DeleteView):
     model = RubroSocio
 
     def delete(self, request, *args, **kwargs):
@@ -529,7 +544,7 @@ class RubroSocioDelete(LoginRequiredMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class UsuarioUpdate(LoginRequiredMixin, UpdateView):
+class UsuarioUpdate(AsistenteRequiredMixin, UpdateView):
     model = Usuario
     template_name = 'asistente/perfil.html'
     fields = ['nombres', 'apellidos', 'fecha_nacimiento']
@@ -600,17 +615,17 @@ def cambiar_password(request):
     return render(request, 'asistente/cambiar_password.html')
 
 
-class CreditoListView(LoginRequiredMixin, ListView):
+class CreditoListView(AsistenteRequiredMixin, ListView):
     model = Credito
     template_name = 'asistente/credito_list.html'
 
 
-class CreditoDetail(LoginRequiredMixin, DetailView):
+class CreditoDetail(AsistenteRequiredMixin, DetailView):
     model = Credito
     template_name = 'asistente/credito_detail.html'
 
 
-class LicquidacionCreditoCreate(LoginRequiredMixin, CreateView):
+class LicquidacionCreditoCreate(AsistenteRequiredMixin, CreateView):
     model = LiquidacionCredito
     template_name = 'asistente/credito_liquidar.html'
     fields = ['valor', 'observacion']
@@ -672,7 +687,7 @@ class LicquidacionCreditoCreate(LoginRequiredMixin, CreateView):
         return reverse_lazy('asistente:creditodetail', args=[credito.id]) + '?ok'
 
 
-# class CreditoUpdate(LoginRequiredMixin, UpdateView):
+# class CreditoUpdate(AsistenteRequiredMixin, UpdateView):
 #     model = Credito
 #     template_name = 'asistente/credito_liquidar.html'
 #     fields = ['estado']
@@ -747,6 +762,7 @@ def consultar_rubros(request):
         # return redirect('asistente:consultarcuotas')
     return render(request, 'asistente/consultar_rubros.html', {'rubros': rubros, 'socio': socio})
 
+
 # data = []
 # print(request.GET['username'])
 # print(request.is_ajax)
@@ -764,6 +780,6 @@ def consultar_rubros(request):
 #     json_dump = json.dumps(data)
 #     return HttpResponse(json_dump, content_type='application/json')
 
-class RestriccionClaseCreditoList(LoginRequiredMixin,ListView):
+class RestriccionClaseCreditoList(AsistenteRequiredMixin, ListView):
     model = RestriccionClaseCredito
     template_name = 'asistente/restriccionclasecredito_list.html'

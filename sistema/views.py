@@ -3,7 +3,7 @@ from django.contrib.auth import login
 from django.contrib import messages
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect, Http404, HttpResponse
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
@@ -58,7 +58,22 @@ def cambiar_password(request):
     return HttpResponse(json_dump, content_type='application/json')
 
 
-class HomePageView(LoginRequiredMixin, TemplateView):
+class AdministradorRequiredMixin(AccessMixin):
+    """
+    Este mixin requerira que el usuario sea de tipo administrador
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        if request.user.tipo != 'administrador':
+            return redirect(reverse_lazy('registration:login'))
+        if request.user.is_superuser is False:
+            return redirect(reverse_lazy('registration:login'))
+        return super(AdministradorRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+
+class HomePageView(AdministradorRequiredMixin, TemplateView):
     template_name = "sistema/index.html"
 
     def get_context_data(self, **kwargs):
@@ -72,11 +87,11 @@ class UsuarioDetailView(LoginRequiredMixin, DetailView):
     template_name = 'sistema/usuario_detail.html'
 
 
-class UsuarioListView(LoginRequiredMixin, ListView):
+class UsuarioListView(AdministradorRequiredMixin, ListView):
     model = Usuario
 
 
-class UsuarioUpdate(LoginRequiredMixin, UpdateView):
+class UsuarioUpdate(AdministradorRequiredMixin, UpdateView):
     model = Usuario
     template_name = 'sistema/perfil.html'
     fields = ['nombres', 'apellidos', 'fecha_nacimiento', 'email']
@@ -85,7 +100,7 @@ class UsuarioUpdate(LoginRequiredMixin, UpdateView):
         return reverse_lazy('sistema:usuarioupdate', args=[self.object.id]) + '?ok'
 
 
-class AdministradorCreate(LoginRequiredMixin, CreateView):
+class AdministradorCreate(AdministradorRequiredMixin, CreateView):
     model = Usuario
     fields = ['nombres', 'apellidos', 'username', 'email', 'fecha_nacimiento', 'password']
     success_url = reverse_lazy('sistema:home')
@@ -116,7 +131,7 @@ class AdministradorCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class AdministradorUpdate(LoginRequiredMixin, UpdateView):
+class AdministradorUpdate(AdministradorRequiredMixin, UpdateView):
     model = Usuario
     fields = ['nombres', 'apellidos', 'email', 'fecha_nacimiento']
     template_name = 'sistema/administrador_form.html'
@@ -125,7 +140,7 @@ class AdministradorUpdate(LoginRequiredMixin, UpdateView):
         return reverse_lazy('sistema:administradorupdate', args=[self.object.id]) + '?ok'
 
 
-class PresidenteCreate(LoginRequiredMixin, CreateView):
+class PresidenteCreate(AdministradorRequiredMixin, CreateView):
     model = Usuario
     success_url = reverse_lazy('sistema:home')
     template_name = 'sistema/presidente_form.html'
@@ -149,7 +164,7 @@ class PresidenteCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class PresidenteUpdate(LoginRequiredMixin, UpdateView):
+class PresidenteUpdate(AdministradorRequiredMixin, UpdateView):
     model = Usuario
     fields = ['nombres', 'apellidos', 'email', 'fecha_nacimiento']
     template_name = 'sistema/presidente_form.html'
@@ -175,7 +190,7 @@ class PresidenteUpdate(LoginRequiredMixin, UpdateView):
         return reverse_lazy('sistema:presidenteupdate', args=[self.object.id]) + '?ok'
 
 
-class AsistenteCreate(LoginRequiredMixin, CreateView):
+class AsistenteCreate(AdministradorRequiredMixin, CreateView):
     model = Usuario
     success_url = reverse_lazy('sistema:home')
     template_name = 'sistema/asistente_form.html'
@@ -198,7 +213,7 @@ class AsistenteCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class AsistenteUpdate(LoginRequiredMixin, UpdateView):
+class AsistenteUpdate(AdministradorRequiredMixin, UpdateView):
     model = Usuario
     fields = ['nombres', 'apellidos', 'email', 'fecha_nacimiento']
     template_name = 'sistema/asistente_form.html'
@@ -224,7 +239,7 @@ class AsistenteUpdate(LoginRequiredMixin, UpdateView):
         return reverse_lazy('sistema:socioupdate', args=[self.object.id]) + '?ok'
 
 
-class SocioCreate(LoginRequiredMixin, CreateView):
+class SocioCreate(AdministradorRequiredMixin, CreateView):
     model = Usuario
     template_name = 'sistema/socio_form.html'
     form_class = UsuarioForm
@@ -247,7 +262,7 @@ class SocioCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class SocioUpdate(LoginRequiredMixin, UpdateView):
+class SocioUpdate(AdministradorRequiredMixin, UpdateView):
     model = Usuario
     fields = ['nombres', 'apellidos', 'email', 'fecha_nacimiento', 'tipo']
     template_name = 'sistema/socio_form.html'
@@ -273,7 +288,7 @@ class SocioUpdate(LoginRequiredMixin, UpdateView):
         return reverse_lazy('sistema:socioupdate', args=[self.object.id]) + '?ok'
 
 
-class UsuarioDelete(LoginRequiredMixin, DeleteView):
+class UsuarioDelete(AdministradorRequiredMixin, DeleteView):
     model = Usuario
 
     # success_url = reverse_lazy('sistema:clascrelist')
@@ -293,15 +308,15 @@ class UsuarioDelete(LoginRequiredMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class ClaseCreditoListView(LoginRequiredMixin, ListView):
+class ClaseCreditoListView(AdministradorRequiredMixin, ListView):
     model = ClaseCredito
 
 
-class ClaseCreditoDetailView(LoginRequiredMixin, DetailView):
+class ClaseCreditoDetailView(AdministradorRequiredMixin, DetailView):
     model = ClaseCredito
 
 
-class ClaseCreditoCreate(LoginRequiredMixin, CreateView):
+class ClaseCreditoCreate(AdministradorRequiredMixin, CreateView):
     model = ClaseCredito
     fields = ['descripcion', 'valdesde', 'valhasta', 'autorizacion', 'plazomax', 'garante', 'estado']
     success_url = reverse_lazy('sistema:clasecreditolist')
@@ -310,7 +325,7 @@ class ClaseCreditoCreate(LoginRequiredMixin, CreateView):
         return reverse_lazy('sistema:clasecreditolist') + '?ok'
 
 
-class ClaseCreditoUpdate(LoginRequiredMixin, UpdateView):
+class ClaseCreditoUpdate(AdministradorRequiredMixin, UpdateView):
     model = ClaseCredito
     fields = ['descripcion', 'valdesde', 'valhasta', 'autorizacion', 'plazomax', 'garante', 'estado']
 
@@ -318,7 +333,7 @@ class ClaseCreditoUpdate(LoginRequiredMixin, UpdateView):
         return reverse_lazy('sistema:clasecreditoupdate', args=[self.object.id]) + '?ok'
 
 
-class ClaseCreditoDelete(LoginRequiredMixin, DeleteView):
+class ClaseCreditoDelete(AdministradorRequiredMixin, DeleteView):
     model = ClaseCredito
 
     # success_url = reverse_lazy('sistema:clascrelist')
@@ -339,7 +354,7 @@ class ClaseCreditoDelete(LoginRequiredMixin, DeleteView):
 
 
 #
-# class ClaseSolicitudListView(LoginRequiredMixin, ListView):
+# class ClaseSolicitudListView(AdministradorRequiredMixin, ListView):
 #     model = ClaseSolicitud
 #
 #
@@ -444,7 +459,7 @@ class RubroDetailView(DetailView):
     model = Rubro
 
 
-class RubroCreate(LoginRequiredMixin, CreateView):
+class RubroCreate(AdministradorRequiredMixin, CreateView):
     model = Rubro
     fields = ['descripcion', 'tipo', 'estado', 'valor', 'abreviatura']
 
@@ -453,7 +468,7 @@ class RubroCreate(LoginRequiredMixin, CreateView):
         return reverse_lazy('sistema:rubrocreate')
 
 
-class RubroUpdate(LoginRequiredMixin, UpdateView):
+class RubroUpdate(AdministradorRequiredMixin, UpdateView):
     model = Rubro
     fields = ['descripcion', 'tipo', 'estado', 'valor', 'abreviatura']
 
@@ -462,7 +477,7 @@ class RubroUpdate(LoginRequiredMixin, UpdateView):
         return reverse_lazy('sistema:rubroupdate', args=[self.object.id])
 
 
-class RubroDelete(LoginRequiredMixin, DeleteView):
+class RubroDelete(AdministradorRequiredMixin, DeleteView):
     model = Rubro
 
     def delete(self, request, *args, **kwargs):

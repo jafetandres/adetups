@@ -1,29 +1,30 @@
 from datetime import date
-
 from django.contrib import messages
 from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import AccessMixin
 from django.shortcuts import render, redirect
-
-# Create your views here.
+from socio.forms import SolicitudCreditoForm
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic.list import ListView
-
-from sistema.models import Adtsolcre, Adtclascre, Adtsocios, Adtclasol, SolicitudCredito, Socio, ClaseCredito, Credito, \
+from sistema.models import SolicitudCredito, Socio, ClaseCredito, Credito, \
     Usuario
 
-#
-# @login_required
-# def index(request):
-#     return render(request, "socio/index.html")
-#
-from socio.forms import SolicitudCreditoForm
+
+class SocioRequiredMixin(AccessMixin):
+    """
+    Este mixin requerira que el usuario sea de tipo presidente
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        if request.user.tipo != 'socio':
+            return redirect(reverse_lazy('registration:login'))
+        return super(SocioRequiredMixin, self).dispatch(request, *args, **kwargs)
 
 
-class HomePageView(LoginRequiredMixin, TemplateView):
+class HomePageView(SocioRequiredMixin, TemplateView):
     template_name = "socio/index.html"
 
     def get_context_data(self, **kwargs):
@@ -33,7 +34,7 @@ class HomePageView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class SolicitudCreditoDetailView(LoginRequiredMixin, DetailView):
+class SolicitudCreditoDetailView(SocioRequiredMixin, DetailView):
     model = SolicitudCredito
     template_name = 'socio/solicitudcredito_detail.html'
 
@@ -122,7 +123,7 @@ def diasHastaFecha(day1, month1, year1, day2, month2, year2):
             return total
 
 
-class SolicitudCreditoCreate(LoginRequiredMixin, CreateView):
+class SolicitudCreditoCreate(SocioRequiredMixin, CreateView):
     model = SolicitudCredito
     form_class = SolicitudCreditoForm
     # fields = ['clasecredito', 'garante', 'monto', 'plazo']
@@ -199,7 +200,7 @@ def rubro_list(request):
     return render(request, 'socio/consultar_rubros.html', {'rubros': rubros})
 
 
-class UsuarioUpdate(LoginRequiredMixin, UpdateView):
+class UsuarioUpdate(SocioRequiredMixin, UpdateView):
     model = Usuario
     template_name = 'socio/perfil.html'
     fields = ['nombres', 'apellidos', 'fecha_nacimiento']
