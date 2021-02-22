@@ -17,6 +17,12 @@ import os
 pymysql.version_info = (1, 4, 0, "final", 0)
 pymysql.install_as_MySQLdb()
 
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+}
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,7 +33,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'k#vl*#66^)ntotmaz)e9zvu!=8r^_ex!w9y6syg4vgix+sajle'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 ADMINS = [('Jafet', 'jafetandres@hotmail.com')]
@@ -183,3 +189,6 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 #     },
 #
 # }
+
+
+CSRF_COOKIE_SECURE = True

@@ -1,7 +1,7 @@
 {% extends 'sistema/index.html' %}
 {% block content %}
     <div class="card shadow-lg border-0 rounded-lg mt-5">
-        <div class="card-header"><h3 class="text-center font-weight-light my-4">{{ usuario.nombres|title }}</h3>
+        <div class="card-header"><h3 class="text-center font-weight-light my-4">{{ usuario.nombres|default_if_none:""|title }}</h3>
         </div>
         <div class="card-body">
             <form>
@@ -9,20 +9,20 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="nombresId">Nombres</label>
-                            <p id="nombresId">{{ usuario.nombres|title }}</p>
+                            <p id="nombresId">{{ usuario.nombres|default_if_none:""|title }}</p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="apellidosId">Apellidos</label>
-                            <p id="apellidosId">{{ usuario.apellidos|title }}</p>
+                            <p id="apellidosId">{{ usuario.apellidos|default_if_none:""|title }}</p>
                         </div>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="small mb-1" for="usernameId">Username</label>
+                            <label class="small mb-1" for="usernameId">Cédula/Username</label>
                             <p id="usernameId">{{ usuario.username }}</p>
                         </div>
                     </div>
@@ -30,7 +30,7 @@
                         <div class="form-group">
                             <label class="small mb-1" for="date_joinedId">Fecha de creación</label>
                             <p id="date_joinedId">
-                                {{ usuario.date_joined }}
+                                {{ usuario.date_joined|default_if_none:"" }}
                             </p>
                         </div>
                     </div>
@@ -40,14 +40,14 @@
                         <div class="form-group">
                             <label class="small mb-1" for="emailId">Correo electrónico</label>
                             <p id="emailId">
-                                {{ usuario.email }}
+                                {{ usuario.email|default_if_none:"" }}
                             </p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="fecha_nacimientoId">Fecha de nacimiento</label>
-                            <p id="fecha_nacimientoId">{{ usuario.fecha_nacimiento }}</p>
+                            <p id="fecha_nacimientoId">{{ usuario.fecha_nacimiento|default_if_none:"" }}</p>
                         </div>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="tipoId">Tipo</label>
-                            <p id="tipoId">{{ usuario.tipo }}</p>
+                            <p id="tipoId">{{ usuario.tipo|default_if_none:""|title }}</p>
                         </div>
                     </div>
                 </div>
@@ -80,16 +80,10 @@
                                  viewBox="0 0 448 512" data-fa-i2svg="">
                                 <path fill="currentColor"
                                       d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
-                            </svg><!-- <i class="fas fa-arrow-left mr-1"></i> -->
+                            </svg>
                             Volver
                         </a>
                     </div>
-{#                    <div class="col-6" align="right">#}
-{#                        <a class="btn btn-warning" href="{% url 'sistema:home' %}"#}
-{#                           aria-label="Edit">#}
-{#                            <i class="fa fa-clipboard" aria-hidden="true"></i>#}
-{#                        </a>#}
-{#                    </div>#}
                 </div>
             </form>
         </div>

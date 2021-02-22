@@ -75,6 +75,8 @@ class UserAdmin(admin.ModelAdmin):
     change_user_password_template = None
 
 
+    search_fields = ('nombres', 'apellidos', 'username')
+
     form = UserChangeForm
     add_form = UserCreationForm
     change_password_form = AdminPasswordChangeForm
@@ -224,13 +226,12 @@ class UserAdmin(admin.ModelAdmin):
         return super().response_add(request, obj, post_url_continue)
 
 
-admin.site.register(User, UserAdmin)
+admin.site.register(Usuario, UserAdmin)
 
 admin.site.register(Adtcredito)
 admin.site.register(Adtdetrub)
 # admin.site.register(Adtevento)
 # admin.site.register(Adtevndet)
-admin.site.register(Usuario)
 admin.site.register(SolicitudCredito)
 admin.site.register(ClaseCredito)
 admin.site.register(Adtparam)

@@ -15,7 +15,7 @@ from django.shortcuts import redirect
 from pyexcel_xls import get_data as xls_get
 from pyexcel_xlsx import get_data as xlsx_get
 from django.utils.datastructures import MultiValueDictKeyError
-from django.views.defaults import page_not_found
+
 
 class AsistenteRequiredMixin(AccessMixin):
     """
@@ -29,8 +29,6 @@ class AsistenteRequiredMixin(AccessMixin):
         if request.user.tipo != 'asistente':
             return redirect(reverse_lazy('registration:login'))
         return super(AsistenteRequiredMixin, self).dispatch(request, *args, **kwargs)
-
-
 
 
 def diasHastaFecha(day1, month1, year1, day2, month2, year2):
@@ -149,7 +147,7 @@ class SolicitudCreditoCreate(AsistenteRequiredMixin, CreateView):
         socio = Socio.objects.get(usuario_id=self.request.user.id)
         if self.kwargs['usuario_id']:
             socio = Socio.objects.get(usuario_id=self.kwargs['usuario_id'])
-        if Credito.objects.filter(socio=socio).exists():
+        if Credito.objects.filter(socio=socio, estado='aprobado').exists():
             messages.error(request, 'El socio ya tiene un prestamo activo y no puede solicitar otro')
         return super().get(request, *args, **kwargs)
 
@@ -168,7 +166,7 @@ class SolicitudCreditoCreate(AsistenteRequiredMixin, CreateView):
         if self.kwargs['usuario_id']:
             socio = Socio.objects.get(usuario_id=self.kwargs['usuario_id'])
         data = form.cleaned_data
-        if Credito.objects.filter(socio=socio).exists():
+        if Credito.objects.filter(socio=socio, estado='aprobado').exists():
             messages.error(self.request, 'El socio ya tiene un prestamo activo y no puede solicitar otro')
             return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
 

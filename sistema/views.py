@@ -97,7 +97,8 @@ class UsuarioUpdate(AdministradorRequiredMixin, UpdateView):
     fields = ['nombres', 'apellidos', 'fecha_nacimiento', 'email']
 
     def get_success_url(self):
-        return reverse_lazy('sistema:usuarioupdate', args=[self.object.id]) + '?ok'
+        messages.success(self.request, 'Registro actualizado correctamente')
+        return reverse_lazy('sistema:usuarioupdate', args=[self.object.id])
 
 
 class AdministradorCreate(AdministradorRequiredMixin, CreateView):
@@ -291,21 +292,18 @@ class SocioUpdate(AdministradorRequiredMixin, UpdateView):
 class UsuarioDelete(AdministradorRequiredMixin, DeleteView):
     model = Usuario
 
-    # success_url = reverse_lazy('sistema:clascrelist')
-
     def delete(self, request, *args, **kwargs):
         """
         Call the delete() method on the fetched object and then redirect to the
         success URL. If the object is protected, send an error message.
         """
         self.object = self.get_object()
-        success_url = reverse_lazy('sistema:home')
-
         try:
             self.object.delete()
+            messages.success(self.request, 'Registro eliminado correctamente')
         except IntegrityError:
-            messages.add_message(request, messages.ERROR, 'No se puede borrar el registro ya que existen dependencias')
-        return HttpResponseRedirect(success_url)
+            messages.error(request, 'No se puede borrar el registro ya que existen dependencias')
+        return redirect('sistema:home')
 
 
 class ClaseCreditoListView(AdministradorRequiredMixin, ListView):

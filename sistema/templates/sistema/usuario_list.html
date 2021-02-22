@@ -19,15 +19,12 @@
                 </div>
             </div>
         </div>
-        {% if 'ok' in request.GET %}
-            <div class="alert alert-success" role="alert">Registro creado correctamente</div>
-        {% endif %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
         <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} m-1" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
@@ -52,27 +49,12 @@
                     </tr>
                     </tfoot>
                     <tbody>
-                    {% for usuario in usuario_list  %}
+                    {% for usuario in usuario_list %}
                         <tr>
                             <td>
-                                {% if usuario.tipo == 'administrador' %}
-                                    <a href="{% url 'sistema:usuariodetail' usuario.id %}">{{ usuario.nombres|title }}</a>
-                                {% endif %}
-                                {% if usuario.tipo == 'socio' %}
-                                    <a href="{% url 'sistema:usuariodetail' usuario.id %}">{{ usuario.nombres|title }}</a>
-                                {% endif %}
-                                {% if usuario.tipo == 'presidente' %}
-                                    <a href="{% url 'sistema:usuariodetail' usuario.id %}">{{ usuario.nombres|title }}</a>
-                                {% endif %}
-                                {% if usuario.tipo == 'asistente' %}
-                                    <a href="{% url 'sistema:usuariodetail' usuario.id %}">{{ usuario.nombres|title }}</a>
-                                {% endif %}
+                                <a href="{% url 'sistema:usuariodetail' usuario.id %}">{{ usuario.nombres|default_if_none:""|title }}</a>
                             </td>
-                            <td>{% if usuario.apellidos is null %}
-                            {% else %}
-                                {{ usuario.apellidos|title }}
-                            {% endif %}
-                            </td>
+                            <td>{{ usuario.apellidos|default_if_none:""|title }}</td>
                             <td>{{ usuario.username }}</td>
                             <td>{{ usuario.tipo|title }}</td>
                             <td>
@@ -102,7 +84,9 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                Si elimina el registro <strong class="text-adetups">{{ usuario.nombres|title }}</strong> se eliminar de la base de datos
+                                                Si elimina el registro <strong
+                                                    class="text-adetups">{{ usuario.nombres|title }}</strong> se
+                                                eliminar de la base de datos
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">

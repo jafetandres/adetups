@@ -23,49 +23,50 @@
         <nav class="sb-sidenav-menu-nested nav">
             <a class="nav-link" href="{% url 'sistema:clasecreditolist' %}">Clase de Créditos</a>
 
-            <a class="nav-link" href="{% url 'sistema:restriccionclasecreditolist' %}">Restricciones de Clase de Crédito</a>
+            <a class="nav-link" href="{% url 'sistema:restriccionclasecreditolist' %}">Restricciones de Clase de
+                Crédito</a>
             <a class="nav-link" href="{% url 'sistema:rubrolist' %}">Rubros</a>
             <a class="nav-link" href="{% url 'sistema:usuariolist' %}">Usuarios</a>
         </nav>
     </div>
-{#    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProcesos"#}
-{#       aria-expanded="false" aria-controls="collapseProcesos">#}
-{#        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>#}
-{#        Procesos#}
-{#        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>#}
-{#    </a>#}
-{#    <div class="collapse" id="collapseProcesos" aria-labelledby="headingTwo"#}
-{#         data-parent="#sidenavAccordion">#}
-{#        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">#}
-{#            <a class="nav-link collapsed" href="#" data-toggle="collapse"#}
-{#               data-target="#pagesCollapseError" aria-expanded="false"#}
-{#               aria-controls="pagesCollapseError">#}
-{#                Error#}
-{#                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>#}
-{#            </a>#}
-{#            <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne"#}
-{#                 data-parent="#sidenavAccordionPages">#}
-{#                <nav class="sb-sidenav-menu-nested nav">#}
-{#                    <a class="nav-link" href="401.html">401 Page</a>#}
-{#                    <a class="nav-link" href="404.html">404 Page</a>#}
-{#                    <a class="nav-link" href="500.html">500 Page</a>#}
-{#                </nav>#}
-{#            </div>#}
-{#        </nav>#}
-{#    </div>#}
-{#    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReportes"#}
-{#       aria-expanded="false" aria-controls="collapseReportes">#}
-{#        <div class="sb-nav-link-icon"><i class="fas fa-clipboard"></i></div>#}
-{#        Reportes#}
-{#        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>#}
-{#    </a>#}
-{#    <div class="collapse" id="collapseReportes" aria-labelledby="headingTwo"#}
-{#         data-parent="#sidenavAccordion">#}
-{#        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">#}
-{#            <a class="nav-link" href="">Créditos</a>#}
-{#            <a class="nav-link" href="">Solicitudes de Créditos</a>#}
-{#        </nav>#}
-{#    </div>#}
+    {#    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProcesos"#}
+    {#       aria-expanded="false" aria-controls="collapseProcesos">#}
+    {#        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>#}
+    {#        Procesos#}
+    {#        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>#}
+    {#    </a>#}
+    {#    <div class="collapse" id="collapseProcesos" aria-labelledby="headingTwo"#}
+    {#         data-parent="#sidenavAccordion">#}
+    {#        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">#}
+    {#            <a class="nav-link collapsed" href="#" data-toggle="collapse"#}
+    {#               data-target="#pagesCollapseError" aria-expanded="false"#}
+    {#               aria-controls="pagesCollapseError">#}
+    {#                Error#}
+    {#                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>#}
+    {#            </a>#}
+    {#            <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne"#}
+    {#                 data-parent="#sidenavAccordionPages">#}
+    {#                <nav class="sb-sidenav-menu-nested nav">#}
+    {#                    <a class="nav-link" href="401.html">401 Page</a>#}
+    {#                    <a class="nav-link" href="404.html">404 Page</a>#}
+    {#                    <a class="nav-link" href="500.html">500 Page</a>#}
+    {#                </nav>#}
+    {#            </div>#}
+    {#        </nav>#}
+    {#    </div>#}
+    {#    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReportes"#}
+    {#       aria-expanded="false" aria-controls="collapseReportes">#}
+    {#        <div class="sb-nav-link-icon"><i class="fas fa-clipboard"></i></div>#}
+    {#        Reportes#}
+    {#        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>#}
+    {#    </a>#}
+    {#    <div class="collapse" id="collapseReportes" aria-labelledby="headingTwo"#}
+    {#         data-parent="#sidenavAccordion">#}
+    {#        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">#}
+    {#            <a class="nav-link" href="">Créditos</a>#}
+    {#            <a class="nav-link" href="">Solicitudes de Créditos</a>#}
+    {#        </nav>#}
+    {#    </div>#}
 {% endblock %}
 {% block content %}
     <h1 class="mt-4">Bienvenido</h1>
@@ -84,9 +85,9 @@
         </div>
         <div class="col-xl-3 col-md-6">
             <div class="card bg-success text-white mb-4">
-                <div class="card-body">Socios</div>
+                <div class="card-body">Usuarios</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="#">Ver</a>
+                    <a class="small text-white stretched-link" href="{% url 'sistema:usuariolist' %}">Ver</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
@@ -111,15 +112,12 @@
                 </div>
             </div>
         </div>
-        {% if 'ok' in request.GET %}
-            <div class="alert alert-success" role="alert">Registro creado correctamente</div>
-        {% endif %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
         <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} m-3" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
@@ -147,24 +145,9 @@
                     {% for usuario in usuarios %}
                         <tr>
                             <td>
-                                {% if usuario.tipo == 'administrador' %}
-                                    <a href="{% url 'sistema:usuariodetail' usuario.id %}">{{ usuario.nombres|title }}</a>
-                                {% endif %}
-                                {% if usuario.tipo == 'socio' %}
-                                    <a href="{% url 'sistema:usuariodetail' usuario.id %}">{{ usuario.nombres|title }}</a>
-                                {% endif %}
-                                {% if usuario.tipo == 'presidente' %}
-                                    <a href="{% url 'sistema:usuariodetail' usuario.id %}">{{ usuario.nombres|title }}</a>
-                                {% endif %}
-                                {% if usuario.tipo == 'asistente' %}
-                                    <a href="{% url 'sistema:usuariodetail' usuario.id %}">{{ usuario.nombres|title }}</a>
-                                {% endif %}
+                                <a href="{% url 'sistema:usuariodetail' usuario.id %}">{{ usuario.nombres|default_if_none:""|title }}</a>
                             </td>
-                            <td>{% if usuario.apellidos is null %}
-                            {% else %}
-                                {{ usuario.apellidos|title }}
-                            {% endif %}
-                            </td>
+                            <td>{{ usuario.apellidos|default_if_none:""|title }}</td>
                             <td>{{ usuario.username }}</td>
                             <td>{{ usuario.tipo|title }}</td>
                             <td>
@@ -194,7 +177,9 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                Si elimina este registro se eliminar de la base de datos
+                                                Si elimina el usuario <strong
+                                                    class="text-adetups"> {{ usuario.username }} </strong> se eliminar de
+                                                la base de datos
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">

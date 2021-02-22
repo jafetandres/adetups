@@ -2,14 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7f909e53-265b-4961-95e9-847068ff836c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/404.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db.sqlite3.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/666fe1b3-e8be-4075-b9a3-768a915483eb.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/666fe1b3-e8be-4075-b9a3-768a915483eb.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adetups/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/adetups/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/presidente/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/presidente/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/usuario_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/usuario_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/usuario_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/usuario_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sistema/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/socio/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/socio/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -223,7 +226,7 @@
       <workItem from="1613239989825" duration="3749000" />
       <workItem from="1613351331792" duration="136000" />
       <workItem from="1613352067308" duration="2072000" />
-      <workItem from="1613680892484" duration="5978000" />
+      <workItem from="1613680892484" duration="14642000" />
     </task>
     <servers />
   </component>
