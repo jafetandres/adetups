@@ -1,12 +1,20 @@
+import io
 from datetime import date
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.mixins import AccessMixin
 from django.db import IntegrityError
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, FileResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView, ListView, DeleteView
+from reportlab.graphics.shapes import Line, Drawing
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Spacer, Paragraph, Table, TableStyle
+from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT
 from asistente.forms import SolicitudCreditoForm
 from sistema.forms import UsuarioForm
 from sistema.models import SolicitudCredito, Usuario, Socio, ClaseCredito, RubroSocio, Credito, Parametro, Rubro, Cuota, \
@@ -781,3 +789,126 @@ def consultar_rubros(request):
 class RestriccionClaseCreditoList(AsistenteRequiredMixin, ListView):
     model = RestriccionClaseCredito
     template_name = 'asistente/restriccionclasecredito_list.html'
+
+
+PAGE_WIDTH = A4[0]
+PAGE_HEIGHT = A4[1]
+styles = getSampleStyleSheet()
+
+nr = None
+
+
+def generar_solicitud_pdf(request, pk):
+    global nr
+    nr = pk
+    solicitudcredito = SolicitudCredito.objects.get(id=pk)
+    titulo = 'Créditos'  # + nombre
+
+    buffer = io.BytesIO()
+    h1 = ParagraphStyle(
+        'subtitulo',
+        fontName="Times-Roman",
+        fontSize=14,
+        leading=20)
+    h2 = ParagraphStyle(
+        'subtitulo',
+        fontName="Times-Roman",
+        fontSize=12,
+        leading=16)
+    doc = SimpleDocTemplate(buffer)
+    story = [Spacer(0, 80)]
+    estilo = styles['Normal']
+    linkStyle = ParagraphStyle(
+        'link',
+        textColor='#3366BB'
+    )
+    paragraphStyle = ParagraphStyle('parrafos',
+                                    alignment=TA_JUSTIFY,
+                                    fontSize=10,
+                                    fontName="Times-Roman",
+                                    )
+    # actividades_alimentacion = request.session.get('actividades_alimentacion')
+    # if actividades_alimentacion:
+    #     story.append(Paragraph('<b>Alimentación</b>', h1))
+    #     lista = ListFlowable(
+    #         [ListItem(Paragraph(actividad, paragraphStyle)
+    #                   )
+    #          for actividad in
+    #          actividades_alimentacion], bulletFontSize=10, bulletFontName="Times-Roman", bulletType='bullet',
+    #         leftIndent=10)
+    #     story.append(lista)
+    #     story.append(Spacer(1, 0.1 * inch))
+    #     story.append(Spacer(1, 0.1 * inch))
+    #     story.append(Paragraph('Desde:', h2))
+    #     story.append(Paragraph('Hasta:', h2))
+    #     story.append(Paragraph('http://www.arasaac.org/herramientas.php', linkStyle))
+    #     story.append(Paragraph('http://wikinclusion.org/index.php/1028', linkStyle))
+    #     story.append(Paragraph('http://wikinclusion.org/index.php/1018', linkStyle))
+    #     story.append(Paragraph('http://wikinclusion.org/index.php/1020', linkStyle))
+    #     story.append(Spacer(1, 0.1 * inch))
+    fecha_ingreso = Paragraph('<b>Fecha de ingreso: </b>' + str(solicitudcredito.fecha_ingreso))
+    clase_nombre = Paragraph('<b>Clase de Crédito: </b>' + str(solicitudcredito.clasecredito.descripcion.title()))
+    data = [[fecha_ingreso, clase_nombre]]
+    t = Table(data)
+
+    story.append(t)
+    caja_subtitulo_style = ParagraphStyle(
+        'subtitulo',
+        fontName="Times-Roman",
+        fontSize=12,
+        leading=20,
+        borderPadding=(5, 3, 2),
+        backColor='#ededed',
+        borderColor='#000000')
+    story.append(Spacer(1, 0.4 * inch))
+    story.append(Paragraph('INFORMACIÓN DEL SOCIO', caja_subtitulo_style))
+    nombres_socio = Paragraph(str(solicitudcredito.socio.usuario.nombres.title()) + ' ' + str(
+        solicitudcredito.socio.usuario.apellidos.title()))
+    cedula_socio = Paragraph(str(solicitudcredito.socio.usuario.username))
+    direccion_socio = Paragraph(str(solicitudcredito.socio.direccion))
+    telefono_socio = Paragraph(str(solicitudcredito.socio.telefono))
+
+    data1 = [[Paragraph('<b>Nombres y Apellidos:</b>'), nombres_socio],
+             [Paragraph('<b>Cédula:</b>'), cedula_socio],
+             [Paragraph('<b>Dirección:</b>'), direccion_socio],
+             [Paragraph('<b>Teléfono:</b>'), telefono_socio],
+             ]
+    t1 = Table(data1)
+
+    story.append(t1)
+    story.append(Spacer(1, 0.4 * inch))
+    d = Drawing(100, 1)
+    d.add(Line(0, 0, 100, 0))
+    data2 = [[[d, Paragraph('Firma del solicitante')], [d, Paragraph('Firma de recepción')]],
+             ]
+    t2 = Table(data2)
+    story.append(t2)
+    # story.append(d)
+    doc.build(story, onFirstPage=myFirstPage, onLaterPages=myLaterPages)
+    buffer.seek(0)
+    nombre = ''
+    return FileResponse(buffer, as_attachment=True, filename='adetups_reportecredito.pdf')
+
+
+# Definimos las caracteristicas fijas de la primera página
+def myFirstPage(canvas, doc):
+    global nr
+    canvas.saveState()
+    canvas.setTitle("Adetups_reportcredito")
+    titulo = 'Solicitud de Crédito Nro. ' + str(nr)
+    archivo_imagen = 'asistente/logo.png'
+    canvas.drawImage(archivo_imagen, 40, 750, 120, 90, preserveAspectRatio=True, mask='auto')
+    canvas.setFont('Times-Roman', 18)
+    canvas.drawString(PAGE_WIDTH / 2.0, PAGE_HEIGHT - 108, titulo)
+    canvas.setFont('Times-Roman', 9)
+    canvas.line(doc.leftMargin, PAGE_HEIGHT - 125, doc.width, PAGE_HEIGHT - 125)
+    canvas.drawString(inch, 0.75 * inch, "Página %s" % (doc.page))
+    canvas.restoreState()
+
+
+# Definimos disposiciones alternas para las caracteristicas de las otras páginas
+def myLaterPages(canvas, doc):
+    canvas.saveState()
+    canvas.setFont('Times-Roman', 9)
+    canvas.drawString(inch, 0.75 * inch, "Página %d" % (doc.page))
+    canvas.restoreState()

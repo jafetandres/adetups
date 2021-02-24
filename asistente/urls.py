@@ -47,6 +47,6 @@ urlpatterns = [
     path('liquidacioncreditocreate/<int:credito_id>/', LicquidacionCreditoCreate.as_view(),
          name="liquidacioncreditocreate"),
     path('consultarcuotas/', consultar_cuotas, name="consultarcuotas"),
-    path('restriccionclasecreditolist/', RestriccionClaseCreditoList.as_view(), name="restriccionclasecreditolist")
-
+    path('restriccionclasecreditolist/', RestriccionClaseCreditoList.as_view(), name="restriccionclasecreditolist"),
+    path('generarsolicitudpdf/<int:pk>/', generar_solicitud_pdf, name="generarsolicitudpdf"),
 ]
