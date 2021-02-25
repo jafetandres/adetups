@@ -9,12 +9,11 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView, ListView, DeleteView
 from reportlab.graphics.shapes import Line, Drawing
-from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Spacer, Paragraph, Table, TableStyle
-from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT, TA_CENTER
+from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
 from asistente.forms import SolicitudCreditoForm
 from sistema.forms import UsuarioForm
 from sistema.models import SolicitudCredito, Usuario, Socio, ClaseCredito, RubroSocio, Credito, Parametro, Rubro, Cuota, \
@@ -27,7 +26,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 class AsistenteRequiredMixin(AccessMixin):
     """
-    Este mixin requerira que el usuario sea de tipo asistente
+    Este mixin de seguridad requiere que el usuario sea de tipo asistente
     """
 
     def dispatch(self, request, *args, **kwargs):
@@ -485,19 +484,6 @@ class RubroDelete(AsistenteRequiredMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-# class RubroSocioListView(ListView):
-#     model = Socio
-#     template_name = 'asistente/consultar_rubros.html'
-#     paginate_by = 1
-
-# def get_context_data(self, **kwargs):
-#     context = super().get_context_data(**kwargs)
-#
-#     context['socios'] = Socio.objects.all()
-#
-#     return context
-
-
 class RubroSocioCreate(AsistenteRequiredMixin, CreateView):
     model = RubroSocio
     fields = ['rubro', 'descripcion', 'servicio', 'valor']
@@ -513,9 +499,6 @@ class RubroSocioCreate(AsistenteRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        data = form.cleaned_data
-        # rubrosocio = form.save(commit=False)
-        id = 0
         if self.request.POST.get('socio') == '':
             print('esta vacio')
             id = 0
@@ -561,7 +544,6 @@ class UsuarioUpdate(AsistenteRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        data = form.cleaned_data
         Socio.objects.update(
             direccion=self.request.POST.get('direccion', ''),
             telefono=self.request.POST.get('telefono', ''),
@@ -693,38 +675,6 @@ class LicquidacionCreditoCreate(AsistenteRequiredMixin, CreateView):
         return reverse_lazy('asistente:creditodetail', args=[credito.id]) + '?ok'
 
 
-# class CreditoUpdate(AsistenteRequiredMixin, UpdateView):
-#     model = Credito
-#     template_name = 'asistente/credito_liquidar.html'
-#     fields = ['estado']
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         credito = self.object
-#         valor_pendiente = 0
-#         for cuota in credito.cuotas.all():
-#             if cuota.estado == False:
-#                 valor_pendiente = cuota.valor_cuota + valor_pendiente
-#
-#         context['valor_pendiente'] = valor_pendiente
-#
-#         return context
-#
-#     def form_valid(self, form):
-#         data = form.cleaned_data
-#         if data["estado"] == 'liquidado':
-#             LiquidacionCredito.objects.create(
-#                 credito=self.object,
-#                 direccion=self.request.POST.get('valor', ''),
-#                 observacion=self.request.POST.get('observacion', '')
-#             )
-#
-#         return super().form_valid(form)
-#
-#     def get_success_url(self):
-#         return reverse_lazy('asistente:creditoupdate', args=[self.object.id]) + '?ok'
-
-
 def consultar_cuotas(request):
     cuotas = []
     socio = None
@@ -769,23 +719,6 @@ def consultar_rubros(request):
     return render(request, 'asistente/consultar_rubros.html', {'rubros': rubros, 'socio': socio})
 
 
-# data = []
-# print(request.GET['username'])
-# print(request.is_ajax)
-# if request.method == 'GET':
-#     username = request.GET['username']
-#     if Usuario.objects.filter(username=username).exists():
-#         usuario = Usuario.objects.get(username=username)
-#         if Socio.objects.filter(usuario_id=usuario.id).exists():
-#             socio = Socio.objects.get(usuario_id=usuario.id)
-#             if Credito.objects.filter(socio_id=socio.id).exists():
-#                 credito = Credito.objects.get(socio_id=socio.id)
-#                 for cuota in credito.cuotas:
-#                     data.append(cuota)
-#
-#     json_dump = json.dumps(data)
-#     return HttpResponse(json_dump, content_type='application/json')
-
 class RestriccionClaseCreditoList(AsistenteRequiredMixin, ListView):
     model = RestriccionClaseCredito
     template_name = 'asistente/restriccionclasecredito_list.html'
@@ -795,70 +728,32 @@ PAGE_WIDTH = A4[0]
 PAGE_HEIGHT = A4[1]
 styles = getSampleStyleSheet()
 
-nr = None
+pk_solicitudcredito = None
 
 
 def generar_solicitud_pdf(request, pk):
-    global nr
-    nr = pk
+    global pk_solicitudcredito
+    pk_solicitudcredito = pk
     solicitudcredito = SolicitudCredito.objects.get(id=pk)
-    titulo = 'Créditos'  # + nombre
-
     buffer = io.BytesIO()
-    h1 = ParagraphStyle(
-        'subtitulo',
-        fontName="Times-Roman",
-        fontSize=14,
-        leading=20)
     firma_estilo = ParagraphStyle(
         name='firma_estilo',
         fontName="Times-Roman",
         alignment=TA_CENTER)
-
-    h2 = ParagraphStyle(
-        'subtitulo',
-        fontName="Times-Roman",
-        fontSize=12,
-        leading=16)
     doc = SimpleDocTemplate(buffer)
     story = [Spacer(0, 80)]
-    estilo = styles['Normal']
     linkStyle = ParagraphStyle(
         'link',
         textColor='#3366BB'
     )
-    paragraphStyle = ParagraphStyle('parrafos',
-                                    alignment=TA_JUSTIFY,
-                                    fontSize=10,
-                                    fontName="Times-Roman",
-                                    )
-    # actividades_alimentacion = request.session.get('actividades_alimentacion')
-    # if actividades_alimentacion:
-    #     story.append(Paragraph('<b>Alimentación</b>', h1))
-    #     lista = ListFlowable(
-    #         [ListItem(Paragraph(actividad, paragraphStyle)
-    #                   )
-    #          for actividad in
-    #          actividades_alimentacion], bulletFontSize=10, bulletFontName="Times-Roman", bulletType='bullet',
-    #         leftIndent=10)
-    #     story.append(lista)
-    #     story.append(Spacer(1, 0.1 * inch))
-    #     story.append(Spacer(1, 0.1 * inch))
-    #     story.append(Paragraph('Desde:', h2))
-    #     story.append(Paragraph('Hasta:', h2))
-    #     story.append(Paragraph('http://www.arasaac.org/herramientas.php', linkStyle))
-    #     story.append(Paragraph('http://wikinclusion.org/index.php/1028', linkStyle))
-    #     story.append(Paragraph('http://wikinclusion.org/index.php/1018', linkStyle))
-    #     story.append(Paragraph('http://wikinclusion.org/index.php/1020', linkStyle))
-    #     story.append(Spacer(1, 0.1 * inch))
     fecha_ingreso = Paragraph('<b>Fecha de ingreso: </b>' + str(solicitudcredito.fecha_ingreso))
     clase_nombre = Paragraph('<b>Clase de Crédito: </b>' + str(solicitudcredito.clasecredito.descripcion.title()))
     data = [[fecha_ingreso, clase_nombre]]
     t = Table(data)
-
     story.append(t)
+
     caja_subtitulo_estilo = ParagraphStyle(
-        'subtitulo',
+        name='caja_subtitulo_estilo',
         fontName="Times-Roman",
         fontSize=12,
         leading=20,
@@ -867,6 +762,7 @@ def generar_solicitud_pdf(request, pk):
         borderColor='#000000')
     story.append(Spacer(1, 0.4 * inch))
     story.append(Paragraph('INFORMACIÓN DEL SOCIO', caja_subtitulo_estilo))
+    story.append(Spacer(1, 0.2 * inch))
     nombres_socio = Paragraph(str(solicitudcredito.socio.usuario.nombres.title()) + ' ' + str(
         solicitudcredito.socio.usuario.apellidos.title()))
     cedula_socio = Paragraph(str(solicitudcredito.socio.usuario.username))
@@ -879,10 +775,10 @@ def generar_solicitud_pdf(request, pk):
              [Paragraph('<b>Teléfono:</b>'), telefono_socio],
              ]
     t1 = Table(data1)
-
     story.append(t1)
     story.append(Spacer(1, 0.4 * inch))
-    story.append(Paragraph('DEPARTAMENTO Y/O FUNCIÓN', caja_subtitulo_estilo))
+    story.append(Paragraph('DEPARTAMENTO Y/O FUNCIÓN DEL SOCIO', caja_subtitulo_estilo))
+    story.append(Spacer(1, 0.2 * inch))
     fecha_actual = date.today()
 
     if solicitudcredito.socio.fecha_ingreso is not None:
@@ -900,13 +796,13 @@ def generar_solicitud_pdf(request, pk):
     story.append(t3)
     story.append(Spacer(1, 0.4 * inch))
     story.append(Paragraph('MONTO DE CREDITO Y PERIODO DE PAGO', caja_subtitulo_estilo))
-
+    story.append(Spacer(1, 0.2 * inch))
     data4 = [[Paragraph('<b>Cantidad solicitada:</b>'), Paragraph('$ ' + str(solicitudcredito.monto))],
              [Paragraph('<b>Plazo de pago:</b>'), Paragraph(str(solicitudcredito.plazo) + ' meses')],
              ]
     t4 = Table(data4)
     story.append(t4)
-    story.append(Spacer(1, 1 * inch))
+    story.append(Spacer(1, 2 * inch))
     d = Drawing(100, 1)
     d.add(Line(0, 0, 100, 0))
     data2 = [
@@ -914,23 +810,21 @@ def generar_solicitud_pdf(request, pk):
 
     t2 = Table(data2)
     t2.setStyle(TableStyle([
-        # ('VALIGN', (0, 0), (0, -1), 'TOP'),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        # ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+
     ]))
     story.append(t2)
     doc.build(story, onFirstPage=myFirstPage, onLaterPages=myLaterPages)
     buffer.seek(0)
-    nombre = ''
-    return FileResponse(buffer, as_attachment=True, filename='adetups_reportecredito.pdf')
+    return FileResponse(buffer, as_attachment=True, filename='adetups_solicitudcredito.pdf')
 
 
 # Definimos las caracteristicas fijas de la primera página
 def myFirstPage(canvas, doc):
-    global nr
+    global pk_solicitudcredito
     canvas.saveState()
     canvas.setTitle("Adetups_reportcredito")
-    titulo = 'Solicitud de Crédito Nro. ' + str(nr)
+    titulo = 'Solicitud de Crédito Nro. ' + str(pk_solicitudcredito)
     archivo_imagen = 'asistente/logo.png'
     canvas.drawImage(archivo_imagen, 40, 750, 120, 90, preserveAspectRatio=True, mask='auto')
     canvas.setFont('Times-Roman', 18)
