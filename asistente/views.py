@@ -14,7 +14,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Spacer, Paragraph, Table, TableStyle
-from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT
+from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT, TA_CENTER
 from asistente.forms import SolicitudCreditoForm
 from sistema.forms import UsuarioForm
 from sistema.models import SolicitudCredito, Usuario, Socio, ClaseCredito, RubroSocio, Credito, Parametro, Rubro, Cuota, \
@@ -810,6 +810,11 @@ def generar_solicitud_pdf(request, pk):
         fontName="Times-Roman",
         fontSize=14,
         leading=20)
+    firma_estilo = ParagraphStyle(
+        name='firma_estilo',
+        fontName="Times-Roman",
+        alignment=TA_CENTER)
+
     h2 = ParagraphStyle(
         'subtitulo',
         fontName="Times-Roman",
@@ -852,7 +857,7 @@ def generar_solicitud_pdf(request, pk):
     t = Table(data)
 
     story.append(t)
-    caja_subtitulo_style = ParagraphStyle(
+    caja_subtitulo_estilo = ParagraphStyle(
         'subtitulo',
         fontName="Times-Roman",
         fontSize=12,
@@ -861,7 +866,7 @@ def generar_solicitud_pdf(request, pk):
         backColor='#ededed',
         borderColor='#000000')
     story.append(Spacer(1, 0.4 * inch))
-    story.append(Paragraph('INFORMACIÓN DEL SOCIO', caja_subtitulo_style))
+    story.append(Paragraph('INFORMACIÓN DEL SOCIO', caja_subtitulo_estilo))
     nombres_socio = Paragraph(str(solicitudcredito.socio.usuario.nombres.title()) + ' ' + str(
         solicitudcredito.socio.usuario.apellidos.title()))
     cedula_socio = Paragraph(str(solicitudcredito.socio.usuario.username))
@@ -877,13 +882,43 @@ def generar_solicitud_pdf(request, pk):
 
     story.append(t1)
     story.append(Spacer(1, 0.4 * inch))
+    story.append(Paragraph('DEPARTAMENTO Y/O FUNCIÓN', caja_subtitulo_estilo))
+    fecha_actual = date.today()
+
+    if solicitudcredito.socio.fecha_ingreso is not None:
+        num_anios = diasHastaFecha(solicitudcredito.socio.fecha_ingreso.day, solicitudcredito.socio.fecha_ingreso.month,
+                                   solicitudcredito.socio.fecha_ingreso.year,
+                                   fecha_actual.day,
+                                   fecha_actual.month, fecha_actual.year) / 365
+    else:
+        num_anios = ''
+    data3 = [[Paragraph('<b>Departamento/Carrera:</b>'), Paragraph(str(solicitudcredito.socio.area))],
+             [Paragraph('<b>Cargo:</b>'), Paragraph(str(solicitudcredito.socio.cargo))],
+             [Paragraph('<b>Tiempo de servicio:</b>'), num_anios],
+             ]
+    t3 = Table(data3)
+    story.append(t3)
+    story.append(Spacer(1, 0.4 * inch))
+    story.append(Paragraph('MONTO DE CREDITO Y PERIODO DE PAGO', caja_subtitulo_estilo))
+
+    data4 = [[Paragraph('<b>Cantidad solicitada:</b>'), Paragraph('$ ' + str(solicitudcredito.monto))],
+             [Paragraph('<b>Plazo de pago:</b>'), Paragraph(str(solicitudcredito.plazo) + ' meses')],
+             ]
+    t4 = Table(data4)
+    story.append(t4)
+    story.append(Spacer(1, 1 * inch))
     d = Drawing(100, 1)
     d.add(Line(0, 0, 100, 0))
-    data2 = [[[d, Paragraph('Firma del solicitante')], [d, Paragraph('Firma de recepción')]],
-             ]
+    data2 = [
+        [[d, Paragraph('Firma del solicitante', firma_estilo)], [d, Paragraph('Firma de recepción', firma_estilo)]]]
+
     t2 = Table(data2)
+    t2.setStyle(TableStyle([
+        # ('VALIGN', (0, 0), (0, -1), 'TOP'),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        # ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ]))
     story.append(t2)
-    # story.append(d)
     doc.build(story, onFirstPage=myFirstPage, onLaterPages=myLaterPages)
     buffer.seek(0)
     nombre = ''
