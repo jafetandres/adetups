@@ -13,7 +13,7 @@ from sistema.models import SolicitudCredito, Socio, ClaseCredito, Credito, \
 
 class SocioRequiredMixin(AccessMixin):
     """
-    Este mixin requerira que el usuario sea de tipo presidente
+    Este mixin de seguridad requiere que el usuario sea de tipo socio
     """
 
     def dispatch(self, request, *args, **kwargs):
@@ -126,15 +126,13 @@ def diasHastaFecha(day1, month1, year1, day2, month2, year2):
 class SolicitudCreditoCreate(SocioRequiredMixin, CreateView):
     model = SolicitudCredito
     form_class = SolicitudCreditoForm
-    # fields = ['clasecredito', 'garante', 'monto', 'plazo']
     template_name = 'socio/solicitudcredito_form.html'
     success_url = reverse_lazy('socio:home')
 
     def get(self, request, *args, **kwargs):
         socio = Socio.objects.get(usuario_id=self.request.user.id)
-        if Credito.objects.filter(socio=socio).exists():
-            messages.error(request, 'El socio ya tiene un prestamo activo y no puede solicitar otro',
-                           extra_tags='danger')
+        if Credito.objects.filter(socio=socio, estado='aprobado').exists():
+            messages.error(request, 'El socio ya tiene un prestamo activo y no puede solicitar otro')
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -150,15 +148,13 @@ class SolicitudCreditoCreate(SocioRequiredMixin, CreateView):
     def form_valid(self, form):
         data = form.cleaned_data
         socio = Socio.objects.get(usuario_id=self.request.user.id)
-        if Credito.objects.filter(socio=socio).exists():
-            messages.error(self.request, 'El socio ya tiene un prestamo activo y no puede solicitar otro',
-                           extra_tags='danger')
+        if Credito.objects.filter(socio=socio, estado='aprobado').exists():
+            messages.error(self.request, 'El socio ya tiene un prestamo activo y no puede solicitar otro')
             return redirect('socio:solicitudcreditocreate')
 
         if socio.fecha_ingreso is None:
             messages.error(self.request,
-                           'El socio no tiene informacion sobre su fecha de ingreso.El socio primero debe actualizar toda su informacion en Cuenta',
-                           extra_tags='danger')
+                           'El socio no tiene informacion sobre su fecha de ingreso.El socio primero debe actualizar toda su informacion en Cuenta')
             return redirect('socio:solicitudcreditocreate')
 
         fecha_actual = date.today()
@@ -167,8 +163,7 @@ class SolicitudCreditoCreate(SocioRequiredMixin, CreateView):
                                    fecha_actual.month, fecha_actual.year) / 365
         if int(num_anios) < data['clasecredito'].tiempo_minimo_servicio:
             messages.error(self.request,
-                           'El socio no cumple con el tiempo minimo de servicio para esta clase de prestamo',
-                           extra_tags='danger')
+                           'El socio no cumple con el tiempo minimo de servicio para esta clase de prestamo')
             return redirect('socio:solicitudcreditocreate')
 
         form.instance.porcentaje_interes = data['clasecredito'].porcentaje_interes
