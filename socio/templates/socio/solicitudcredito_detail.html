@@ -36,7 +36,7 @@
                 <div class="col-md-2">
                     <a class="btn btn-outline-primary" target="_blank"
                        href="{% url 'socio:generarsolicitudpdf' solicitudcredito.id %}"> <i class="fa fa-print"
-                                                                                                aria-hidden="true"></i>
+                                                                                            aria-hidden="true"></i>
                         Imprimir Solicitud
                     </a>
                 </div>
@@ -149,14 +149,7 @@
                 </div>
                 {% if solicitudcredito.estado == 'pendiente' %}
                     <div class="col-6" align="right">
-                        <button type="button" class="btn btn-outline-success" aria-label="Revisado" data-toggle="modal"
-                                data-target="#modalRevisada"
-                                aria-label="Edit"><i class="fa fa-check" aria-hidden="true"></i> Dar visto bueno
-                        </button>
-                        <button type="button" class="btn btn-outline-danger" aria-label="Negada" data-toggle="modal"
-                                data-target="#modalNegada"
-                                aria-label="Edit"><i class="fa fa-times" aria-hidden="true"></i> Negar
-                        </button>
+                        <p class="text-warning"> Solicitud pendiente</p>
                     </div>
                 {% elif solicitudcredito.estado == 'revisada' %}
                     <div class="col-6" align="right">
