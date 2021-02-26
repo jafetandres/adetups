@@ -1,7 +1,6 @@
 from django.urls import path, re_path
 from .views import *
 
-
 app_name = 'asistente'
 
 urlpatterns = [
@@ -10,9 +9,6 @@ urlpatterns = [
     path('solicitudcreditoupdate/<int:pk>/', SolicitudCreditoUpdate.as_view(), name="solicitudcreditoupdate"),
     re_path('solicitudcreditocreate/(?P<usuario_id>\d+)/$', SolicitudCreditoCreate.as_view(),
             name='solicitudcreditocreate'),
-    # path('solicitudcreditocreate/<int:socio_id>/', SolicitudCreditoCreate.as_view(),
-    #      name='solicitudcreditocreate'),
-
     path('sociocreate/', SocioCreate.as_view(), name='sociocreate'),
     path('cargarrubrosmoviestar/', cargar_rubros_moviestar, name='cargarrubrosmoviestar'),
     path('cargarrubrosgeneral/', cargar_rubros_general, name='cargarrubrosgeneral'),
@@ -49,4 +45,5 @@ urlpatterns = [
     path('consultarcuotas/', consultar_cuotas, name="consultarcuotas"),
     path('restriccionclasecreditolist/', RestriccionClaseCreditoList.as_view(), name="restriccionclasecreditolist"),
     path('generarsolicitudpdf/<int:pk>/', generar_solicitud_pdf, name="generarsolicitudpdf"),
+    path('reportescreditos', reportes_creditos, name="reportescreditos")
 ]

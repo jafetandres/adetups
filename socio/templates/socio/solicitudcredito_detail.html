@@ -27,11 +27,18 @@
                         <p id="clasecreditoId">{{ solicitudcredito.clasecredito.descripcion|title }}</p>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label class="small mb-1" for="fecha_ingresoId">Fecha de ingreso</label>
                         <p id="fecha_ingresoId">{{ solicitudcredito.fecha_ingreso }}</p>
                     </div>
+                </div>
+                <div class="col-md-2">
+                    <a class="btn btn-outline-primary" target="_blank"
+                       href="{% url 'socio:generarsolicitudpdf' solicitudcredito.id %}"> <i class="fa fa-print"
+                                                                                                aria-hidden="true"></i>
+                        Imprimir Solicitud
+                    </a>
                 </div>
             </div>
             <div class="form-row">

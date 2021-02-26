@@ -1,10 +1,19 @@
+import io
 from datetime import date
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.mixins import AccessMixin
+from django.http import FileResponse
 from django.shortcuts import render, redirect
 from socio.forms import SolicitudCreditoForm
 from django.urls import reverse_lazy
+from reportlab.graphics.shapes import Line, Drawing
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Spacer, Paragraph, Table, TableStyle
+from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
 from django.views.generic import DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from sistema.models import SolicitudCredito, Socio, ClaseCredito, Credito, \
@@ -265,3 +274,122 @@ def cambiar_password(request):
             messages.success(request, "Contraseña cambiada")
             login(request, usuario)
     return render(request, 'socio/cambiar_password.html')
+
+
+PAGE_WIDTH = A4[0]
+PAGE_HEIGHT = A4[1]
+styles = getSampleStyleSheet()
+
+pk_solicitudcredito = None
+
+
+def generar_solicitud_pdf(request, pk):
+    global pk_solicitudcredito
+    pk_solicitudcredito = pk
+    solicitudcredito = SolicitudCredito.objects.get(id=pk)
+    buffer = io.BytesIO()
+    firma_estilo = ParagraphStyle(
+        name='firma_estilo',
+        fontName="Times-Roman",
+        alignment=TA_CENTER)
+    doc = SimpleDocTemplate(buffer)
+    story = [Spacer(0, 80)]
+    linkStyle = ParagraphStyle(
+        'link',
+        textColor='#3366BB'
+    )
+    fecha_ingreso = Paragraph('<b>Fecha de ingreso: </b>' + str(solicitudcredito.fecha_ingreso))
+    clase_nombre = Paragraph('<b>Clase de Crédito: </b>' + str(solicitudcredito.clasecredito.descripcion.title()))
+    data = [[fecha_ingreso, clase_nombre]]
+    t = Table(data)
+    story.append(t)
+
+    caja_subtitulo_estilo = ParagraphStyle(
+        name='caja_subtitulo_estilo',
+        fontName="Times-Roman",
+        fontSize=12,
+        leading=20,
+        borderPadding=(5, 3, 2),
+        backColor='#ededed',
+        borderColor='#000000')
+    story.append(Spacer(1, 0.4 * inch))
+    story.append(Paragraph('INFORMACIÓN DEL SOCIO', caja_subtitulo_estilo))
+    story.append(Spacer(1, 0.2 * inch))
+    nombres_socio = Paragraph(str(solicitudcredito.socio.usuario.nombres.title()) + ' ' + str(
+        solicitudcredito.socio.usuario.apellidos.title()))
+    cedula_socio = Paragraph(str(solicitudcredito.socio.usuario.username))
+    direccion_socio = Paragraph(str(solicitudcredito.socio.direccion))
+    telefono_socio = Paragraph(str(solicitudcredito.socio.telefono))
+
+    data1 = [[Paragraph('<b>Nombres y Apellidos:</b>'), nombres_socio],
+             [Paragraph('<b>Cédula:</b>'), cedula_socio],
+             [Paragraph('<b>Dirección:</b>'), direccion_socio],
+             [Paragraph('<b>Teléfono:</b>'), telefono_socio],
+             ]
+    t1 = Table(data1)
+    story.append(t1)
+    story.append(Spacer(1, 0.4 * inch))
+    story.append(Paragraph('DEPARTAMENTO Y/O FUNCIÓN DEL SOCIO', caja_subtitulo_estilo))
+    story.append(Spacer(1, 0.2 * inch))
+    fecha_actual = date.today()
+
+    if solicitudcredito.socio.fecha_ingreso is not None:
+        num_anios = diasHastaFecha(solicitudcredito.socio.fecha_ingreso.day, solicitudcredito.socio.fecha_ingreso.month,
+                                   solicitudcredito.socio.fecha_ingreso.year,
+                                   fecha_actual.day,
+                                   fecha_actual.month, fecha_actual.year) / 365
+    else:
+        num_anios = ''
+    data3 = [[Paragraph('<b>Departamento/Carrera:</b>'), Paragraph(str(solicitudcredito.socio.area))],
+             [Paragraph('<b>Cargo:</b>'), Paragraph(str(solicitudcredito.socio.cargo))],
+             [Paragraph('<b>Tiempo de servicio:</b>'), num_anios],
+             ]
+    t3 = Table(data3)
+    story.append(t3)
+    story.append(Spacer(1, 0.4 * inch))
+    story.append(Paragraph('MONTO DE CREDITO Y PERIODO DE PAGO', caja_subtitulo_estilo))
+    story.append(Spacer(1, 0.2 * inch))
+    data4 = [[Paragraph('<b>Cantidad solicitada:</b>'), Paragraph('$ ' + str(solicitudcredito.monto))],
+             [Paragraph('<b>Plazo de pago:</b>'), Paragraph(str(solicitudcredito.plazo) + ' meses')],
+             ]
+    t4 = Table(data4)
+    story.append(t4)
+    story.append(Spacer(1, 2 * inch))
+    d = Drawing(100, 1)
+    d.add(Line(0, 0, 100, 0))
+    data2 = [
+        [[d, Paragraph('Firma del solicitante', firma_estilo)], [d, Paragraph('Firma de recepción', firma_estilo)]]]
+
+    t2 = Table(data2)
+    t2.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+
+    ]))
+    story.append(t2)
+    doc.build(story, onFirstPage=myFirstPage, onLaterPages=myLaterPages)
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename='adetups_solicitudcredito.pdf')
+
+
+# Definimos las caracteristicas fijas de la primera página
+def myFirstPage(canvas, doc):
+    global pk_solicitudcredito
+    canvas.saveState()
+    canvas.setTitle("Adetups_reportcredito")
+    titulo = 'Solicitud de Crédito Nro. ' + str(pk_solicitudcredito)
+    archivo_imagen = 'asistente/static/img/logo_adetups.png'
+    canvas.drawImage(archivo_imagen, 40, 750, 120, 90, preserveAspectRatio=True, mask='auto')
+    canvas.setFont('Times-Roman', 18)
+    canvas.drawString(PAGE_WIDTH / 2.0, PAGE_HEIGHT - 108, titulo)
+    canvas.setFont('Times-Roman', 9)
+    canvas.line(doc.leftMargin, PAGE_HEIGHT - 125, doc.width, PAGE_HEIGHT - 125)
+    canvas.drawString(inch, 0.75 * inch, "Página %s" % (doc.page))
+    canvas.restoreState()
+
+
+# Definimos disposiciones alternas para las caracteristicas de las otras páginas
+def myLaterPages(canvas, doc):
+    canvas.saveState()
+    canvas.setFont('Times-Roman', 9)
+    canvas.drawString(inch, 0.75 * inch, "Página %d" % (doc.page))
+    canvas.restoreState()

@@ -9,6 +9,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView, ListView, DeleteView
 from reportlab.graphics.shapes import Line, Drawing
+from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
@@ -123,7 +124,10 @@ def diasHastaFecha(day1, month1, year1, day2, month2, year2):
 
 
 class HomePageView(AsistenteRequiredMixin, TemplateView):
-    template_name = "asistente/index.html"
+    """
+    Home o index del portal del asistente
+    """
+    template_name = "asistente/index.html"  # archivo html
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -825,7 +829,7 @@ def myFirstPage(canvas, doc):
     canvas.saveState()
     canvas.setTitle("Adetups_reportcredito")
     titulo = 'Solicitud de Crédito Nro. ' + str(pk_solicitudcredito)
-    archivo_imagen = 'asistente/logo.png'
+    archivo_imagen = 'asistente/static/img/logo_adetups.png'
     canvas.drawImage(archivo_imagen, 40, 750, 120, 90, preserveAspectRatio=True, mask='auto')
     canvas.setFont('Times-Roman', 18)
     canvas.drawString(PAGE_WIDTH / 2.0, PAGE_HEIGHT - 108, titulo)
@@ -840,4 +844,58 @@ def myLaterPages(canvas, doc):
     canvas.saveState()
     canvas.setFont('Times-Roman', 9)
     canvas.drawString(inch, 0.75 * inch, "Página %d" % (doc.page))
+    canvas.restoreState()
+
+
+def reportes_creditos(request):
+    if request.method == 'POST':
+        buffer = io.BytesIO()
+        doc = SimpleDocTemplate(buffer)
+        story = [Spacer(0, 80)]
+        fecha_actual = Paragraph('<b>Fecha: </b>' + str(date.today()))
+        clase_nombre = Paragraph('')
+        data = [[fecha_actual, clase_nombre]]
+        t = Table(data)
+        story.append(t)
+        story.append(Spacer(1, 0.4 * inch))
+        datos = []
+        datos.append([Paragraph('<b>Socio</b>'), Paragraph('<b>Monto</b>'), Paragraph('<b>Plazo</b>')])
+        if request.POST['estado'] is not None:
+            estado = request.POST['estado']
+            if estado == 'pendiente':
+                estado = 'PND'
+            creditos = Credito.objects.filter(estado=estado)
+            for credito in creditos:
+                datos.append(
+                    [credito.socio.usuario.nombres.title() + ' ' + credito.socio.usuario.apellidos.title(),
+                     '$ ' + str(credito.monto), str(credito.plazo) + ' meses'])
+        t = Table(datos)
+        t.setStyle(TableStyle([
+
+            ('ALIGN', (1, 1), (-1, -1), 'RIGHT'),
+            # ('TEXTCOLOR', (1, 1), (-1, -1), colors.blue),
+            ('ALIGN', (0, 0), (2, 0), 'CENTER'),
+            # ('TEXTCOLOR', (0, 0), (2, 0), colors.green),
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
+        ]))
+        story.append(t)
+        doc.build(story, onFirstPage=primera_pagina_reportescreditos, onLaterPages=myLaterPages)
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename='adetups_reporte_creditos.pdf')
+    return render(request, 'asistente/reportes_creditos.html')
+
+
+def primera_pagina_reportescreditos(canvas, doc):
+    global pk_solicitudcredito
+    canvas.saveState()
+    canvas.setTitle("Adetups_reportecredito")
+    titulo = 'Créditos Adetups'
+    archivo_imagen = 'asistente/static/img/logo_adetups.png'
+    canvas.drawImage(archivo_imagen, 40, 750, 120, 90, preserveAspectRatio=True, mask='auto')
+    canvas.setFont('Times-Roman', 18)
+    canvas.drawString(PAGE_WIDTH / 2.0, PAGE_HEIGHT - 108, titulo)
+    canvas.setFont('Times-Roman', 9)
+    canvas.line(doc.leftMargin, PAGE_HEIGHT - 125, doc.width, PAGE_HEIGHT - 125)
+    canvas.drawString(inch, 0.75 * inch, "Página %s" % (doc.page))
     canvas.restoreState()

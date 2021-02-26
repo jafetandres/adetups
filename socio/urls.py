@@ -14,6 +14,7 @@ urlpatterns = [
     path('usuarioupdate/<int:pk>/', UsuarioUpdate.as_view(),
          name="usuarioupdate"),
     path('cambiarpassword/', cambiar_password, name='cambiarpassword'),
+    path('generarsolicitudpdf/<int:pk>/', generar_solicitud_pdf, name="generarsolicitudpdf"),
 
     # path('clascreupdate/<int:pk>/', AdtclascreUpdate.as_view(), name='clascreupdate'),
     # path('clascredelete/<int:pk>/', AdtclascreDelete.as_view(), name='clascredelete'),
