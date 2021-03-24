@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'core',
     'sistema',
     'socio',
-    'django_celery_beat',
+    # 'django_celery_beat',
     'asistente',
     'presidente'
 
@@ -191,4 +191,4 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # }
 
 
-CSRF_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True

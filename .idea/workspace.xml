@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7f909e53-265b-4961-95e9-847068ff836c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/socio/templates/socio/solicitudcredito_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/socio/templates/socio/solicitudcredito_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adetups/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/adetups/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/rubro_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubro_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -217,7 +221,13 @@
       <workItem from="1613239989825" duration="3749000" />
       <workItem from="1613351331792" duration="136000" />
       <workItem from="1613352067308" duration="2072000" />
-      <workItem from="1613680892484" duration="38018000" />
+      <workItem from="1613680892484" duration="38420000" />
+      <workItem from="1614558287117" duration="33000" />
+      <workItem from="1616003002419" duration="4563000" />
+      <workItem from="1616262640952" duration="2308000" />
+      <workItem from="1616529476677" duration="265000" />
+      <workItem from="1616529851991" duration="22000" />
+      <workItem from="1616600391390" duration="1945000" />
     </task>
     <servers />
   </component>
@@ -236,9 +246,9 @@
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/asistente/views.py</url>
-          <line>27</line>
-          <option name="timeStamp" value="5" />
+          <url>file://$PROJECT_DIR$/adetups/urls.py</url>
+          <line>15</line>
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="django-line">
           <url>file://$PROJECT_DIR$/asistente/templates/asistente/perfil.html</url>
@@ -253,7 +263,6 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/asistente/templates/asistente/reportes_creditos.html</url>
           <line>18</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>

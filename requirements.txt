@@ -2,13 +2,10 @@ amqp==5.0.1
 anyjson==0.3.3
 asgiref==3.2.10
 billiard==3.6.3.0
-celery==5.0.2
 click==7.1.2
 click-didyoumean==0.0.3
 click-repl==0.1.6
 Django==3.1.2
-django-celery==3.3.1
-django-celery-beat==2.1.0
 django-timezone-field==4.0
 et-xmlfile==1.0.1
 importlib-metadata==2.0.0
@@ -29,6 +26,7 @@ python-crontab==2.5.1
 python-dateutil==2.8.1
 pytz==2020.1
 redis==3.5.3
+reportlab==3.5.59
 six==1.15.0
 sqlparse==0.4.1
 vine==5.0.0
