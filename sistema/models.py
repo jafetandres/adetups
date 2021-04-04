@@ -3,6 +3,8 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils import timezone
 
+from asistente.manager import MyModelManager, SocioManager
+
 
 class PersonalizadoBaseUserManager(BaseUserManager):
     def create_user(self, username, password):
@@ -45,7 +47,6 @@ class Rubro(models.Model):
     descripcion = models.CharField(max_length=50, null=True, blank=True)
     tipo = models.CharField(max_length=10, null=True, blank=True)
     estado = models.BooleanField(default=True, null=True, blank=True)
-    valor = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
     abreviatura = models.CharField(max_length=10, null=True, blank=True, unique=True)
 
     def __str__(self):
@@ -79,7 +80,29 @@ class Socio(models.Model):
     fecha_ingreso = models.DateField(blank=True, null=True)  # Field name made lowercase.
     is_garante = models.BooleanField(default=False, null=True, blank=True)
     rubros = models.ManyToManyField(RubroSocio, blank=True, null=True)
+
+    objects = SocioManager()
+
     # tiempo = models.SmallIntegerField()  # Field name made lowercase.
+
+    def as_list(self):
+        if self.usuario.is_active:
+            estado = 'Activo'
+        else:
+            estado = 'Desactivado'
+
+        nombres = '<a  href="/asistente/sociodetail/' + str(
+            self.id)+'/'+'sociolist' + '" aria-label="Detail">'+self.usuario.nombres.title()+'</a>'
+
+        acciones = '<a class="btn btn-warning" href="/asistente/socioupdate/' + str(
+            self.id) + '" aria-label="Edit"><b>Editar</b></a>'
+        return [
+            nombres,
+            self.usuario.apellidos.title(),
+            self.usuario.username,
+            estado,
+            acciones
+        ]
 
 
 class Adtclascre(models.Model):
@@ -173,10 +196,25 @@ class SolicitudCredito(models.Model):
     plazo = models.SmallIntegerField(blank=True, null=True)
     estado = models.CharField(max_length=20, default='pendiente', blank=True, null=True)
     socio = models.ForeignKey(Socio, models.DO_NOTHING, related_name='socio', blank=True, null=True)
+    objects = MyModelManager()
     # cuota = models.DecimalField(max_digits=9, decimal_places=2)
     # interes = models.DecimalField(max_digits=9, decimal_places=2)
     porcentaje_interes = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     observaciones = models.TextField(blank=True, null=True)
+
+    def as_list(self):
+        acciones = '<a class="btn btn-warning" href="/asistente/solicitudcreditoupdate/' + str(
+            self.id) + '" aria-label="Edit"><b>Ver</b></a>'
+        monto = '$ ' + str(self.monto)
+
+        return [self.socio.usuario.nombres.title(),
+                self.fecha_ingreso,
+                self.garante.usuario.nombres.title(),
+                monto,
+                self.clasecredito.descripcion.title(),
+                self.estado.title(),
+                acciones
+                ]
 
 
 class Adtclcreq(models.Model):

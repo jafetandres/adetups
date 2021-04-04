@@ -6,24 +6,19 @@
             <div id="alertsId">
                 {% if form.errors %}
                     <div class="alert alert-warning" role="alert">
-                        {% if form.nombres.errors %}
-                            Nombres {{ form.nombres.errors }}
+                        {% if form.descripcion.errors %}
+                            Descripcion {{ form.descripcion.errors }}
                         {% endif %}
-                        {% if form.apellidos.errors %}
-                            Apellidos {{ form.apellidos.errors }}
+                        {% if form.tipo.errors %}
+                            Tipo {{ form.tipo.errors }}
                         {% endif %}
-                        {% if form.username.errors %}
-                            Username{{ form.username.errors }}
+                        {% if form.abreviatura.errors %}
+                            Abreviatura{{ form.abreviatura.errors }}
                         {% endif %}
-                        {% if form.email.errors %}
-                            Email{{ form.email.errors }}
+                        {% if form.estado.errors %}
+                            Estado{{ form.estado.errors }}
                         {% endif %}
-                        {% if form.fecha_nacimiento.errors %}
-                            Fecha de nacimiento {{ form.fecha_nacimiento.errors }}
-                        {% endif %}
-                        {% if form.passsword.errors %}
-                            Contraseña {{ form.passsword.errors }}
-                        {% endif %}
+
                     </div>
                 {% endif %}
             </div>
@@ -48,22 +43,11 @@
                 <div class="form-row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="small mb-1" for="valorId">Valor</label>
-                            <input class="form-control py-4" id="valorId" name="valor" type="number"
-                                   placeholder="Ingrese el valor" value="{{ rubro.valor }}"
-                                   required/>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
                             <label class="small mb-1" for="abreviaturaId">Abreviatura</label>
                             <input class="form-control py-4" id="abreviaturaId" name="abreviatura" type="text"
                                    placeholder="Ingrese la abreviatura" value="{{ rubro.abreviatura }}" required/>
                         </div>
                     </div>
-                </div>
-
-                <div class="form-row">
                     <div class="col-md-6">
                         <label class="small mb-1">Estado</label>
                         <br>

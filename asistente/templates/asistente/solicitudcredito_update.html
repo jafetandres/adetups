@@ -7,7 +7,11 @@
             </h3>
         </div>
         <div class="card-body">
-
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} m-1" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
             {% if form.errors %}
                 <div class="alert alert-warning" role="alert">
                     {% if form.estado.errors %}
@@ -32,8 +36,10 @@
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <a class="btn btn-outline-primary" target="_blank" href="{% url 'asistente:generarsolicitudpdf' solicitudcredito.id %}"> <i class="fa fa-print" aria-hidden="true"></i>
-                         Imprimir Solicitud
+                    <a class="btn btn-outline-primary" target="_blank"
+                       href="{% url 'asistente:generarsolicitudpdf' solicitudcredito.id %}"> <i class="fa fa-print"
+                                                                                                aria-hidden="true"></i>
+                        Imprimir Solicitud
                     </a>
                 </div>
             </div>
@@ -132,7 +138,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-6">
+                <div class="col-4">
                     <a href="{% url 'asistente:home' %}">
                         <svg class="svg-inline--fa fa-arrow-left fa-w-14 mr-1" aria-hidden="true" focusable="false"
                              data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg"
@@ -144,7 +150,7 @@
                     </a>
                 </div>
                 {% if solicitudcredito.estado == 'pendiente' %}
-                    <div class="col-6" align="right">
+                    <div class="col-8" align="right">
                         <button type="button" class="btn btn-outline-success" aria-label="Revisado" data-toggle="modal"
                                 data-target="#modalRevisada"
                                 aria-label="Edit"><i class="fa fa-check" aria-hidden="true"></i> Dar visto bueno
@@ -155,8 +161,18 @@
                         </button>
                     </div>
                 {% elif solicitudcredito.estado == 'revisada' %}
-                    <div class="col-6" align="right">
+                    <div class="col-8" align="right">
                         <p class="text-success"><i class="fa fa-check" aria-hidden="true"></i> Solicitud revisada</p>
+                        <button type="button" class="btn btn-outline-success" aria-label="Aprobada" data-toggle="modal"
+                                data-target="#modalAprobada"
+                                aria-label="Edit"><i class="fa fa-check" aria-hidden="true"></i><i class="fa fa-check"
+                                                                                                   aria-hidden="true"></i>
+                            Aprobar
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" aria-label="Negada" data-toggle="modal"
+                                data-target="#modalNegada"
+                                aria-label="Edit"><i class="fa fa-times" aria-hidden="true"></i> Negar
+                        </button>
                     </div>
                 {% elif solicitudcredito.estado == 'aprobada' %}
                     <div class="col-6" align="right">
@@ -229,15 +245,15 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Está seguro?</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Estás seguro?</h5>
                         <button type="button" class="close" data-dismiss="modal"
                                 aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        Estas seguro de dar el visto bueno a la solicitud de crédito
-                        para {{ solicitudcredito.socio.usuario.nombres|title }} {{ solicitudcredito.socio.usuario.apellidos|title }}
+                        Estas seguro de dar el <b>visto bueno</b> a la solicitud de crédito
+                        para <b>{{ solicitudcredito.socio.usuario.nombres|title }} {{ solicitudcredito.socio.usuario.apellidos|title }}</b>
 
                         <div class="form-group">
                             <label class="small mb-1" for="observacionesId">Observaciones</label>
@@ -252,6 +268,49 @@
                         </button>
                         <button type="button" class="btn btn-success"
                                 onclick="document.getElementById('my_formRevisada').submit();">
+                            Aceptar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form id="my_formAprobada" method="post">
+        {% csrf_token %}
+        <input type="text" hidden name="estado" value="aprobada">
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalAprobada" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Estás seguro?</h5>
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Estas seguro de <b>aprobar</b> la solicitud de crédito
+                        para
+                        <b>{{ solicitudcredito.socio.usuario.nombres|title }} {{ solicitudcredito.socio.usuario.apellidos|title }}</b>
+
+                        <div class="form-group">
+                            <label class="small mb-1" for="observacionesId">Observaciones</label>
+                            <textarea class="form-control" id="observacionesId" name="observaciones"
+                                      rows="3"></textarea>
+                            {#                <p id="porcinteresId">{{ solicitudcredito.porcinteres }}</p>#}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="button" class="btn btn-success"
+                                onclick="document.getElementById('my_formAprobada').submit();">
                             Aceptar
                         </button>
                     </div>

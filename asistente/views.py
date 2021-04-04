@@ -1,4 +1,8 @@
 import io
+import datetime
+import numpy as np
+import numpy_financial as npf
+from dateutil import relativedelta
 from datetime import date
 from django.contrib import messages
 from django.contrib.auth import login
@@ -23,6 +27,47 @@ from django.shortcuts import redirect
 from pyexcel_xls import get_data as xls_get
 from pyexcel_xlsx import get_data as xlsx_get
 from django.utils.datastructures import MultiValueDictKeyError
+from django.views import generic
+from braces.views import JSONResponseMixin
+
+
+class TableAsJSON(JSONResponseMixin, generic.View):
+    model = SolicitudCredito
+
+    def get(self, request, *args, **kwargs):
+        col_name_map = {
+            '0': 'socio',
+            '1': 'fecha_ingreso',
+            '2': 'garante',
+            '3': 'monto',
+            '4': 'clasecredito',
+            '5': 'estado',
+            '6': 'acciones',
+        }
+        object_list = self.model.objects.all()
+        search_text = request.GET.get('sSearch', '').lower()
+        start = int(request.GET.get('iDisplayStart', 0))
+        delta = int(request.GET.get('iDisplayLength', 50))
+        sort_dir = request.GET.get('sSortDir_0', 'asc')
+        sort_col = int(request.GET.get('iSortCol_0', 0))
+        sort_col_name = request.GET.get('mDataProp_%s' % sort_col, '1')
+        sort_dir_prefix = (sort_dir == 'desc' and '-' or '')
+
+        if sort_col_name in col_name_map:
+            sort_col = col_name_map[sort_col_name]
+            object_list = object_list.order_by('%s%s' % (sort_dir_prefix, sort_col))
+
+        filtered_object_list = object_list
+        if len(search_text) > 0:
+            filtered_object_list = object_list.filter_on_search(search_text)
+
+        json = {
+            "iTotalRecords": object_list.count(),
+            "iTotalDisplayRecords": filtered_object_list.count(),
+            "sEcho": request.GET.get('sEcho', 1),
+            "aaData": [obj.as_list() for obj in filtered_object_list[start:(start + delta)]]
+        }
+        return self.render_json_response(json)
 
 
 class AsistenteRequiredMixin(AccessMixin):
@@ -144,8 +189,47 @@ class SolicitudCreditoUpdate(AsistenteRequiredMixin, UpdateView):
     fields = ['estado', 'observaciones']
     template_name = 'asistente/solicitudcredito_update.html'
 
+    def form_valid(self, form):
+        data = form.cleaned_data
+        if data["estado"] == 'aprobada':
+            print("monto1", self.object.monto)
+            monto = float(self.object.monto)
+            print("monto2", monto)
+            per = np.arange(1 * self.object.plazo) + 1
+            ipmt = npf.ipmt(0.09 / 12, per, 1 * self.object.plazo, monto)
+            ppmt = npf.ppmt(0.09 / 12, per, 1 * self.object.plazo, monto)
+            pmt = npf.pmt(0.09 / 12, 1 * self.object.plazo, monto)
+            np.allclose(ipmt + ppmt, pmt)
+            fmt = '{0:2d} {1:8.2f} {2:8.2f} {3:8.2f}'
+            cuotas = []
+            for payment in per:
+                index = payment - 1
+                monto = monto + ppmt[index]
+                cuotas.append(Cuota.objects.create(capital=abs(round(ppmt[index], 2)),
+                                                   interes=abs(round(ipmt[index], 2)),
+                                                   saldo_capital=abs(round(monto, 2)),
+                                                   orden=payment,
+                                                   fecha_pago=datetime.date.today() + relativedelta.relativedelta(
+                                                       months=payment),
+                                                   valor_cuota=abs(round(ppmt[index], 2)) + abs(round(ipmt[index], 2))))
+
+            credito = Credito()
+            credito.solicitud = self.object
+            credito.socio = self.object.socio
+            credito.monto = self.object.monto
+            credito.porcentaje_interes = self.object.porcentaje_interes
+            credito.plazo = self.object.plazo
+            credito.estado = 'aprobado'
+            credito.save()
+            for cuota in cuotas:
+                credito.cuotas.add(cuota.id)
+
+
+        return super().form_valid(form)
+
     def get_success_url(self):
-        return reverse_lazy('asistente:solicitudcreditoupdate', args=[self.object.id]) + '?ok'
+        messages.success(self.request,"Estado de solicitud actualizado correctamente")
+        return reverse_lazy('asistente:solicitudcreditoupdate', args=[self.object.id])
 
 
 class SolicitudCreditoCreate(AsistenteRequiredMixin, CreateView):
@@ -278,10 +362,20 @@ def cargar_rubros_moviestar(request):
 
 clases_rubros = []
 rubros_generados_general = []
+colum_name = []
 
 
 def cargar_rubros_general(request):
+    global rubros_generados_general
+    global clases_rubros
+    clases_rubros = []
+    rubros_generados_general = []
     titulo = 'Rubros en general'
+    abreviaturas = []
+    aux1 = []
+    aux = []
+    contador = 0
+    rubroexistente = []
     if request.method == 'POST':
         if bool(request.FILES.get('archivo_rubros', False)):
             try:
@@ -292,23 +386,51 @@ def cargar_rubros_general(request):
                     data = xlsx_get(excel_file, column_limit=26)
                     rubros = data["Hoja1"]
                     size = len(rubros)
-                    for i in range(len(rubros)):
-                        if i == 4:
+                    for num1, rubrosfilas in enumerate(rubros, start=0):
+                        for num2, rubroscolum in enumerate(rubrosfilas, start=0):
+                            if num1 == 4:
+                                abreviaturas.append(rubros[num1][num2])
+                        if num1 == 4:
+                            for num3, abreviatura in enumerate(abreviaturas, start=0):
+                                if abreviatura.strip(' ') != 'MOVI':
+                                    if Rubro.objects.filter(abreviatura=abreviatura.strip(' ')).exists():
+                                        rubroexistente = Rubro.objects.get(abreviatura=abreviatura.strip(' ')), num3
+                                        clases_rubros.append(rubroexistente)
+                                    # print(rubroexistente[0],rubroexistente[1])
 
-                            for j in range(len(rubros[i])):
-                                abreviatura = rubros[i][j]
-                                if Rubro.objects.filter(abreviatura=abreviatura.strip(' ')).exists():
-                                    aux = Rubro.objects.get(abreviatura=abreviatura.strip(' ')), j
-                                    clases_rubros.append(aux)
+                        if num1 > 3 and num1 < len(rubros) - 1:
+                            for num2, rubroscolum in enumerate(rubrosfilas, start=0):
+                                if contador == 0:
+                                    if num2 == 0:
+                                        aux.append("Nº")
+                                    if num2 == 1:
+                                        aux.append("Nombres")
+                                    if num2 == 2:
+                                        aux.append("Cédula")
+                                    for rubroexis in clases_rubros:
+                                        # print(rubroexis[1])
+                                        if num2 == rubroexis[1]:
+                                            aux.append(rubroscolum)
 
-                        if i > 4:
-                            #     if rubros[i][pos_movi] != '':
-                            #         rubros[i].append('MOVI')
-                            #     if rubros[i][pos_claro] != '':
-                            #         rubros[i].append('CLARO')
-                            rubros_generados_general.append(rubros[i])
+                            if contador == 0:
+                                rubros_generados_general.append(aux)
+                                aux = []
+                            contador += 1
+                            if Usuario.objects.filter(username=rubrosfilas[2]).exists():
+                                usuario = Usuario.objects.get(username=rubrosfilas[2])
+                                if Socio.objects.filter(usuario_id=usuario.id).exists():
+                                    socio = Socio.objects.get(usuario_id=usuario.id)
+                                    for num2, rubroscolum in enumerate(rubrosfilas, start=0):
+                                        if contador > 0:
+                                            if num2 >= 0 and num2 < 3:
+                                                aux.append(rubroscolum)
+                                            if num2 >= 4:
+                                                for rubroexis in clases_rubros:
+                                                    if num2 == rubroexis[1]:
+                                                        aux.append(rubroscolum)
 
-                    # return render(request, 'asistente/rubrosocioexcelmoviestar_list.html', {'rubros_generados': rubros_generados})
+                                    rubros_generados_general.append(aux)
+                                    aux = []
                     return redirect('asistente:guardarrubrosgeneral')
             except MultiValueDictKeyError:
                 return redirect('asistente:home')
@@ -341,69 +463,126 @@ def guardar_rubros_moviestar(request):
 
 def guardar_rubros_general(request):
     global rubros_generados_general
-    global clases_rubros
+    clases_rubros = []
+    global colum_name
     if request.method == 'POST':
-        for rubro in rubros_generados_general:
-            print(rubro)
-            if Usuario.objects.filter(username=rubro[2]).exists():
-                usuario = Usuario.objects.get(username=rubro[2])
-                if Socio.objects.filter(usuario_id=usuario.id).exists():
-                    socio = Socio.objects.get(usuario_id=usuario.id)
-                    for num, rubro_aux in enumerate(rubro, start=0):
-                        if num > 3:
-                            if isinstance(rubro_aux, float) or isinstance(rubro_aux, int):
-                                if rubro_aux > 0:
-                                    for clase in clases_rubros:
-                                        if num == clase[1]:
-                                            rubro_generado = RubroSocio.objects.create(rubro_id=clase[0].id,
-                                                                                       descripcion=clase[0].descripcion,
-                                                                                       valor=rubro_aux)
+        for num1, rubrosfilas in enumerate(rubros_generados_general, start=0):
+            if num1 == 0:
+                for num2, rubroscolum in enumerate(rubrosfilas, start=0):
+                    if num2 > 2:
+                        rubroexistente = rubroscolum, num2
+                        clases_rubros.append(rubroexistente)
+            if num1 > 0:
+                for num2, rubroscolum in enumerate(rubrosfilas, start=0):
+                    if num2 == 2:
+                        usuario = Usuario.objects.get(username=rubrosfilas[2])
+                        socio = Socio.objects.get(usuario_id=usuario.id)
+                    if num2 > 2:
+                        if isinstance(rubroscolum, float) or isinstance(rubroscolum, int):
+                            if rubroscolum > 0:
+                                for clase in clases_rubros:
+                                    if num2 == clase[1]:
+                                        print(clase[0])
+                                        rubro_generado = RubroSocio.objects.create(
+                                            rubro=Rubro.objects.get(abreviatura=clase[0]),
+                                            descripcion=clase[0]
+                                        )
 
-                                            socio.rubros.add(rubro_generado)
-                                            socio.save()
+                                        socio.rubros.add(rubro_generado)
+                                        socio.save()
 
         messages.success(request, 'Rubros generados correctamente')
         rubros_generados_general = []
         clases_rubros = []
         return redirect('asistente:cargarrubrosgeneral')
     return render(request, 'asistente/rubrosocioexcelgeneral_list.html',
-                  {'rubros_generados_general': rubros_generados_general})
+                  {'rubros_generados_general': rubros_generados_general, 'colum_name': colum_name})
 
 
 class SocioUpdate(AsistenteRequiredMixin, UpdateView):
-    model = Usuario
-    fields = ['nombres', 'apellidos', 'email', 'fecha_nacimiento', 'tipo']
+    model = Socio
+    fields = ['fecha_ingreso', 'direccion', 'telefono', 'celular', 'cargo', 'area']
     template_name = 'asistente/socio_form.html'
 
-    def form_valid(self, form):
-        data = form.cleaned_data
-        Socio.objects.update(
-            direccion=self.request.POST.get('direccion', ''),
-            telefono=self.request.POST.get('telefono', ''),
-            celular=self.request.POST.get('celular', ''),
-            cargo=self.request.POST.get('cargo', ''),
-            area=self.request.POST.get('area', ''),
-            fecha_ingreso=self.request.POST.get('fecha_ingreso', None)
-        )
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     data = form.cleaned_data
+    #     Socio.objects.update(
+    #         direccion=self.request.POST.get('direccion', ''),
+    #         telefono=self.request.POST.get('telefono', ''),
+    #         celular=self.request.POST.get('celular', ''),
+    #         cargo=self.request.POST.get('cargo', ''),
+    #         area=self.request.POST.get('area', ''),
+    #         fecha_ingreso=self.request.POST.get('fecha_ingreso', None)
+    #     )
+    #     return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['socio'] = Socio.objects.get(usuario_id=self.object.id)
+        # context['socio'] = Socio.objects.get(usuario_id=self.object.id)
+
+        context['is_asistente'] = True
         return context
 
     def get_success_url(self):
-        return reverse_lazy('sistema:socioupdate', args=[self.object.id]) + '?ok'
+        messages.success(self.request, "Registro actualizado correctamente")
+        return reverse_lazy('asistente:socioupdate', args=[self.object.id])
 
 
-class SocioListView(AsistenteRequiredMixin, ListView):
-    model = Socio
+class SocioListView(AsistenteRequiredMixin, TemplateView):
     template_name = 'asistente/socio_list.html'
+
+
+class TableSocioAsJSON(JSONResponseMixin, generic.View):
+    model = Socio
+
+    def get(self, request, *args, **kwargs):
+        col_name_map = {
+            '0': 'usuario',
+            '1': 'usuario',
+            '2': 'usuario',
+            '3': 'usuario',
+            '4': 'acciones',
+        }
+        object_list = self.model.objects.all()
+        search_text = request.GET.get('sSearch', '').lower()
+        start = int(request.GET.get('iDisplayStart', 0))
+        delta = int(request.GET.get('iDisplayLength', 50))
+        sort_dir = request.GET.get('sSortDir_0', 'asc')
+        sort_col = int(request.GET.get('iSortCol_0', 0))
+        sort_col_name = request.GET.get('mDataProp_%s' % sort_col, '1')
+        sort_dir_prefix = (sort_dir == 'desc' and '-' or '')
+        print(sort_col_name)
+        print(col_name_map)
+
+        if sort_col_name in col_name_map:
+            sort_col = col_name_map[sort_col_name]
+            print(sort_col)
+            object_list = object_list.order_by('%s%s' % (sort_dir_prefix, sort_col))
+
+        filtered_object_list = object_list
+        if len(search_text) > 0:
+            filtered_object_list = object_list.filter_on_search(search_text)
+
+        json = {
+            "iTotalRecords": object_list.count(),
+            "iTotalDisplayRecords": filtered_object_list.count(),
+            "sEcho": request.GET.get('sEcho', 1),
+            "aaData": [obj.as_list() for obj in filtered_object_list[start:(start + delta)]]
+        }
+        return self.render_json_response(json)
 
 
 class SocioDetailView(AsistenteRequiredMixin, DetailView):
     model = Socio
     template_name = 'asistente/socio_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        back_url = '/asistente/' + self.kwargs['back_url']
+        context['back_url'] = back_url
+        print(self.kwargs['back_url'])
+
+        return context
 
 
 def escoger_socio(request):
@@ -456,7 +635,7 @@ class RubroDetailView(DetailView):
 
 class RubroCreate(AsistenteRequiredMixin, CreateView):
     model = Rubro
-    fields = ['descripcion', 'tipo', 'estado', 'valor', 'abreviatura']
+    fields = ['descripcion', 'tipo', 'estado', 'abreviatura']
     success_url = reverse_lazy('asistente:rubrolist')
     template_name = 'asistente/rubro_form.html'
 
