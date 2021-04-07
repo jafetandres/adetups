@@ -99,7 +99,7 @@
                 <div class="card-body">Solicitar Crédito para {{ request.user.nombres|title }}</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
                     <a class="small text-white stretched-link"
-                       href="{% url 'asistente:solicitudcreditocreate' request.user.id %}">Ver</a>
+                       href="{% url 'asistente:solicitudcreditocreate' request.user.id %}">Ingresar</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
@@ -108,7 +108,7 @@
             <div class="card bg-warning text-white mb-4">
                 <div class="card-body">Subir rubros mediante archivo excel</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{% url 'asistente:escogerarchivo' %}">Ver</a>
+                    <a class="small text-white stretched-link" href="{% url 'asistente:escogerarchivo' %}">Escojer</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
@@ -117,7 +117,8 @@
             <div class="card bg-success text-white mb-4">
                 <div class="card-body">Créditos</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{% url 'asistente:creditolist' %}">Ver</a>
+                    <a class="small text-white stretched-link" href="{% url 'asistente:creditolist' %}">Lista de
+                        créditos</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
@@ -126,7 +127,8 @@
             <div class="card bg-adetups text-white mb-4">
                 <div class="card-body">Socios</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{% url 'asistente:sociolist' %}">Ver</a>
+                    <a class="small text-white stretched-link" href="{% url 'asistente:sociolist' %}">Lista de
+                        socios</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
@@ -146,12 +148,13 @@
                 </div>
             </div>
         </div>
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
+
         <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} m-1" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
             <div class="table-responsive">
                 <table class="table table-bordered" width="100%" cellspacing="0">
                     <thead>

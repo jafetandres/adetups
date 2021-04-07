@@ -92,7 +92,7 @@ class Socio(models.Model):
             estado = 'Desactivado'
 
         nombres = '<a  href="/asistente/sociodetail/' + str(
-            self.id)+'/'+'sociolist' + '" aria-label="Detail">'+self.usuario.nombres.title()+'</a>'
+            self.id) + '/' + 'sociolist' + '" aria-label="Detail">' + self.usuario.nombres.title() + '</a>'
 
         acciones = '<a class="btn btn-warning" href="/asistente/socioupdate/' + str(
             self.id) + '" aria-label="Edit"><b>Editar</b></a>'
@@ -131,37 +131,46 @@ class Adtclascre(models.Model):
         return self.clcdescri
 
 
-class ClaseCredito(models.Model):
-    descripcion = models.CharField(max_length=30, blank=True, null=True)
-    valdesde = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
-    valhasta = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
-    autorizacion = models.BooleanField(default=True, blank=True, null=True)  # Field name made lowercase.
-    estado = models.CharField(max_length=10, blank=True, null=True)  # Field name made lowercase.
-    plazomax = models.SmallIntegerField(blank=True, null=True)  # Field name made lowercase.
-    porcentaje_interes = models.DecimalField(max_digits=4, decimal_places=2, blank=True,
-                                             null=True)  # Field name made lowercase.
-    tiempo_minimo_servicio = models.IntegerField(blank=True, null=True)
-    garante = models.BooleanField(default=True, blank=True, null=True)  # Field name made lowercase.
-    # parametros = models.ManyToManyField(Parametro, blank=True, null=True)
-
-
 class RestriccionClaseCredito(models.Model):
-    clasecredito = models.ForeignKey(ClaseCredito, models.DO_NOTHING)
-    tiempo_desde = models.SmallIntegerField(blank=True,
-                                            null=True)  # Field name made lowercase.
-    tiempo_hasta = models.SmallIntegerField(blank=True,
-                                            null=True)  # Field name made lowercase.
-    valhasta = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    # clasecredito = models.ForeignKey(ClaseCredito, models.DO_NOTHING)
+    # tiempo_max = models.SmallIntegerField(blank=True,
+    #                                       null=True)  # Field name made lowercase.
+    tiempo_min = models.SmallIntegerField(blank=True,
+                                          null=True)  # Field name made lowercase.
+    val_max =  models.SmallIntegerField(blank=True,
+                                          null=True) # Field name made lowercase.
+    val_min =  models.SmallIntegerField(blank=True,
+                                          null=True)  # Field name made lowercase.
+    plazo_max = models.SmallIntegerField(blank=True,
+                                         null=True)  # Field name made lowercase.
+    # plazo_min = models.SmallIntegerField(blank=True,
+    #                                      null=True)  # Field name made lowercase.
     estado = models.BooleanField(default=True, blank=True, null=True)  # Field name made lowercase.
     fecha_creacion = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 
 class Parametro(models.Model):
-    clasecredito = models.ForeignKey(ClaseCredito, models.CASCADE)
+    # clasecredito = models.ForeignKey(ClaseCredito, models.CASCADE)
     descripcion = models.CharField(max_length=100)  # Field name made lowercase.
     valorcaracter = models.CharField(max_length=200)  # Field name made lowercase.
     valornumerico = models.DecimalField(max_digits=9, decimal_places=2)  # Field name made lowercase.
     estado = models.BooleanField(default=False)  # Field name made lowercase.
+
+
+class ClaseCredito(models.Model):
+    descripcion = models.CharField(max_length=30, blank=True, null=True)
+    # valdesde = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    # valhasta = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    # autorizacion = models.BooleanField(default=True, blank=True, null=True)  # Field name made lowercase.
+    estado = models.CharField(max_length=10, blank=True, null=True)  # Field name made lowercase.
+    # plazomax = models.SmallIntegerField(blank=True, null=True)  # Field name made lowercase.
+    porcentaje_interes = models.DecimalField(max_digits=4, decimal_places=2, blank=True,
+                                             null=True)  # Field name made lowercase.
+    # tiempo_minimo_servicio = models.IntegerField(blank=True, null=True)
+    garante = models.BooleanField(default=True, blank=True, null=True)  # Field name made lowercase.
+    restricciones = models.ManyToManyField(RestriccionClaseCredito)
+
+    # parametros = models.ManyToManyField(Parametro, blank=True, null=True)
 
 
 class Adtclasol(models.Model):

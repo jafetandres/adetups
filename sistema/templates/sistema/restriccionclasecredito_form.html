@@ -56,7 +56,7 @@
                             <label class="small mb-1" for="tiempo_desdeId">Tiempo desde</label>
                             <input class="form-control py-4" id="tiempo_desdeId" name="tiempo_desde" type="number"
                                    placeholder="Ingrese el tiempo desde"
-                                   value="{{ restriccionclasecredito.tiempo_desde }}"
+                                   value="{{ restriccionclasecredito.tiempo_max }}"
                                    required/>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                             <label class="small mb-1" for="tiempo_hastaId">Tiempo hasta</label>
                             <input class="form-control py-4" id="tiempo_hastaId" name="tiempo_hasta" type="number"
                                    placeholder="Ingrese el tiempo hasta"
-                                   value="{{ restriccionclasecredito.tiempo_hasta }}"
+                                   value="{{ restriccionclasecredito.tiempo_min }}"
                                    onkeypress="return soloNumeros(event)"
                                    required/>
                         </div>

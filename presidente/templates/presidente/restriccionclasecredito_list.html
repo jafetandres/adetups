@@ -52,8 +52,8 @@
                             <td>
                                 {{ restriccionclasecredito.clasecredito.descripcion|title }}
                             </td>
-                            <td>{{ restriccionclasecredito.tiempo_desde }} meses</td>
-                            <td>{{ restriccionclasecredito.tiempo_hasta }} meses</td>
+                            <td>{{ restriccionclasecredito.tiempo_max }} meses</td>
+                            <td>{{ restriccionclasecredito.tiempo_min }} meses</td>
                             <td>$ {{ restriccionclasecredito.valhasta }} </td>
                             <td>{% if restriccionclasecredito.estado %}
                                 Activo

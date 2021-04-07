@@ -1,0 +1,148 @@
+{% extends 'asistente/index.html' %}
+{% block content %}
+    <div class="card shadow-lg border-0 rounded-lg mt-5">
+        <div class="card-header"><h3 class="text-center font-weight-light my-4">Restricción de Clase de Crédito</h3>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} m-2" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            {% if form.errors %}
+                <div class="alert alert-warning" role="alert">
+                    {% if form.val_min.errors %}
+                        Valor minimo {{ form.val_min.errors }}
+                    {% endif %}
+                    {% if form.val_max.errors %}
+                        Valor maximo {{ form.val_max.errors }}
+                    {% endif %}
+                    {% if form.plazo_max.errors %}
+                        Plazo máximo {{ form.plazo_max.errors }}
+                    {% endif %}
+                    {% if form.plazo_min.errors %}
+                        Plazo minimo {{ form.plazo_min.errors }}
+                    {% endif %}
+                    {% if form.tiempo_max.errors %}
+                        Tiempo de servicio máximo {{ form.tiempo_max.errors }}
+                    {% endif %}
+                    {% if form.tiempo_min.errors %}
+                        Tiempo de servicio minimo {{ form.tiempo_min.errors }}
+                    {% endif %}
+                    {% if form.estado.errors %}
+                        Estado {{ form.estado.errors }}
+                    {% endif %}
+                </div>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="text-md-center font-weight-bold text-primary" for="clasecreditoId">Clase de
+                        Crédito</label>
+                    <select class="selectpicker" name="clasecredito" id="clasecreditoId"
+                            required>
+                        <option value="" disabled selected>Escoger una opción</option>
+                        {% if clasecreditos %}
+                            {% for clasecredito in clasecreditos %}
+                                <option value="{{ clasecredito.id }}">{{ clasecredito.descripcion|title }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="tiempo_desdeId">Tiempo minimo de servicio (años)</label>
+                            <input class="form-control py-4" id="tiempo_desdeId" name="tiempo_min" type="number"
+                                   placeholder="Ingrese el tiempo minimo "
+                                   value="{{ restriccionclasecredito.tiempo_max }}"
+                                   onkeypress="return soloNumeros(event)" required/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="val_minId">Valor minimo</label>
+                            <input class="form-control py-4" id="val_minId" name="val_min" type="number"
+                                   placeholder="Ingrese la valor minimo" value="{{ restriccionclasecredito.val_min }}"
+                                   onkeypress="return soloNumeros(event)" required/>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="val_maxId">Valor maximo</label>
+                            <input class="form-control py-4" id="val_maxId" name="val_max" type="number"
+                                   placeholder="Ingrese la valor maximo" value="{{ restriccionclasecredito.val_max }}"
+                                   onkeypress="return soloNumeros(event)" required/>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="plazo_maxId">Plazo maximo (meses)</label>
+                            <input class="form-control py-4" id="plazo_maxId" name="plazo_max" type="number"
+                                   placeholder="Ingrese el plazo máximo "
+                                   value="{{ restriccionclasecredito.plazo_max }}"
+                                   onkeypress="return soloNumeros(event)" required/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <label class="small mb-1">Estado</label>
+                        <br>
+                        {% if restriccionclasecredito.estado is not None %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="estado" id="estadoId1"
+                                       value="True"
+                                       {% if restriccionclasecredito.estado %}checked{% endif %}/>
+                                <label class="form-check-label" for="estadoId1">
+                                    Activo
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="estado" id="estadoId2"
+                                       value="False"
+                                       {% if restriccionclasecredito.estado is False %}checked{% endif %}/>
+                                <label class="form-check-label" for="estadoId2">
+                                    Desactivado
+                                </label>
+                            </div>
+                        {% else %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="estado" id="estadoId1"
+                                       value="True" checked>
+                                <label class="form-check-label" for="estadoId1">
+                                    Activo
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="estado" id="estadoId2"
+                                       value="False">
+                                <label class="form-check-label" for="estadoId2">
+                                    Desactivado
+                                </label>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                    <a href="{% url 'asistente:clasecreditolist' %}">
+                        <svg class="svg-inline--fa fa-arrow-left fa-w-14 mr-1" aria-hidden="true" focusable="false"
+                             data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 448 512" data-fa-i2svg="">
+                            <path fill="currentColor"
+                                  d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
+                        </svg>
+                        Volver
+                    </a>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

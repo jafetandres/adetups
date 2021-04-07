@@ -37,24 +37,33 @@
             {% endif %}
             <form method="post">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label class="text-md-center font-weight-bold text-primary" for="clasecreditoId">Clase de
-                        Crédito</label>
-                    <select class="selectpicker" name="clasecredito" id="clasecreditoId" onchange="enviarParametros()"
-                            required>
-                        <option value="" disabled selected>Escoger una opción</option>
-                        {% if clasecreditos %}
-                            {% for clasecredito in clasecreditos %}
-                                {% if solicitudcredito.clasecredito %}
-                                    <option value="{{ clasecredito.id }}"
-                                            {% if solicitudcredito.clasecredito.id == clasecredito.id %}
-                                            selected{% endif %}>{{ clasecredito.descripcion|title }}</option>
-                                {% else %}
-                                    <option value="{{ clasecredito.id }}">{{ clasecredito.descripcion|title }}</option>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="text-md-center font-weight-bold text-primary" for="clasecreditoId">Clase de
+                                Crédito</label>
+                            <select class="selectpicker" name="clasecredito" id="clasecreditoId"
+                                    onchange="enviarParametros()"
+                                    required>
+                                <option value="" disabled selected>Escoger una opción</option>
+                                {% if clasecreditos %}
+                                    {% for clasecredito in clasecreditos %}
+                                        {% if solicitudcredito.clasecredito %}
+                                            <option value="{{ clasecredito.id }}"
+                                                    {% if solicitudcredito.clasecredito.id == clasecredito.id %}
+                                                    selected{% endif %}>{{ clasecredito.descripcion|title }}</option>
+                                        {% else %}
+                                            <option value="{{ clasecredito.id }}">{{ clasecredito.descripcion|title }}</option>
+                                        {% endif %}
+                                    {% endfor %}
                                 {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    </select>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <p>Tus años de servicio son: <b>{{ anios_servicio }}</b> años
+                        </p>
+                    </div>
                 </div>
                 <div id="infoCreditoId"></div>
                 <div class="form-row">
@@ -92,7 +101,7 @@
                         </div>
                     </div>
                     <div class="col-4">
-                        <label id="labelGarante"></label>
+                        <label class="text-primary" id="labelGarante"></label>
                     </div>
                 </div>
                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
@@ -103,13 +112,13 @@
                                  viewBox="0 0 448 512" data-fa-i2svg="">
                                 <path fill="currentColor"
                                       d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
-                            </svg><!-- <i class="fas fa-arrow-left mr-1"></i> -->
+                            </svg>
                             Volver
                         </a>
                     </div>
                     <div class="col-md-6 text-right">
                         <button type="button" class="btn btn-success" data-toggle="modal"
-                                data-target="#modalTablaAmortizacion" onclick="calcular()" id="buttonAmortizacion"
+                                data-target="#modalTablaAmortizacion" id="buttonAmortizacion"
                                 disabled>Ver tabla de amortizacion
                         </button>
                         <button type="submit" class="btn btn-primary">Guardar</button>
@@ -189,27 +198,26 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="tablaAmortizacion" width="100%" cellspacing="0">
+                                <table class="table table-bordered" id="lista-tabla" width="100%" cellspacing="0">
                                     <thead>
                                     <tr>
-                                        <th>Numero</th>
-                                        <th>Interes</th>
-                                        <th>Abono Capital</th>
-                                        <th>Valor cuota</th>
-                                        <th>Saldo capital</th>
+                                        <th>Fecha de pago</th>
+                                        <th>Cuota</th>
+                                        <th>Capital</th>
+                                        <th>Interés</th>
+                                        <th>Saldo</th>
                                     </tr>
                                     </thead>
                                     <tfoot>
                                     <tr>
-                                        <th>Numero</th>
-                                        <th>Interes</th>
-                                        <th>Abono Capital</th>
-                                        <th>Valor cuota</th>
-                                        <th>Saldo capital</th>
+                                        <th>Fecha de pago</th>
+                                        <th>Cuota</th>
+                                        <th>Capital</th>
+                                        <th>Interés</th>
+                                        <th>Saldo</th>
                                     </tr>
                                     </tfoot>
-                                    <tbody id="tbody_1">
-
+                                    <tbody>
                                     </tbody>
                                 </table>
                             </div>
@@ -225,7 +233,6 @@
 
 {% endblock %}
 {% block js %}
-
     <script>
         $('select').selectpicker();
     </script>
@@ -238,7 +245,6 @@
                 return false;
             } else {
                 if (monto && plazo) {
-
                     document.getElementById('buttonAmortizacion').disabled = false;
                     {#calcular();#}
                 } else {
@@ -247,13 +253,12 @@
                 return true;
 
             }
-
-
         }
     </script>
     <script>
         $(document).ready(function () {
             var table = $('#tablaGarante').DataTable();
+            document.getElementById("garanteId").value = '';
             $('#tablaGarante tbody').on('click', 'tr', function () {
                 var data = table.row(this).data();
                 if ($(this).hasClass('text-success')) {
@@ -269,165 +274,12 @@
             });
         });
     </script>
-
-    <script>
-        function calculate() {
-            // Get the user's input from the form. Assume it is all valid.
-            // Convert interest from a percentage to a decimal, and convert from
-            // an annual rate to a monthly rate. Convert payment period in years
-            // to the number of monthly payments.
-            {#var principal = document.loandata.principal.value;#}
-            {#var interest = document.loandata.interest.value / 100 / 12;#}
-            {#var payments = document.loandata.years.value * 12;#}
-            var principal = 4000;
-            var interest = 9 / 100 / 12;
-            var payments = 18;
-
-            // Now compute the monthly payment figure, using esoteric math.
-            var x = Math.pow(1 + interest, payments);
-            var monthly = (principal * x * interest) / (x - 1);
-
-            // Check that the result is a finite number. If so, display the results.
-            if (!isNaN(monthly) &&
-                (monthly != Number.POSITIVE_INFINITY) &&
-                (monthly != Number.NEGATIVE_INFINITY)) {
-
-                {#document.loandata.payment.value = round(monthly);#}
-                {#document.loandata.total.value = round(monthly * payments);#}
-                {#document.loandata.totalinterest.value =#}
-                {#    round((monthly * payments) - principal);#}
-                console.log(round(monthly));
-                console.log(round(monthly * payments));
-                console.log(round((monthly * payments) - principal));
-
-            }
-                // Otherwise, the user's input was probably invalid, so don't
-            // display anything.
-            else {
-                document.loandata.payment.value = "";
-                document.loandata.total.value = "";
-                document.loandata.totalinterest.value = "";
-            }
-        }
-
-        // This simple method rounds a number to two decimal places.
-        function round(x) {
-            return Math.round(x * 100) / 100;
-        }
-    </script>
-    <script>
-
-        function getTasa(tasa) {
-            tasa = tasa / 12
-            tasa = tasa / 100.0
-            return tasa;
-        }
-
-        function getValorDeCuotaFija(monto, tasa, cuotas, periodo) {
-            tasa = getTasa(tasa, periodo);
-            valor = monto * ((tasa * Math.pow(1 + tasa, cuotas)) / (Math.pow(1 + tasa, cuotas) - 1));
-            return valor.toFixed(2);
-        }
-
-        function getAmortizacion(monto, tasa, cuotas, periodo) {
-            var valor_de_cuota = getValorDeCuotaFija(monto, tasa, cuotas, periodo);
-            var saldo_al_capital = monto;
-            var items = new Array();
-
-            for (i = 0; i < cuotas; i++) {
-                interes = saldo_al_capital * getTasa(tasa, periodo);
-                abono_al_capital = valor_de_cuota - interes;
-                saldo_al_capital -= abono_al_capital;
-                numero = i + 1;
-
-                interes = interes.toFixed(2);
-                abono_al_capital = abono_al_capital.toFixed(2);
-                saldo_al_capital = saldo_al_capital.toFixed(2);
-
-                item = [numero, interes, abono_al_capital, valor_de_cuota, saldo_al_capital];
-                items.push(item);
-            }
-            return items;
-        }
-
-
-        function setMoneda(num) {
-            num = num.toString().replace(/\$|\,/g, '');
-            if (isNaN(num)) num = "0";
-            sign = (num == (num = Math.abs(num)));
-            num = Math.floor(num * 100 + 0.50000000001);
-            cents = num % 100;
-            num = Math.floor(num / 100).toString();
-            if (cents < 10) cents = "0" + cents;
-            for (var i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++)
-                num = num.substring(0, num.length - (4 * i + 3)) + ',' + num.substring(num.length - (4 * i + 3));
-            return (((sign) ? '' : '-') + '$' + num + ((cents == "00") ? '' : '.' + cents));
-        }
-
-
-        function calcular() {
-
-            var monto = document.getElementById("montoId").value;
-            var cuotas = document.getElementById("plazoId").value;
-            var tasa = 9;
-            if (!monto) {
-                alert('Indique el monto');
-                return;
-            }
-            if (!cuotas) {
-                alert('Indique las cuotas');
-                return;
-            }
-            if (parseInt(cuotas) < 1) {
-                alert('Las cuotas deben ser de 1 en adelante');
-                return;
-            }
-
-
-            var items = getAmortizacion(monto, tasa, cuotas,);
-            var t = $('#tablaAmortizacion').DataTable();
-            t.clear().draw();
-
-
-            if (parseInt(cuotas) > 3000) {
-                alert("Ha indicado una cantidad excesiva de cuotas, porfavor reduzcala a menos de 3000");
-                return;
-            }
-
-
-            for (i = 0; i < items.length; i++) {
-                item = items[i];
-                tr = document.createElement("tr");
-                for (e = 0; e < item.length; e++) {
-                    value = item[e];
-                    if (e > 0) {
-                        value = setMoneda(value);
-                    }
-
-                    td = document.createElement("td");
-                    textCell = document.createTextNode(value);
-                    td.appendChild(textCell);
-                    tr.appendChild(td);
-
-                }
-                t.row.add(tr).draw(false);
-
-
-            }
-            var div1 = document.getElementById("cuofijaId");
-            valor = setMoneda(items[0][3]);
-            div1.innerHTML = valor;
-
-
-        }
-    </script>
     <script>
         $(document).ready(function () {
             enviarParametros();
         });
     </script>
     <script>
-
         function enviarParametros() {
 
             var infoCredito = document.getElementById('infoCreditoId');
@@ -438,24 +290,30 @@
                 if (creditos.value == {{ clasecredito.id }}) {
                     infoCredito.innerHTML = '<h5 class="">Información sobre el Crédito {{ clasecredito.descripcion|title }} </h5>'
                     infoCredito.appendChild(listElement);
-                    listItem1 = document.createElement('li');
-                    listItem2 = document.createElement('li');
-                    listItem3 = document.createElement('li');
-                    listItem4 = document.createElement('li');
-                    listItem1.className = 'text-secondary'
-                    listItem2.className = 'text-secondary'
-                    listItem3.className = 'text-secondary'
-                    listItem4.className = 'text-secondary'
+                    {% for restriccion in clasecredito.restricciones.all %}
+                        listItem{{ forloop.counter }} = document.createElement('li');
+                        listItem{{ forloop.counter }}.className = 'text-secondary';
+                        listItem{{ forloop.counter }}.innerHTML = 'Si tienes entre {{ restriccion.tiempo_min }}-{{ restriccion.tiempo_max }} años de servicio. Puedes solicitar desde $ {{ restriccion.val_min }} hasta $ {{ restriccion.val_max }}, con un plazo maximo de {{ restriccion.plazo_max }} meses';
+                        listElement.appendChild(listItem{{ forloop.counter }});
+                    {% endfor %}
+                    {#listItem1 = document.createElement('li');#}
+                    {#listItem2 = document.createElement('li');#}
+                    {#listItem3 = document.createElement('li');#}
+                    {#listItem4 = document.createElement('li');#}
+                    {#listItem1.className = 'text-secondary'#}
+                    {#listItem2.className = 'text-secondary'#}
+                    {#listItem3.className = 'text-secondary'#}
+                    {#listItem4.className = 'text-secondary'#}
 
-                    listItem1.innerHTML = 'Puedes solicitar desde $ {{ clasecredito.valdesde }} hasta $ {{ clasecredito.valhasta }} ';
-                    listItem2.innerHTML = 'Plazo maximo de cuotas {{ clasecredito.plazomax }} meses';
-                    listItem3.innerHTML = 'Tiempo mínimo de servicio {{ clasecredito.tiempo_minimo_servicio }} años';
-                    listItem4.innerHTML = 'Interes {{ clasecredito.porcentaje_interes }} %';
+                    {#listItem1.innerHTML = 'Puedes solicitar desde $ {{ clasecredito.valdesde }} hasta $ {{ clasecredito.valhasta }} ';#}
+                    {#listItem2.innerHTML = 'Plazo maximo de cuotas {{ clasecredito.plazomax }} meses';#}
+                    {#listItem3.innerHTML = 'Tiempo mínimo de servicio {{ clasecredito.tiempo_minimo_servicio }} años';#}
+                    {#listItem4.innerHTML = 'Interes {{ clasecredito.porcentaje_interes }} %';#}
 
-                    listElement.appendChild(listItem1);
-                    listElement.appendChild(listItem2);
-                    listElement.appendChild(listItem3);
-                    listElement.appendChild(listItem4);
+                    {#listElement.appendChild(listItem1);#}
+                    {#listElement.appendChild(listItem2);#}
+                    {#listElement.appendChild(listItem3);#}
+                    {#listElement.appendChild(listItem4);#}
 
                     {#listElement.appendChild(listItem3);#}
                     {#monto.innerText = '(Desde $ {{ clasecredito.valdesde }} - Hasta $ {{ clasecredito.valhasta }} )';#}

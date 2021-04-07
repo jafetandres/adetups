@@ -224,11 +224,10 @@ class SolicitudCreditoUpdate(AsistenteRequiredMixin, UpdateView):
             for cuota in cuotas:
                 credito.cuotas.add(cuota.id)
 
-
         return super().form_valid(form)
 
     def get_success_url(self):
-        messages.success(self.request,"Estado de solicitud actualizado correctamente")
+        messages.success(self.request, "Estado de solicitud actualizado correctamente")
         return reverse_lazy('asistente:solicitudcreditoupdate', args=[self.object.id])
 
 
@@ -254,6 +253,14 @@ class SolicitudCreditoCreate(AsistenteRequiredMixin, CreateView):
         socio_usuario = Socio.objects.get(usuario_id=self.kwargs['usuario_id'])
         context["socio"] = socio_usuario
         context["garantes"] = garantes
+        socio = Socio.objects.get(usuario_id=self.request.user.id)
+        if self.kwargs['usuario_id']:
+            socio = Socio.objects.get(usuario_id=self.kwargs['usuario_id'])
+        fecha_actual = date.today()
+        num_anios = diasHastaFecha(socio.fecha_ingreso.day, socio.fecha_ingreso.month, socio.fecha_ingreso.year,
+                                   fecha_actual.day,
+                                   fecha_actual.month, fecha_actual.year) / 365
+        context["anios_servicio"] = int(num_anios)
         return context
 
     def form_valid(self, form):
@@ -274,10 +281,26 @@ class SolicitudCreditoCreate(AsistenteRequiredMixin, CreateView):
         num_anios = diasHastaFecha(socio.fecha_ingreso.day, socio.fecha_ingreso.month, socio.fecha_ingreso.year,
                                    fecha_actual.day,
                                    fecha_actual.month, fecha_actual.year) / 365
-        if int(num_anios) < data['clasecredito'].tiempo_minimo_servicio:
-            messages.error(self.request,
-                           'El socio no cumple con el tiempo minimo de servicio para esta clase de prestamo')
-            return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
+        # if int(num_anios) < data['clasecredito'].tiempo_minimo_servicio:
+        #     messages.error(self.request,
+        #                    'El socio no cumple con el tiempo minimo de servicio para esta clase de prestamo')
+        #     return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
+
+        for restriccion in data['clasecredito'].restricciones.all():
+            if int(num_anios) >= restriccion.tiempo_min:
+                if data['monto'] < restriccion.val_min or data['monto'] > restriccion.val_max:
+                    messages.error(self.request,
+                                   'Por favor  revise que el monto ingresado respete la restriccion del credito')
+                    return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
+
+                if data['plazo'] > restriccion.plazo_max:
+                    messages.error(self.request,
+                                   'Por favor  revise que el plazo ingresado respete la restriccion del credito')
+                    return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
+            else:
+                messages.error(self.request,
+                               'Por favor  revise su tiempo de servicio')
+                return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
 
         # garante = Socio.objects.get(id=data['garante'])
         # solicitudcredito = form.save(commit=False)
@@ -464,6 +487,7 @@ def guardar_rubros_moviestar(request):
 def guardar_rubros_general(request):
     global rubros_generados_general
     clases_rubros = []
+    clases_rubros1 = []
     global colum_name
     if request.method == 'POST':
         for num1, rubrosfilas in enumerate(rubros_generados_general, start=0):
@@ -471,25 +495,84 @@ def guardar_rubros_general(request):
                 for num2, rubroscolum in enumerate(rubrosfilas, start=0):
                     if num2 > 2:
                         rubroexistente = rubroscolum, num2
-                        clases_rubros.append(rubroexistente)
+                        clases_rubros1.append(rubroexistente)
             if num1 > 0:
                 for num2, rubroscolum in enumerate(rubrosfilas, start=0):
                     if num2 == 2:
-                        usuario = Usuario.objects.get(username=rubrosfilas[2])
+                        usuario = Usuario.objects.get(username=rubroscolum)
                         socio = Socio.objects.get(usuario_id=usuario.id)
                     if num2 > 2:
                         if isinstance(rubroscolum, float) or isinstance(rubroscolum, int):
                             if rubroscolum > 0:
-                                for clase in clases_rubros:
+                                for clase in clases_rubros1:
                                     if num2 == clase[1]:
                                         print(clase[0])
-                                        rubro_generado = RubroSocio.objects.create(
-                                            rubro=Rubro.objects.get(abreviatura=clase[0]),
-                                            descripcion=clase[0]
-                                        )
+                                        if clase[0] == 'PRESTAMO':
+                                            if Credito.objects.filter(socio=socio).exists():
+                                                print(socio.usuario.nombres)
+                                                credito = Credito.objects.get(socio=socio, estado='aprobado')
+                                                print(credito)
+                                                valor_rubro = rubroscolum
+                                                for cuota in credito.cuotas.all().order_by('orden'):
+                                                    if cuota.estado == False:
+                                                        print("valor1 ", rubroscolum)
+                                                        print(type(rubroscolum))
+                                                        valor_anterior = cuota.valor_cuota
 
-                                        socio.rubros.add(rubro_generado)
-                                        socio.save()
+                                                        valor_actual = float(valor_anterior) - rubroscolum
+                                                        print("valor actual1", valor_actual)
+                                                        rubroscolum = abs(valor_actual)
+                                                        if valor_actual <= 0:
+                                                            print("valor actual2", valor_actual)
+                                                            cuota.estado = True
+                                                            cuota.save()
+                                                            print(cuota.estado)
+                                                        if rubroscolum > 0 and cuota.estado == False:
+                                                            print("valor 2", rubroscolum)
+                                                            cuota.valor_cuota = valor_actual
+                                                            cuota.save()
+                                                            if rubroscolum > 0:
+                                                                rubroscolum = 0
+
+                                                rubro_generado = RubroSocio.objects.create(
+                                                    rubro=Rubro.objects.get(
+                                                        abreviatura=clase[0].strip(' ')),
+                                                    descripcion=clase[0], valor=valor_rubro
+                                                )
+                                                socio.rubros.add(rubro_generado)
+                                                socio.save()
+
+                                        else:
+                                            rubro_generado = RubroSocio.objects.create(
+                                                rubro=Rubro.objects.get(abreviatura=clase[0].strip(' ')),
+                                                descripcion=clase[0], valor=rubroscolum
+                                            )
+                                            socio.rubros.add(rubro_generado)
+                                            socio.save()
+        # for num1, rubrosfilas in enumerate(rubros_generados_general, start=0):
+        #     if num1 == 0:
+        #         for num2, rubroscolum in enumerate(rubrosfilas, start=0):
+        #             if num2 > 2:
+        #                 rubroexistente = rubroscolum, num2
+        #                 clases_rubros.append(rubroexistente)
+        #     if num1 > 0:
+        #         for num2, rubroscolum in enumerate(rubrosfilas, start=0):
+        #             if num2 == 2:
+        #                 usuario = Usuario.objects.get(username=rubrosfilas[2])
+        #                 socio = Socio.objects.get(usuario_id=usuario.id)
+        #             if num2 > 2:
+        #                 if isinstance(rubroscolum, float) or isinstance(rubroscolum, int):
+        #                     if rubroscolum > 0:
+        #                         for clase in clases_rubros:
+        #                             if num2 == clase[1]:
+        #                                 print(clase[0])
+        #                                 rubro_generado = RubroSocio.objects.create(
+        #                                     rubro=Rubro.objects.get(abreviatura=clase[0]),
+        #                                     descripcion=clase[0]
+        #                                 )
+        #
+        #                                 socio.rubros.add(rubro_generado)
+        #                                 socio.save()
 
         messages.success(request, 'Rubros generados correctamente')
         rubros_generados_general = []
@@ -611,6 +694,16 @@ class ClaseCreditoListView(AsistenteRequiredMixin, ListView):
 class ClaseCreditoDetailView(AsistenteRequiredMixin, DetailView):
     model = ClaseCredito
     template_name = 'asistente/clasecredito_detail.html'
+
+
+class ClaseCreditoCreate(AsistenteRequiredMixin, CreateView):
+    model = ClaseCredito
+    fields = ['descripcion', 'garante', 'estado']
+    template_name = 'asistente/clasecredito_form.html'
+
+    def get_success_url(self):
+        messages.success(self.request, "Registro creado exitosamente")
+        return reverse_lazy('asistente:clasecreditolist')
 
 
 class ParametroListView(ListView):
@@ -902,9 +995,45 @@ def consultar_rubros(request):
     return render(request, 'asistente/consultar_rubros.html', {'rubros': rubros, 'socio': socio})
 
 
-class RestriccionClaseCreditoList(AsistenteRequiredMixin, ListView):
-    model = RestriccionClaseCredito
+class RestriccionClaseCreditoList(AsistenteRequiredMixin, TemplateView):
     template_name = 'asistente/restriccionclasecredito_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['clasecreditos'] = ClaseCredito.objects.all()
+        return context
+
+
+# class RestriccionClaseCreditoList(AsistenteRequiredMixin, Tem):
+#     model = RestriccionClaseCredito
+#     template_name = 'asistente/restriccionclasecredito_list.html'
+
+class RestriccionClaseCreditoDetail(AsistenteRequiredMixin, DetailView):
+    model = RestriccionClaseCredito
+    template_name = 'asistente/restriccionclasecredito_detail.html'
+
+
+class RestriccionClaseCreditoCreate(AsistenteRequiredMixin, CreateView):
+    model = RestriccionClaseCredito
+    fields = ['tiempo_min', 'val_max', 'val_min', 'plazo_max', 'estado']
+    template_name = 'asistente/restriccionclasecredito_form.html'
+
+    def form_valid(self, form):
+        clasecredito = ClaseCredito.objects.get(id=self.request.POST['clasecredito'])
+        restriccionclasecredito = form.save(commit=False)
+        restriccionclasecredito.save()
+        clasecredito.restricciones.add(restriccionclasecredito)
+
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['clasecreditos'] = ClaseCredito.objects.all()
+        return context
+
+    def get_success_url(self):
+        messages.success(self.request, "Registro creado exitosamente")
+        return reverse_lazy('asistente:restriccionclasecreditolist')
 
 
 PAGE_WIDTH = A4[0]
@@ -973,7 +1102,7 @@ def generar_solicitud_pdf(request, pk):
         num_anios = ''
     data3 = [[Paragraph('<b>Departamento/Carrera:</b>'), Paragraph(str(solicitudcredito.socio.area))],
              [Paragraph('<b>Cargo:</b>'), Paragraph(str(solicitudcredito.socio.cargo))],
-             [Paragraph('<b>Tiempo de servicio:</b>'), num_anios],
+             [Paragraph('<b>Tiempo de servicio:</b>'), int(num_anios)],
              ]
     t3 = Table(data3)
     story.append(t3)
@@ -997,6 +1126,13 @@ def generar_solicitud_pdf(request, pk):
 
     ]))
     story.append(t2)
+    data1 = [[Paragraph('<b>Nombres y Apellidos:</b>'), nombres_socio],
+             [Paragraph('<b>Cédula:</b>'), cedula_socio],
+             [Paragraph('<b>Dirección:</b>'), direccion_socio],
+             [Paragraph('<b>Teléfono:</b>'), telefono_socio],
+             ]
+    t1 = Table(data1)
+    story.append(t1)
     doc.build(story, onFirstPage=myFirstPage, onLaterPages=myLaterPages)
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename='adetups_solicitudcredito.pdf')

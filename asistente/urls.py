@@ -21,6 +21,8 @@ urlpatterns = [
     path('socioupdate/<int:pk>/', SocioUpdate.as_view(), name="socioupdate"),
     path('clasecreditolist/', ClaseCreditoListView.as_view(), name="clasecreditolist"),
     path('clasecreditodetail/<int:pk>/', ClaseCreditoDetailView.as_view(), name="clasecreditodetail"),
+    path('clasecreditocreate/', ClaseCreditoCreate.as_view(), name="clasecreditocreate"),
+
     path('parametrolist/', ParametroListView.as_view(), name="parametrolist"),
     path('parametrodetail/<int:pk>/', ParametroDetailView.as_view(),
          name="parametrodetail"),
@@ -45,8 +47,12 @@ urlpatterns = [
          name="liquidacioncreditocreate"),
     path('consultarcuotas/', consultar_cuotas, name="consultarcuotas"),
     path('restriccionclasecreditolist/', RestriccionClaseCreditoList.as_view(), name="restriccionclasecreditolist"),
+    path('restriccionclasecreditocreate/', RestriccionClaseCreditoCreate.as_view(),
+         name="restriccionclasecreditocreate"),
+    path('restriccionclasecreditodetail/<int:pk>/', RestriccionClaseCreditoDetail.as_view(),
+         name="restriccionclasecreditodetail"),
     path('generarsolicitudpdf/<int:pk>/', generar_solicitud_pdf, name="generarsolicitudpdf"),
     path('reportescreditos', reportes_creditos, name="reportescreditos"),
-    path('table/as_json/',TableAsJSON.as_view(), name='table-as-json'),
+    path('table/as_json/', TableAsJSON.as_view(), name='table-as-json'),
     path('tablesocio/as_json/', TableSocioAsJSON.as_view(), name='tablesocio-as-json'),
 ]

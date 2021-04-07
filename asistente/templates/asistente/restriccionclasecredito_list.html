@@ -7,12 +7,18 @@
                     <i class="fas fa-table mr-1"></i>
                     Restricciones de Clase de Crédito
                 </div>
-
+                <div class="col-6" align="right">
+                    <a class="btn" href="{% url 'asistente:restriccionclasecreditocreate' %}"><i
+                            class="fa fa-plus fa-fw"
+                            aria-hidden="true"></i>Añadir
+                        restricción de clase de crédito
+                    </a>
+                </div>
             </div>
         </div>
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
+                <div class="alert alert-{{ message.tags }} m-2" role="alert">{{ message }}</div>
             {% endfor %}
         {% endif %}
         <div class="card-body">
@@ -21,8 +27,9 @@
                     <thead>
                     <tr>
                         <th>Clase de Crédito</th>
-                        <th>Tiempo desde</th>
-                        <th>Tiempo hasta</th>
+                        <th>Tiempo minimo de servicio</th>
+
+                        <th>Valor minimo</th>
                         <th>Valor màximo</th>
                         <th>Estado</th>
                     </tr>
@@ -30,33 +37,58 @@
                     <tfoot>
                     <tr>
                         <th>Clase de Crédito</th>
-                        <th>Tiempo desde</th>
-                        <th>Tiempo hasta</th>
+                        <th>Tiempo minimo de servicio</th>
+
+                        <th>Valor minimo</th>
                         <th>Valor màximo</th>
                         <th>Estado</th>
                     </tr>
                     </tfoot>
                     <tbody>
-                    {% for restriccionclasecredito in restriccionclasecredito_list %}
-                        <tr>
-                            <td>
-                                {{ restriccionclasecredito.clasecredito.descripcion|title }}
-                            </td>
-                            <td>{{ restriccionclasecredito.tiempo_desde }} meses</td>
-                            <td>{{ restriccionclasecredito.tiempo_hasta }} meses</td>
-                            <td>$ {{ restriccionclasecredito.valhasta }} </td>
-                            <td>{% if restriccionclasecredito.estado %}
-                                Activo
-                            {% endif %}
-                                {% if restriccionclasecredito.estado is False %}
-                                    Desactivado
+                    {% for clasecredito in clasecreditos %}
+                        {% for restriccionclasecredito in clasecredito.restricciones.all %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'asistente:restriccionclasecreditodetail' restriccionclasecredito.id %}">{{ clasecredito.descripcion|title }}</a>
+                                </td>
+                                <td>{{ restriccionclasecredito.tiempo_min }} años</td>
+                                <td>$ {{ restriccionclasecredito.val_min }} </td>
+                                <td>$ {{ restriccionclasecredito.val_max }} </td>
+                                <td>{% if restriccionclasecredito.estado %}
+                                    Activo
                                 {% endif %}
-                            </td>
-                        </tr>
+                                    {% if restriccionclasecredito.estado is False %}
+                                        Desactivado
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
                     {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+{% endblock %}
+{% block js %}
+    <script>
+        $('table').DataTable({
+            language: {
+                search: "Buscar:",
+                lengthMenu: "Mostrar _MENU_ registros",
+                info: "Se muestra de _START_ a _END_ registros de _TOTAL_ registros en total",
+                infoEmpty: "Se muestra 0 registros de 0 ",
+                infoFiltered: "(Hay _MAX_ registros en total)",
+                infoPostFix: "",
+                loadingRecords: "Cargando...",
+                zeroRecords: "No existen registros",
+                paginate: {
+                    first: "Primero",
+                    previous: "Previo",
+                    next: "Siguiente",
+                    last: "Anterior"
+                },
+            }
+        });
+    </script>
 {% endblock %}
