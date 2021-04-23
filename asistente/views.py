@@ -17,7 +17,7 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Spacer, Paragraph, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Spacer, Paragraph, Table, TableStyle, PageBreak
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
 from asistente.forms import SolicitudCreditoForm
 from sistema.forms import UsuarioForm
@@ -191,7 +191,10 @@ class SolicitudCreditoUpdate(AsistenteRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         data = form.cleaned_data
+        if data["estado"] == 'revisada':
+            form.instance.revisada_por = Usuario.objects.get(id=self.request.user.id)
         if data["estado"] == 'aprobada':
+            form.instance.aprobada_por = Usuario.objects.get(id=self.request.user.id)
             print("monto1", self.object.monto)
             monto = float(self.object.monto)
             print("monto2", monto)
@@ -257,9 +260,13 @@ class SolicitudCreditoCreate(AsistenteRequiredMixin, CreateView):
         if self.kwargs['usuario_id']:
             socio = Socio.objects.get(usuario_id=self.kwargs['usuario_id'])
         fecha_actual = date.today()
-        num_anios = diasHastaFecha(socio.fecha_ingreso.day, socio.fecha_ingreso.month, socio.fecha_ingreso.year,
-                                   fecha_actual.day,
-                                   fecha_actual.month, fecha_actual.year) / 365
+        if socio.fecha_ingreso is not None:
+            num_anios = diasHastaFecha(socio.fecha_ingreso.day, socio.fecha_ingreso.month, socio.fecha_ingreso.year,
+                                       fecha_actual.day,
+                                       fecha_actual.month, fecha_actual.year) / 365
+        else:
+            num_anios = 0
+            messages.error(self.request, 'El socio no tiene fecha de ingreso actualize sus datos')
         context["anios_servicio"] = int(num_anios)
         return context
 
@@ -348,6 +355,8 @@ rubros_generados_moviestar = []
 
 def cargar_rubros_moviestar(request):
     titulo = ' Rubros Moviestar unicamente'
+    global rubros_generados_moviestar
+    rubros_generados_moviestar = []
     if request.method == 'POST':
         if bool(request.FILES.get('archivo_rubros', False)):
             try:
@@ -473,7 +482,7 @@ def guardar_rubros_moviestar(request):
             if Usuario.objects.filter(username=rubro[2]).exists():
                 usuario = Usuario.objects.get(username=rubro[2])
                 rubro_generado = RubroSocio.objects.create(rubro_id=1,
-                                                           descripcion=rubro[10],
+                                                           descripcion=rubro[3],
                                                            valor=rubro[12])
 
                 socio = Socio.objects.get(usuario_id=usuario.id)
@@ -1055,12 +1064,24 @@ def generar_solicitud_pdf(request, pk):
     doc = SimpleDocTemplate(buffer)
     story = [Spacer(0, 80)]
     linkStyle = ParagraphStyle(
-        'link',
-        textColor='#3366BB'
+        name='liknstyle',
+        alignment=TA_CENTER,
+        fontSize=18,
+
     )
     fecha_ingreso = Paragraph('<b>Fecha de ingreso: </b>' + str(solicitudcredito.fecha_ingreso))
     clase_nombre = Paragraph('<b>Clase de Crédito: </b>' + str(solicitudcredito.clasecredito.descripcion.title()))
-    data = [[fecha_ingreso, clase_nombre]]
+    if solicitudcredito.revisada_por is not None:
+        revisada_por = Paragraph('<b>Revisada por: </b>' + str(solicitudcredito.revisada_por.nombres.title()) + str(
+            solicitudcredito.revisada_por.apellidos.title()))
+    else:
+        revisada_por = ''
+    if solicitudcredito.aprobada_por is not None:
+        aprobada_por = Paragraph('<b>Aprobada por: </b>' + str(solicitudcredito.aprobada_por.nombres.title()) + str(
+            solicitudcredito.aprobada_por.apellidos.title()))
+    else:
+        aprobada_por = ''
+    data = [[fecha_ingreso, clase_nombre], [revisada_por, aprobada_por]]
     t = Table(data)
     story.append(t)
 
@@ -1126,13 +1147,35 @@ def generar_solicitud_pdf(request, pk):
 
     ]))
     story.append(t2)
-    data1 = [[Paragraph('<b>Nombres y Apellidos:</b>'), nombres_socio],
-             [Paragraph('<b>Cédula:</b>'), cedula_socio],
-             [Paragraph('<b>Dirección:</b>'), direccion_socio],
-             [Paragraph('<b>Teléfono:</b>'), telefono_socio],
-             ]
-    t1 = Table(data1)
-    story.append(t1)
+    story.append(PageBreak())
+    story.append(Paragraph('Cuotas',linkStyle))
+    story.append(Spacer(1, 0.2 * inch))
+    monto = float(solicitudcredito.monto)
+    per = np.arange(1 * solicitudcredito.plazo) + 1
+    ipmt = npf.ipmt(0.09 / 12, per, 1 * solicitudcredito.plazo, monto)
+    ppmt = npf.ppmt(0.09 / 12, per, 1 * solicitudcredito.plazo, monto)
+    pmt = npf.pmt(0.09 / 12, 1 * solicitudcredito.plazo, monto)
+    np.allclose(ipmt + ppmt, pmt)
+    fmt = '{0:2d} {1:8.2f} {2:8.2f} {3:8.2f}'
+    cuotas = []
+    cuotas.append(['N°', 'Capital', 'Interés', 'Saldo Capital', 'Valor cuota'])
+    for payment in per:
+        index = payment - 1
+        monto = monto + ppmt[index]
+        cuotas.append([payment, abs(round(ppmt[index], 2)), abs(round(ipmt[index], 2)), abs(round(monto, 2)),
+                       round(abs(round(ppmt[index], 2)) + abs(round(ipmt[index], 2)), 2)])
+
+    # data1 = [[Paragraph('<b>Nombres y Apellidos:</b>'), nombres_socio],
+    #          [Paragraph('<b>Cédula:</b>'), cedula_socio],
+    #          [Paragraph('<b>Dirección:</b>'), direccion_socio],
+    #          [Paragraph('<b>Teléfono:</b>'), telefono_socio],
+    #          ]
+    tabla_cuotas = Table(cuotas)
+
+    tabla_cuotas.setStyle(TableStyle([('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                                      ('BOX', (0, 0), (-1, -1), 0.25, colors.black), ]))
+
+    story.append(tabla_cuotas)
     doc.build(story, onFirstPage=myFirstPage, onLaterPages=myLaterPages)
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename='adetups_solicitudcredito.pdf')
@@ -1143,7 +1186,7 @@ def myFirstPage(canvas, doc):
     global pk_solicitudcredito
     canvas.saveState()
     canvas.setTitle("Adetups_reportcredito")
-    titulo = 'Solicitud de Crédito Nro. ' + str(pk_solicitudcredito)
+    titulo = 'Solicitud de Crédito'
     archivo_imagen = 'asistente/static/img/logo_adetups.png'
     canvas.drawImage(archivo_imagen, 40, 750, 120, 90, preserveAspectRatio=True, mask='auto')
     canvas.setFont('Times-Roman', 18)

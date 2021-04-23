@@ -18,27 +18,27 @@
             {% endif %}
             <form method="post">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label class="text-md-center font-weight-bold text-primary" for="clasecreditoId">Escoja el mes
-                        perteneciente
-                        a los rubros: </label>
-                    <select class="selectpicker" name="clasecredito" id="clasecreditoId" onchange="enviarParametros()"
-                            required>
-                        <option value="" disabled selected>Escoger una opción</option>
-                        <option value="enero">Enero</option>
-                        <option value="febrero">Febrero</option>
-                        <option value="marzo">Marzo</option>
-                        <option value="abril">Abril</option>
-                        <option value="mayo">Mayo</option>
-                        <option value="junio">Junio</option>
-                        <option value="julio">Julio</option>
-                        <option value="agosto">Agosto</option>
-                        <option value="septiembre">Septiembre</option>
-                        <option value="octubre">Octubre</option>
-                        <option value="noviembre">Noviembre</option>
-                        <option value="diciembre">Diciembre</option>
-                    </select>
-                </div>
+                {#                <div class="form-group">#}
+                {#                    <label class="text-md-center font-weight-bold text-primary" for="clasecreditoId">Escoja el mes#}
+                {#                        perteneciente#}
+                {#                        a los rubros: </label>#}
+                {#                    <select class="selectpicker" name="clasecredito" id="clasecreditoId" onchange="enviarParametros()"#}
+                {#                            required>#}
+                {#                        <option value="" disabled selected>Escoger una opción</option>#}
+                {#                        <option value="enero">Enero</option>#}
+                {#                        <option value="febrero">Febrero</option>#}
+                {#                        <option value="marzo">Marzo</option>#}
+                {#                        <option value="abril">Abril</option>#}
+                {#                        <option value="mayo">Mayo</option>#}
+                {#                        <option value="junio">Junio</option>#}
+                {#                        <option value="julio">Julio</option>#}
+                {#                        <option value="agosto">Agosto</option>#}
+                {#                        <option value="septiembre">Septiembre</option>#}
+                {#                        <option value="octubre">Octubre</option>#}
+                {#                        <option value="noviembre">Noviembre</option>#}
+                {#                        <option value="diciembre">Diciembre</option>#}
+                {#                    </select>#}
+                {#                </div>#}
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
@@ -73,16 +73,26 @@
                                 </tr>
                             {% endif %}
                         {% endfor %}
-
-
                         </tbody>
                     </table>
+                </div>
+                <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                    <a href="{% url 'asistente:escogerarchivo' %}">
+                        <svg class="svg-inline--fa fa-arrow-left fa-w-14 mr-1" aria-hidden="true" focusable="false"
+                             data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 448 512" data-fa-i2svg="">
+                            <path fill="currentColor"
+                                  d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"></path>
+                        </svg>
+                        Volver
+                    </a>
                 </div>
                 <div class="text-right m-4">
                     <button type="button" class="btn btn-adetups" data-toggle="modal" data-target="#exampleModal">
                         Guardar Rubros
                     </button>
                 </div>
+
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                      aria-labelledby="exampleModalLabel" aria-hidden="true">

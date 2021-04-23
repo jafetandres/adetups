@@ -118,8 +118,7 @@
                     </div>
                     <div class="col-md-6 text-right">
                         <button type="button" class="btn btn-success" data-toggle="modal"
-                                data-target="#modalTablaAmortizacion" id="buttonAmortizacion"
-                                disabled>Ver tabla de amortizacion
+                                data-target="#modalTablaAmortizacion" id="buttonAmortizacion">Ver tabla de amortizacion
                         </button>
                         <button type="submit" class="btn btn-primary">Guardar</button>
                     </div>
@@ -244,12 +243,7 @@
             if (charCode > 31 && (charCode < 48 || charCode > 57)) {
                 return false;
             } else {
-                if (monto && plazo) {
-                    document.getElementById('buttonAmortizacion').disabled = false;
-                    {#calcular();#}
-                } else {
-                    document.getElementById('buttonAmortizacion').disabled = true;
-                }
+
                 return true;
 
             }
@@ -288,14 +282,17 @@
             infoCredito.innerHTML = '';
             {% for clasecredito in clasecreditos %}
                 if (creditos.value == {{ clasecredito.id }}) {
-                    infoCredito.innerHTML = '<h5 class="">Información sobre el Crédito {{ clasecredito.descripcion|title }} </h5>'
-                    infoCredito.appendChild(listElement);
-                    {% for restriccion in clasecredito.restricciones.all %}
-                        listItem{{ forloop.counter }} = document.createElement('li');
-                        listItem{{ forloop.counter }}.className = 'text-secondary';
-                        listItem{{ forloop.counter }}.innerHTML = 'Si tienes entre {{ restriccion.tiempo_min }}-{{ restriccion.tiempo_max }} años de servicio. Puedes solicitar desde $ {{ restriccion.val_min }} hasta $ {{ restriccion.val_max }}, con un plazo maximo de {{ restriccion.plazo_max }} meses';
-                        listElement.appendChild(listItem{{ forloop.counter }});
-                    {% endfor %}
+                    {% if  clasecredito.restricciones.all  %}
+                        infoCredito.innerHTML = '<h5 class="">Información sobre el Crédito {{ clasecredito.descripcion|title }} </h5>'
+                        infoCredito.appendChild(listElement);
+                        {% for restriccion in clasecredito.restricciones.all %}
+
+                            listItem{{ forloop.counter }} = document.createElement('li');
+                            listItem{{ forloop.counter }}.className = 'text-secondary';
+                            listItem{{ forloop.counter }}.innerHTML = 'Si tienes mas de {{ restriccion.tiempo_min }}{% if restriccion.tiempo_max is not None %}-{% endif %}{{ restriccion.tiempo_max }} años de servicio. Puedes solicitar desde $ {{ restriccion.val_min }} hasta $ {{ restriccion.val_max }}, con un plazo maximo de {{ restriccion.plazo_max }} meses';
+                            listElement.appendChild(listItem{{ forloop.counter }});
+                        {% endfor %}
+                    {% endif %}
                     {#listItem1 = document.createElement('li');#}
                     {#listItem2 = document.createElement('li');#}
                     {#listItem3 = document.createElement('li');#}

@@ -137,10 +137,10 @@ class RestriccionClaseCredito(models.Model):
     #                                       null=True)  # Field name made lowercase.
     tiempo_min = models.SmallIntegerField(blank=True,
                                           null=True)  # Field name made lowercase.
-    val_max =  models.SmallIntegerField(blank=True,
-                                          null=True) # Field name made lowercase.
-    val_min =  models.SmallIntegerField(blank=True,
-                                          null=True)  # Field name made lowercase.
+    val_max = models.SmallIntegerField(blank=True,
+                                       null=True)  # Field name made lowercase.
+    val_min = models.SmallIntegerField(blank=True,
+                                       null=True)  # Field name made lowercase.
     plazo_max = models.SmallIntegerField(blank=True,
                                          null=True)  # Field name made lowercase.
     # plazo_min = models.SmallIntegerField(blank=True,
@@ -204,6 +204,8 @@ class SolicitudCredito(models.Model):
     monto = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
     plazo = models.SmallIntegerField(blank=True, null=True)
     estado = models.CharField(max_length=20, default='pendiente', blank=True, null=True)
+    aprobada_por = models.ForeignKey(Usuario, models.DO_NOTHING, related_name='aprobado_por', null=True, blank=True)
+    revisada_por = models.ForeignKey(Usuario, models.DO_NOTHING, related_name='revisado_por', null=True, blank=True)
     socio = models.ForeignKey(Socio, models.DO_NOTHING, related_name='socio', blank=True, null=True)
     objects = MyModelManager()
     # cuota = models.DecimalField(max_digits=9, decimal_places=2)

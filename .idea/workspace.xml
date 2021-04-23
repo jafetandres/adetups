@@ -2,40 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7f909e53-265b-4961-95e9-847068ff836c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/clasecredito_form.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/restriccionclasecredito_detail.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/asistente/templates/asistente/restriccionclasecredito_form.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0006_auto_20210405_1338.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0007_remove_clasecredito_autorizacion.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0008_auto_20210405_1519.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0009_auto_20210406_1136.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0010_auto_20210406_1753.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0011_remove_restriccionclasecredito_plazo_min.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/migrations/0012_remove_restriccionclasecredito_tiempo_max.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/static/js/amortizacion.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/static/js/moment.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sistema/static/js/moment.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/666fe1b3-e8be-4075-b9a3-768a915483eb.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/666fe1b3-e8be-4075-b9a3-768a915483eb.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0013_auto_20210422_1632.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0014_auto_20210422_1955.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sistema/migrations/0015_auto_20210422_2027.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/clasecredito_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/clasecredito_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/credito_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/credito_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/credito_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/credito_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/escoger_archivo.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/escoger_archivo.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/restriccionclasecredito_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/restriccionclasecredito_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/reportes_creditos.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/reportes_creditos.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/rubro_subirarchivo.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubro_subirarchivo.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/rubrosocioexcelmoviestar_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubrosocioexcelmoviestar_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/rubrosocioexcelgeneral_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/rubrosocioexcelgeneral_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/templates/asistente/solicitudcredito_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/templates/asistente/solicitudcredito_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/asistente/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/asistente/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/asistente/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/presidente/templates/presidente/restriccionclasecredito_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/presidente/templates/presidente/restriccionclasecredito_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/presidente/templates/presidente/restriccionclasecredito_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/presidente/templates/presidente/restriccionclasecredito_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/presidente/templates/presidente/socio_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/presidente/templates/presidente/socio_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sistema/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/clasecredito_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/clasecredito_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/restriccionclasecredito_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/restriccionclasecredito_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/restriccionclasecredito_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/restriccionclasecredito_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sistema/templates/sistema/restriccionescredito_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/sistema/templates/sistema/restriccionescredito_form.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -262,7 +243,8 @@
       <workItem from="1617036584150" duration="74960000" />
       <workItem from="1617592916593" duration="9000" />
       <workItem from="1617643736795" duration="17287000" />
-      <workItem from="1617806461771" duration="9399000" />
+      <workItem from="1617806461771" duration="15565000" />
+      <workItem from="1619052497974" duration="13012000" />
     </task>
     <servers />
   </component>
@@ -294,11 +276,6 @@
           <url>file://$PROJECT_DIR$/socio/templates/socio/solicitudcredito_form.html</url>
           <line>1</line>
           <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/asistente/templates/asistente/reportes_creditos.html</url>
-          <line>18</line>
-          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
