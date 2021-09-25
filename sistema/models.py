@@ -92,7 +92,7 @@ class Socio(models.Model):
             estado = 'Desactivado'
 
         nombres = '<a  href="/asistente/sociodetail/' + str(
-            self.id) + '/' + 'sociolist' + '" aria-label="Detail">' + self.usuario.nombres.title() + '</a>'
+            self.id) + '/' + 'sociolist' + '" aria-label="Detail">' + self.usuario.nombres.title() + ' ' + self.usuario.apellidos.title() + '</a>'
 
         acciones = '<a class="btn btn-warning" href="/asistente/socioupdate/' + str(
             self.id) + '" aria-label="Edit"><b>Editar</b></a>'
@@ -139,8 +139,8 @@ class RestriccionClaseCredito(models.Model):
                                           null=True)  # Field name made lowercase.
     val_max = models.SmallIntegerField(blank=True,
                                        null=True)  # Field name made lowercase.
-    val_min = models.SmallIntegerField(blank=True,
-                                       null=True)  # Field name made lowercase.
+    # val_min = models.SmallIntegerField(blank=True,
+    #                                    null=True)  # Field name made lowercase.
     plazo_max = models.SmallIntegerField(blank=True,
                                          null=True)  # Field name made lowercase.
     # plazo_min = models.SmallIntegerField(blank=True,
@@ -214,13 +214,13 @@ class SolicitudCredito(models.Model):
     observaciones = models.TextField(blank=True, null=True)
 
     def as_list(self):
+        from django.contrib.humanize.templatetags.humanize import intcomma
         acciones = '<a class="btn btn-warning" href="/asistente/solicitudcreditoupdate/' + str(
             self.id) + '" aria-label="Edit"><b>Ver</b></a>'
-        monto = '$ ' + str(self.monto)
-
-        return [self.socio.usuario.nombres.title(),
+        monto = '$ ' + str(intcomma(self.monto))
+        socio = self.socio.usuario.nombres.title() + ' ' + self.socio.usuario.apellidos.title()
+        return [socio,
                 self.fecha_ingreso,
-                self.garante.usuario.nombres.title(),
                 monto,
                 self.clasecredito.descripcion.title(),
                 self.estado.title(),

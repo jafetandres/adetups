@@ -11,9 +11,7 @@
             {% endif %}
             {% if form.errors %}
                 <div class="alert alert-warning" role="alert">
-                    {% if form.val_min.errors %}
-                        Valor minimo {{ form.val_min.errors }}
-                    {% endif %}
+
                     {% if form.val_max.errors %}
                         Valor maximo {{ form.val_max.errors }}
                     {% endif %}
@@ -52,26 +50,6 @@
                 <div class="form-row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="small mb-1" for="tiempo_desdeId">Tiempo minimo de servicio (años)</label>
-                            <input class="form-control py-4" id="tiempo_desdeId" name="tiempo_min" type="number"
-                                   placeholder="Ingrese el tiempo minimo "
-                                   value="{{ restriccionclasecredito.tiempo_max }}"
-                                   onkeypress="return soloNumeros(event)" required/>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="small mb-1" for="val_minId">Valor minimo</label>
-                            <input class="form-control py-4" id="val_minId" name="val_min" type="number"
-                                   placeholder="Ingrese la valor minimo" value="{{ restriccionclasecredito.val_min }}"
-                                   onkeypress="return soloNumeros(event)" required/>
-
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
                             <label class="small mb-1" for="val_maxId">Valor maximo</label>
                             <input class="form-control py-4" id="val_maxId" name="val_max" type="number"
                                    placeholder="Ingrese la valor maximo" value="{{ restriccionclasecredito.val_max }}"
@@ -79,8 +57,6 @@
 
                         </div>
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="plazo_maxId">Plazo maximo (meses)</label>
@@ -91,6 +67,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="small mb-1" for="tiempo_desdeId">Tiempo minimo de servicio (años)</label>
+                            <input class="form-control py-4" id="tiempo_desdeId" name="tiempo_min" type="number"
+                                   placeholder="Ingrese el tiempo minimo "
+                                   value="{{ restriccionclasecredito.tiempo_max }}"
+                                   onkeypress="return soloNumeros(event)" required/>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-row">
                     <div class="col-md-6">
                         <label class="small mb-1">Estado</label>

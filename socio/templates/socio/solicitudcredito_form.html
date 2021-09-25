@@ -1,4 +1,5 @@
 {% extends 'socio/index.html' %}
+{% load humanize %}
 {% block content %}
     <div class="card shadow-lg border-0 rounded-lg mt-5">
         <div class="card-header"><h3 class="text-center font-weight-light my-4">Registro de Solicitud
@@ -37,25 +38,32 @@
             {% endif %}
             <form method="post">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label class="text-md-center font-weight-bold text-primary" for="clasecreditoId">Clase de
-                        Crédito</label>
-                    <select class="selectpicker" name="clasecredito" id="clasecreditoId" onchange="enviarParametros()"
-                            required>
-                        <option value="" disabled selected>Escoger una opción</option>
-                        {% if clasecreditos %}
-                            {% for clasecredito in clasecreditos %}
-                                {% if solicitudcredito.clasecredito %}
-                                    <option value="{{ clasecredito.id }}"
-                                            {% if solicitudcredito.clasecredito.id == clasecredito.id %}
-                                            selected{% endif %}>{{ clasecredito.descripcion|title }}</option>
-                                {% else %}
-                                    <option value="{{ clasecredito.id }}">{{ clasecredito.descripcion|title }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    </select>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="text-md-center font-weight-bold text-primary" for="clasecreditoId">Clase de
+                            Crédito</label>
+                        <select class="selectpicker" name="clasecredito" id="clasecreditoId"
+                                onchange="enviarParametros()"
+                                required>
+                            <option value="" disabled selected>Escoger una opción</option>
+                            {% if clasecreditos %}
+                                {% for clasecredito in clasecreditos %}
+                                    {% if solicitudcredito.clasecredito %}
+                                        <option value="{{ clasecredito.id }}"
+                                                {% if solicitudcredito.clasecredito.id == clasecredito.id %}
+                                                selected{% endif %}>{{ clasecredito.descripcion|title }}</option>
+                                    {% else %}
+                                        <option value="{{ clasecredito.id }}">{{ clasecredito.descripcion|title }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="font-weight-bold">Tus años de servicio son: <span class="font-weight-normal">{{ anios_servicio }} años</span></p>
+                    </div>
                 </div>
+
                 <div id="infoCreditoId"></div>
                 <div class="form-row">
                     <div class="col-md-6">
@@ -434,33 +442,18 @@
             var listElement = document.createElement('ul');
             var creditos = document.getElementById('clasecreditoId')
             infoCredito.innerHTML = '';
-            {% for clasecredito in clasecreditos %}
+                 {% for clasecredito in clasecreditos %}
                 if (creditos.value == {{ clasecredito.id }}) {
-                    infoCredito.innerHTML = '<h5 class="">Información sobre el Crédito {{ clasecredito.descripcion|title }} </h5>'
-                    infoCredito.appendChild(listElement);
-                    listItem1 = document.createElement('li');
-                    listItem2 = document.createElement('li');
-                    listItem3 = document.createElement('li');
-                    listItem4 = document.createElement('li');
-                    listItem1.className = 'text-secondary'
-                    listItem2.className = 'text-secondary'
-                    listItem3.className = 'text-secondary'
-                    listItem4.className = 'text-secondary'
-
-                    listItem1.innerHTML = 'Puedes solicitar desde $ {{ clasecredito.valdesde }} hasta $ {{ clasecredito.valhasta }} ';
-                    listItem2.innerHTML = 'Plazo maximo de cuotas {{ clasecredito.plazomax }} meses';
-                    listItem3.innerHTML = 'Tiempo mínimo de servicio {{ clasecredito.tiempo_minimo_servicio }} años';
-                    listItem4.innerHTML = 'Interes {{ clasecredito.porcentaje_interes }} %';
-
-                    listElement.appendChild(listItem1);
-                    listElement.appendChild(listItem2);
-                    listElement.appendChild(listItem3);
-                    listElement.appendChild(listItem4);
-
-                    {#listElement.appendChild(listItem3);#}
-                    {#monto.innerText = '(Desde $ {{ clasecredito.valdesde }} - Hasta $ {{ clasecredito.valhasta }} )';#}
-                    {#plazo.innerText = '( máximo {{ clasecredito.plazomax }} meses )';#}
-
+                    {% if  clasecredito.restricciones.all  %}
+                        infoCredito.innerHTML = '<h5 class="mt-4">Información sobre el Crédito {{ clasecredito.descripcion|title }} </h5>'
+                        infoCredito.appendChild(listElement);
+                        {% for restriccion in clasecredito.restricciones.all %}
+                            listItem{{ forloop.counter }} = document.createElement('li');
+                            listItem{{ forloop.counter }}.className = 'text-secondary';
+                            listItem{{ forloop.counter }}.innerHTML = 'Si tienes más de {{ restriccion.tiempo_min }}{% if restriccion.tiempo_max is not None %}-{% endif %}{{ restriccion.tiempo_max }} años de servicio. Puedes solicitar hasta ${{ restriccion.val_max|intcomma  }} con un plazo maximo de pago de {{ restriccion.plazo_max }} meses.';
+                            listElement.appendChild(listItem{{ forloop.counter }});
+                        {% endfor %}
+                    {% endif %}
                 }
             {% endfor %}
 

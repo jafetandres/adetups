@@ -1,4 +1,5 @@
 {% extends 'asistente/index.html' %}
+{% load humanize %}
 {% block content %}
     <div class="card shadow-lg border-0 rounded-lg mt-5">
         <div class="card-header">
@@ -31,7 +32,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label class="small mb-1" for="fecha_ingresoId">Fecha de ingreso</label>
+                        <label class="small mb-1" for="fecha_ingresoId">Fecha de solicitud</label>
                         <p id="fecha_ingresoId">{{ solicitudcredito.fecha_ingreso }}</p>
                     </div>
                 </div>
@@ -48,7 +49,7 @@
                     <div class="form-group">
                         <label class="small mb-1" for="date_joinedId">Monto</label>
                         <p id="date_joinedId">
-                            $ {{ solicitudcredito.monto }}
+                            $ {{ solicitudcredito.monto|intcomma }}
                         </p>
                     </div>
                 </div>
@@ -71,7 +72,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="small mb-1" for="porcinteresId">Porcentaje de interes</label>
-                        <p id="porcinteresId">{{ solicitudcredito.porcentaje_interes }}</p>
+                        <p id="porcinteresId">{{ solicitudcredito.porcentaje_interes }} %</p>
                     </div>
                 </div>
             </div>
@@ -90,7 +91,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="small mb-1" for="fecha_ingresoId">Fecha de ingreso</label>
-                        <p id="fecha_ingresoId">{{ solicitudcredito.socio.fecha_ingreso|date:"D d M Y" }}</p>
+                        <p id="fecha_ingresoId">{{ solicitudcredito.socio.fecha_ingreso}}</p>
                     </div>
                 </div>
             </div>

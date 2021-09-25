@@ -1,0 +1,29 @@
+--USUARIOS
+
+
+INSERT INTO sistema_usuario (id, password, last_login, is_superuser, foto, nombres, apellidos, username, email, fecha_nacimiento, is_active, is_staff, tipo, date_joined) VALUES (10, 'pbkdf2_sha256$216000$UzGbFs6OGbCz$VK+cdrG2x6uQEN1kwQe3xCj9Fk920XlGl8vYTJ35nAs=', null, 0, '', 'JORGE IVAN', 'ALTAMIRANO SANCHEZ', 'presidente', 'jaltamirano@ups.edu.ec', null, 1, 0, 'presidente', null);
+INSERT INTO sistema_usuario (id, password, last_login, is_superuser, foto, nombres, apellidos, username, email, fecha_nacimiento, is_active, is_staff, tipo, date_joined) VALUES (11, 'pbkdf2_sha256$216000$z5yG6kEd43Ii$VpTY9vWgwvFzHy+yMbdYT3s2CIQQ7Q5MWWUm5RT0IdE=', null, 0, '', 'LINDA IVANOVA', 'ALVARADO BARROS', '0705506947', 'lalvarado@ups.edu.ec', null, 1, 0, 'socio', null);
+INSERT INTO sistema_usuario (id, password, last_login, is_superuser, foto, nombres, apellidos, username, email, fecha_nacimiento, is_active, is_staff, tipo, date_joined) VALUES (585, 'pbkdf2_sha256$216000$ZBl8lZ5X9HQ2$fdHD0AYko8hG3tfFDYeIS3p46dwUVGnI8KqcQ0pBPfw=', '2021-04-09 23:45:48.328135', 1, 'img_perfil/default-avatar.jpg', 'admin', 'admin', 'admin', 'jafetgalvez1@gmail.com', null, 1, 1, 'administrador', '2021-04-09 23:45:10.332594');
+INSERT INTO sistema_usuario (id, password, last_login, is_superuser, foto, nombres, apellidos, username, email, fecha_nacimiento, is_active, is_staff, tipo, date_joined) VALUES (586, 'pbkdf2_sha256$216000$rci513K4z6yz$IJ+bFheOuhvy4sXTv6Wa17/4kCFEz7DMa0dRoyx1y7U=', '2021-04-22 14:37:24.567056', 0, 'img_perfil/default-avatar.jpg', 'TANIA', 'GONZALEZ', '0105363477', 'jafetandres@hotmail.com', '1991-01-01', 1, 0, 'asistente', '2021-04-09 23:49:34.343440');
+
+
+--SOCIOS
+
+INSERT INTO sistema_socio (id, direccion, celular, cargo, area, fecha_ingreso, is_garante, usuario_id, telefono) VALUES (11, 'ninguna', '1111111111', 'asistente', 'adetups', '2007-01-01', 0, 11, '11111');
+
+
+---CLASE DE CREDITOS
+
+INSERT INTO sistema_clasecredito (id, descripcion, estado, porcentaje_interes, garante) VALUES (1, 'PERSONAL', 'ACT', 9, 1);
+INSERT INTO sistema_clasecredito (id, descripcion, estado, porcentaje_interes, garante) VALUES (2, 'EMERGENCIA', 'INA', 9, 1);
+INSERT INTO sistema_clasecredito (id, descripcion, estado, porcentaje_interes, garante) VALUES (3, 'CONVENIO', 'INA', 9, 1);
+INSERT INTO sistema_clasecredito (id, descripcion, estado, porcentaje_interes, garante) VALUES (4, 'RAPIDO', 'INA', 9, 1);
+
+
+--RESTRICCIONS CLASE CREDITO
+
+INSERT INTO sistema_restriccionclasecredito (id, estado, fecha_creacion, val_max, val_min, plazo_max, tiempo_min) VALUES (1, 1, '2021-04-07 18:56:56.651288', 3000, 1000, 24, 5);
+
+--CLASE CREDITO RESTRICCIONES 
+
+INSERT INTO sistema_clasecredito_restricciones (id, clasecredito_id, restriccionclasecredito_id) VALUES (7, 1, 1);

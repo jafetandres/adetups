@@ -41,7 +41,7 @@
                                             selected{% endif %}>{{ clasecredito.descripcion|title }}</option>
                                 {% else %}
                                     <option value="{{ clasecredito.id }}"
-                                            >{{ clasecredito.descripcion|title }}</option>
+                                    >{{ clasecredito.descripcion|title }}</option>
                                 {% endif %}
                             {% endfor %}
                         {% endif %}
@@ -50,39 +50,34 @@
                 <div class="form-row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="small mb-1" for="tiempodesdeId">Años desde</label>
-                            <input class="form-control py-4" id="tiempodesdeId" name="tiempodesde" type="number"
-                                   placeholder="Ingrese el valor" value="{{ restriccionescredito.tiempodesde }}"
-                                   onkeypress="return soloNumeros(event)" required/>
+                            <label class="small mb-1" for="plazo_maxId">Plazo máximo de pago <span class="small">(meses)</span></label>
+                            <input class="form-control py-4" id="plazo_maxId" name="plazo_max" type="number"
+                                   placeholder="Ingrese el valor"
+                                   value="{{ restriccionescredito.plazo_max }}"
+                                   onkeypress="return soloNumeros(event)"/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="small mb-1" for="tiempohastaId">Años hasta</label>
-                            <input class="form-control py-4" id="tiempohastaId" name="tiempohasta" type="number"
-                                   placeholder="Ingrese la valor" value="{{ restriccionescredito.tiempohasta }}"
-                                   onkeypress="return soloNumeros(event)" required/>
+                            <label class="small mb-1" for="val_maxId">Valor máximo del crédito</label>
+                            <input class="form-control py-4" id="val_maxId" name="val_max" type="number"
+                                   placeholder="Ingrese el valor"
+                                   value="{{ restriccionescredito.val_max }}"
+                                   onkeypress="return soloNumeros(event)"/>
                         </div>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="small mb-1" for="plazomaxId">Plazo máximo de pago</label>
-                            <input class="form-control py-4" id="plazomaxId" name="plazomax" type="number"
-                                   placeholder="Ingrese el plazo máximo de pago" value="{{ restriccionescredito.plazomax }}"
-                                   onkeypress="return soloNumeros(event)"/>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="small mb-1" for="valhastaId">Valor máximo de crédito</label>
-                            <input class="form-control py-4" id="valhastaId" name="valhasta" type="number"
-                                   placeholder="Ingrese el valor máximo de crédito" value="{{ restriccionescredito.valhasta }}"
-                                   onkeypress="return soloNumeros(event)"/>
+                            <label class="small mb-1" for="tiempo_minId">Tiempo minimo de servicio <span class="small">(años)</span></label>
+                            <input class="form-control py-4" id="tiempo_minId" name="tiempo_min" type="number"
+                                   placeholder="Ingrese el valor" value="{{ restriccionescredito.tiempo_min }}"
+                                   onkeypress="return soloNumeros(event)" required/>
                         </div>
                     </div>
                 </div>
+
                 <div class="form-row">
                     <div class="col-md-6">
                         <label class="small mb-1">Estado</label>
@@ -92,14 +87,14 @@
                                 <input class="form-check-input" type="radio" name="estado" id="estadoId1"
                                        value="act" {% if restriccionescredito.estado == 'act' %}checked{% endif %}/>
                                 <label class="form-check-label" for="estadoId1">
-                                    ACTIVO
+                                    Activo
                                 </label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="estado" id="estadoId2"
                                        value="ina" {% if restriccionescredito.estado == 'ina' %}checked{% endif %}/>
                                 <label class="form-check-label" for="estadoId2">
-                                    INACTIVO
+                                    Inactivo
                                 </label>
                             </div>
                         {% else %}
@@ -107,21 +102,21 @@
                                 <input class="form-check-input" type="radio" name="estado" id="estadoId1"
                                        value="act" checked>
                                 <label class="form-check-label" for="estadoId1">
-                                    ACTIVO
+                                    Activo
                                 </label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="estado" id="estadoId2"
                                        value="ina">
                                 <label class="form-check-label" for="estadoId2">
-                                    INACTIVO
+                                    Inactivo
                                 </label>
                             </div>
                         {% endif %}
                     </div>
                 </div>
                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-                    <a href="{% url 'sistema:restriccionescreditolist' %}">
+                    <a href="{% url 'sistema:restriccionclasecreditolist' %}">
                         <svg class="svg-inline--fa fa-arrow-left fa-w-14 mr-1" aria-hidden="true" focusable="false"
                              data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg"
                              viewBox="0 0 448 512" data-fa-i2svg="">

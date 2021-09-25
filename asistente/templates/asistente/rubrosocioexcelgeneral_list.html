@@ -1,5 +1,4 @@
 {% extends 'asistente/index.html' %}
-
 {% block content %}
     <div class="card mb-4 mt-4">
         <div class="card-header">
@@ -68,7 +67,7 @@
                             {% if forloop.counter0 > 0 %}
                                 <tr>
                                     {% for name in socio %}
-                                        <th>{{ name }}</th>
+                                        <th class="font-weight-normal">{{ name }}</th>
                                     {% endfor %}
                                 </tr>
                             {% endif %}

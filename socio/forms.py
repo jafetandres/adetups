@@ -3,6 +3,7 @@ from django import forms
 from sistema.models import SolicitudCredito, Socio, Credito
 
 
+
 class SolicitudCreditoForm(forms.ModelForm):
     # def __init__(self, *args, **kwargs):
     #     user=requ
@@ -13,19 +14,20 @@ class SolicitudCreditoForm(forms.ModelForm):
     def clean_monto(self):
         clasecredito = self.cleaned_data['clasecredito']
         monto = self.cleaned_data['monto']
-        if monto > clasecredito.valhasta:
-            raise forms.ValidationError("El monto excede a la clase de credito")
-        if monto < clasecredito.valdesde:
-            raise forms.ValidationError("El monto esta por de bajo del limite a la clase de credito")
+
+        # if monto > clasecredito.valhasta:
+        #     raise forms.ValidationError("El monto excede a la clase de credito")
+        # if monto < clasecredito.valdesde:
+        #     raise forms.ValidationError("El monto esta por de bajo del limite a la clase de credito")
         return monto
 
     def clean_plazo(self):
         clasecredito = self.cleaned_data['clasecredito']
         plazo = self.cleaned_data['plazo']
-        if plazo > clasecredito.plazomax:
-            raise forms.ValidationError("El plazo excede a la clase de credito")
-        if plazo < 1:
-            raise forms.ValidationError("El plazo debe ser mayor a 1 mes")
+        # if plazo > clasecredito.plazomax:
+        #     raise forms.ValidationError("El plazo excede a la clase de credito")
+        # if plazo < 1:
+        #     raise forms.ValidationError("El plazo debe ser mayor a 1 mes")
         return plazo
 
     # def clean(self):

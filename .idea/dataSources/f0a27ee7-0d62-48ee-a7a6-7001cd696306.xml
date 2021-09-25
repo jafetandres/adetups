@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="jdbc:mysql://172.16.101.41 :3306/ADETUPS_RESP">
-  <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.20">
+  <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.23">
     <root id="1">
       <ServerVersion>5.7.20</ServerVersion>
       <DefaultEngine>InnoDB</DefaultEngine>
@@ -726,9 +726,6 @@
     </collation>
     <user id="227" parent="1" name="wpadmindes">
       <Host>%</Host>
-      <ObjectGrants>ALL PRIVILEGES|ADETUPS\_RESP
-ALL PRIVILEGES|wpadetups\_resp
-</ObjectGrants>
     </user>
     <table id="228" parent="2" name="ADTCLASCRE"/>
     <table id="229" parent="2" name="ADTCLASOL"/>

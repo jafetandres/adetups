@@ -9,6 +9,7 @@ from socio.forms import SolicitudCreditoForm
 from django.urls import reverse_lazy
 from reportlab.graphics.shapes import Line, Drawing
 from reportlab.lib import colors
+from django.db.models import Q
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
@@ -17,7 +18,7 @@ from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
 from django.views.generic import DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from sistema.models import SolicitudCredito, Socio, ClaseCredito, Credito, \
-    Usuario
+    Usuario, RestriccionClaseCredito
 
 
 class SocioRequiredMixin(AccessMixin):
@@ -132,6 +133,12 @@ def diasHastaFecha(day1, month1, year1, day2, month2, year2):
             return total
 
 
+def calcular_tiempo_servicio(fecha_ingreso):
+    return int(diasHastaFecha(fecha_ingreso.day, fecha_ingreso.month, fecha_ingreso.year,
+                              date.today().day,
+                              date.today().month, date.today().year) / 365)
+
+
 class SolicitudCreditoCreate(SocioRequiredMixin, CreateView):
     model = SolicitudCredito
     form_class = SolicitudCreditoForm
@@ -146,34 +153,57 @@ class SolicitudCreditoCreate(SocioRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        clasecreditos = ClaseCredito.objects.all()
-        garantes = Socio.objects.filter(is_garante=False)
+        clasecreditos = []
+        for clasecredito in ClaseCredito.objects.all():
+            if clasecredito.estado == 'ACT':
+                if RestriccionClaseCredito.objects.filter(clasecredito=clasecredito.id):
+                    clasecreditos.append(clasecredito)
+
         context["clasecreditos"] = clasecreditos
-        socio_usuario = Socio.objects.get(usuario_id=self.request.user.id)
-        context["socio"] = socio_usuario
+        socio = Socio.objects.get(usuario_id=self.request.user.id)
+        garantes = Socio.objects.filter(is_garante=False).filter(~Q(id=socio.id))
+        context["socio"] = socio
         context["garantes"] = garantes
+        num_anios = 0
+        if socio.fecha_ingreso is not None:
+            num_anios = calcular_tiempo_servicio(socio.fecha_ingreso)
+        else:
+            messages.error(self.request, 'El socio no tiene fecha de ingreso actualize sus datos por favor.')
+        context["anios_servicio"] = num_anios
         return context
 
     def form_valid(self, form):
-        data = form.cleaned_data
         socio = Socio.objects.get(usuario_id=self.request.user.id)
-        if Credito.objects.filter(socio=socio, estado='aprobado').exists():
-            messages.error(self.request, 'El socio ya tiene un prestamo activo y no puede solicitar otro')
-            return redirect('socio:solicitudcreditocreate')
-
         if socio.fecha_ingreso is None:
             messages.error(self.request,
                            'El socio no tiene informacion sobre su fecha de ingreso.El socio primero debe actualizar toda su informacion en Cuenta')
             return redirect('socio:solicitudcreditocreate')
-
-        fecha_actual = date.today()
-        num_anios = diasHastaFecha(socio.fecha_ingreso.day, socio.fecha_ingreso.month, socio.fecha_ingreso.year,
-                                   fecha_actual.day,
-                                   fecha_actual.month, fecha_actual.year) / 365
-        if int(num_anios) < data['clasecredito'].tiempo_minimo_servicio:
-            messages.error(self.request,
-                           'El socio no cumple con el tiempo minimo de servicio para esta clase de prestamo')
+        from operator import attrgetter
+        data = form.cleaned_data
+        monto = data["monto"]
+        plazo_max = data["plazo"]
+        num_anios = calcular_tiempo_servicio(socio.fecha_ingreso)
+        clasecredito = data['clasecredito']
+        restricciones = clasecredito.restricciones.all().order_by('-tiempo_min')
+        m = min(restricciones, key=attrgetter("tiempo_min"))
+        if num_anios < m.tiempo_min:
+            messages.error(self.request, 'Verifique su tiempo de servicio')
             return redirect('socio:solicitudcreditocreate')
+
+        restriccion = min(restricciones, key=lambda x: int(attrgetter("tiempo_min")(x)) - num_anios > 0)
+
+        if monto > restriccion.val_max:
+            messages.error(self.request, 'Error el monto solicitado excede el limite de la restriccion del prestamo.')
+            return redirect('socio:solicitudcreditocreate')
+        if plazo_max > restriccion.plazo_max:
+            messages.error(self.request, 'Error el plazo  excede el limite de la restriccion del prestamo')
+            return redirect('socio:solicitudcreditocreate')
+        if Credito.objects.filter(socio=socio, estado='aprobado').exists():
+            messages.error(self.request, 'El socio ya tiene un prestamo activo y no puede solicitar otro')
+            return redirect('socio:solicitudcreditocreate')
+
+
+
 
         form.instance.porcentaje_interes = data['clasecredito'].porcentaje_interes
         form.instance.socio = socio

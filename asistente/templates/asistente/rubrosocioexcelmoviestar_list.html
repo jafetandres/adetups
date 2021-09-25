@@ -1,5 +1,5 @@
 {% extends 'asistente/index.html' %}
-
+{% load humanize %}
 {% block content %}
     <div class="card mb-4 mt-4">
         <div class="card-header">
@@ -22,7 +22,7 @@
                     <thead>
                     <tr>
                         <th>Nro</th>
-                        <th>Nombres</th>
+                        <th>Nombres/Apellidos</th>
                         <th>Cedula</th>
                         <th>Total debito</th>
                     </tr>
@@ -30,7 +30,7 @@
                     <tfoot>
                     <tr>
                         <th>Nro</th>
-                        <th>Nombres</th>
+                        <th>Nombres/Apellidos</th>
                         <th>Cedula</th>
                         <th>Total debito</th>
                     </tr>
@@ -38,10 +38,10 @@
                     <tbody>
                     {% for socio in rubros_generados %}
                         <tr>
-                            <th>{{ forloop.counter }}</th>
-                            <th>{{ socio.1 }}</th>
+                            <th class="font-weight-normal">{{ forloop.counter }}</th>
+                            <th class="font-weight-normal">{{ socio.1 }}</th>
                             <td>{{ socio.2 }}</td>
-                            <td>{{ socio.12 }}</td>
+                            <td>$ {{ socio.12|intcomma }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -68,8 +68,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                Si guardas los rubros se guardaran en la base de datos esperamos que hayas revisado la
-                                informacion
+                                Los rubros de los socios se guardaran en la base de datos.
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -82,4 +81,29 @@
         </div>
     </div>
 {% endblock %}
+{% block js %}
+    <script>
+        $('table').dataTable({
+            paging: true,
+            searching: true,
+            language: {
+                search: "Buscar:",
+                lengthMenu: "Mostrar _MENU_ registros",
+                info: "Se muestra de _START_ a _END_ registros de _TOTAL_ registros en total",
+                infoEmpty: "Se muestra 0 registros de 0 ",
+                infoFiltered: "(Hay _MAX_ registros en total)",
+                infoPostFix: "",
+                loadingRecords: "Cargando...",
+                zeroRecords: "No existen registros",
+                paginate: {
+                    first: "Primero",
+                    previous: "Previo",
+                    next: "Siguiente",
+                    last: "Anterior"
+                },
+            }
 
+        });
+
+    </script>
+{% endblock %}

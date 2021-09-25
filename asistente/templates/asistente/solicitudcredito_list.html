@@ -1,0 +1,27 @@
+{% extends 'asistente/index.html' %}
+{% block content %}
+    <div class="card m-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <i class="fas fa-table mr-1"></i>
+                    Solicitudes de Credito
+                </div>
+                <div class="col-6" align="right">
+                    <a class="btn" href="{% url 'asistente:escogersocio' %}"><i class="fa fa-plus fa-fw"
+                                                                                aria-hidden="true"></i>Añadir solicitud
+                        de crédito</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} m-1" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            {% include 'asistente/tabla_solicitudes_credito.html' %}
+        </div>
+    </div>
+
+{% endblock %}

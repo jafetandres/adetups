@@ -6,6 +6,7 @@ app_name = 'asistente'
 urlpatterns = [
     path('', HomePageView.as_view(), name="home"),
     path('escogerarchivo', EscogerArchivoPageView.as_view(), name="escogerarchivo"),
+    path('solicitudcreditolist', SolicitudCreditoList.as_view(), name="solicitudcreditolist"),
     path('solicitudcreditoupdate/<int:pk>/', SolicitudCreditoUpdate.as_view(), name="solicitudcreditoupdate"),
     re_path('solicitudcreditocreate/(?P<usuario_id>\d+)/$', SolicitudCreditoCreate.as_view(),
             name='solicitudcreditocreate'),

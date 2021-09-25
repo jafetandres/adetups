@@ -398,7 +398,8 @@ class ClaseCreditoDelete(AdministradorRequiredMixin, DeleteView):
 # success_url = reverse_lazy('sistema:clascrelist')
 
 class RestriccionClaseCreditoListView(ListView):
-    model = RestriccionClaseCredito
+    model = ClaseCredito
+    template_name = 'sistema/restriccionescredito_list.html'
 
 
 class RestriccionClaseCreditoCreate(CreateView):
@@ -414,6 +415,23 @@ class RestriccionClaseCreditoCreate(CreateView):
     def get_success_url(self):
         messages.success(self.request, 'Registro creado correctamente')
         return reverse_lazy('sistema:restriccionclasecreditocreate')
+
+
+def crear_restricciones_clase_credito(request):
+    clasecreditos = []
+    if ClaseCredito.objects.all():
+        clasecreditos = ClaseCredito.objects.all()
+    if request.method == 'POST':
+        clasecredito = ClaseCredito.objects.get(id=request.POST['clasecredito'])
+        restriccion = RestriccionClaseCredito()
+        restriccion.plazo_max = request.POST['plazo_max']
+        restriccion.val_max = request.POST['val_max']
+        restriccion.tiempo_min = request.POST['tiempo_min']
+        restriccion.save()
+        clasecredito.restricciones.add(restriccion)
+        clasecredito.save()
+        return redirect('sistema:restriccionclasecreditolist')
+    return render(request, 'sistema/restriccionescredito_form.html', {'clasecreditos': clasecreditos})
 
 
 class RestriccionClaseCreditoUpdate(UpdateView):

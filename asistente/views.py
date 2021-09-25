@@ -38,11 +38,10 @@ class TableAsJSON(JSONResponseMixin, generic.View):
         col_name_map = {
             '0': 'socio',
             '1': 'fecha_ingreso',
-            '2': 'garante',
-            '3': 'monto',
-            '4': 'clasecredito',
-            '5': 'estado',
-            '6': 'acciones',
+            '2': 'monto',
+            '3': 'clasecredito',
+            '4': 'estado',
+            '5': 'acciones',
         }
         object_list = self.model.objects.all()
         search_text = request.GET.get('sSearch', '').lower()
@@ -180,6 +179,11 @@ class HomePageView(AsistenteRequiredMixin, TemplateView):
         return context
 
 
+class SolicitudCreditoList(AsistenteRequiredMixin, ListView):
+    model = SolicitudCredito
+    template_name = 'asistente/solicitudcredito_list.html'
+
+
 class EscogerArchivoPageView(AsistenteRequiredMixin, TemplateView):
     template_name = "asistente/escoger_archivo.html"
 
@@ -195,9 +199,7 @@ class SolicitudCreditoUpdate(AsistenteRequiredMixin, UpdateView):
             form.instance.revisada_por = Usuario.objects.get(id=self.request.user.id)
         if data["estado"] == 'aprobada':
             form.instance.aprobada_por = Usuario.objects.get(id=self.request.user.id)
-            print("monto1", self.object.monto)
             monto = float(self.object.monto)
-            print("monto2", monto)
             per = np.arange(1 * self.object.plazo) + 1
             ipmt = npf.ipmt(0.09 / 12, per, 1 * self.object.plazo, monto)
             ppmt = npf.ppmt(0.09 / 12, per, 1 * self.object.plazo, monto)
@@ -361,7 +363,6 @@ def cargar_rubros_moviestar(request):
         if bool(request.FILES.get('archivo_rubros', False)):
             try:
                 excel_file = request.FILES['archivo_rubros']
-
                 if (str(excel_file).split('.')[-1] == "xls"):
                     data = xls_get(excel_file, column_limit=13)
                 elif (str(excel_file).split('.')[-1] == "xlsx"):
@@ -378,9 +379,7 @@ def cargar_rubros_moviestar(request):
                                     usuario = Usuario.objects.get(username=rubro[2])
                                     if Socio.objects.filter(usuario_id=usuario.id).exists():
                                         rubros_generados_moviestar.append(rubro)
-
                     return redirect('asistente:guardarrubrosmoviestar')
-
             except MultiValueDictKeyError:
                 return redirect('asistente:home')
             except IndexError:
@@ -398,16 +397,17 @@ colum_name = []
 
 
 def cargar_rubros_general(request):
+    if not Rubro.objects.all():
+        messages.error(request, 'No existen rubros cargados en la base de datos.')
+        return redirect('asistente:cargarrubrosgeneral')
     global rubros_generados_general
     global clases_rubros
     clases_rubros = []
     rubros_generados_general = []
     titulo = 'Rubros en general'
     abreviaturas = []
-    aux1 = []
     aux = []
     contador = 0
-    rubroexistente = []
     if request.method == 'POST':
         if bool(request.FILES.get('archivo_rubros', False)):
             try:
@@ -431,6 +431,9 @@ def cargar_rubros_general(request):
                                     # print(rubroexistente[0],rubroexistente[1])
 
                         if num1 > 3 and num1 < len(rubros) - 1:
+                            if len(clases_rubros) <= 0:
+                                messages.error(request, 'No se encontraron registros para agregar.')
+                                return redirect('asistente:cargarrubrosgeneral')
                             for num2, rubroscolum in enumerate(rubrosfilas, start=0):
                                 if contador == 0:
                                     if num2 == 0:
@@ -440,7 +443,6 @@ def cargar_rubros_general(request):
                                     if num2 == 2:
                                         aux.append("Cédula")
                                     for rubroexis in clases_rubros:
-                                        # print(rubroexis[1])
                                         if num2 == rubroexis[1]:
                                             aux.append(rubroscolum)
 
@@ -463,6 +465,7 @@ def cargar_rubros_general(request):
 
                                     rubros_generados_general.append(aux)
                                     aux = []
+
                     return redirect('asistente:guardarrubrosgeneral')
             except MultiValueDictKeyError:
                 return redirect('asistente:home')
@@ -477,11 +480,14 @@ def cargar_rubros_general(request):
 
 def guardar_rubros_moviestar(request):
     global rubros_generados_moviestar
+    if not Rubro.objects.filter(abreviatura='MOVI').exists():
+        messages.error(request, 'El rubro moviestar no esta agregado')
+        return redirect('asistente:escogerarchivo')
     if request.method == 'POST':
         for rubro in rubros_generados_moviestar:
             if Usuario.objects.filter(username=rubro[2]).exists():
                 usuario = Usuario.objects.get(username=rubro[2])
-                rubro_generado = RubroSocio.objects.create(rubro_id=1,
+                rubro_generado = RubroSocio.objects.create(rubro=Rubro.objects.get(abreviatura='MOVI'),
                                                            descripcion=rubro[3],
                                                            valor=rubro[12])
 
@@ -489,6 +495,7 @@ def guardar_rubros_moviestar(request):
                 socio.rubros.add(rubro_generado)
                 socio.save()
         rubros_generados_moviestar = []
+        return redirect('asistente:consultar_rubros')
     return render(request, 'asistente/rubrosocioexcelmoviestar_list.html',
                   {'rubros_generados': rubros_generados_moviestar})
 
@@ -1024,7 +1031,7 @@ class RestriccionClaseCreditoDetail(AsistenteRequiredMixin, DetailView):
 
 class RestriccionClaseCreditoCreate(AsistenteRequiredMixin, CreateView):
     model = RestriccionClaseCredito
-    fields = ['tiempo_min', 'val_max', 'val_min', 'plazo_max', 'estado']
+    fields = ['tiempo_min', 'val_max', 'plazo_max', 'estado']
     template_name = 'asistente/restriccionclasecredito_form.html'
 
     def form_valid(self, form):
@@ -1148,7 +1155,7 @@ def generar_solicitud_pdf(request, pk):
     ]))
     story.append(t2)
     story.append(PageBreak())
-    story.append(Paragraph('Cuotas',linkStyle))
+    story.append(Paragraph('Cuotas', linkStyle))
     story.append(Spacer(1, 0.2 * inch))
     monto = float(solicitudcredito.monto)
     per = np.arange(1 * solicitudcredito.plazo) + 1

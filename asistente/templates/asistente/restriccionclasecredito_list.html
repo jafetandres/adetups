@@ -1,4 +1,5 @@
 {% extends 'asistente/index.html' %}
+{% load humanize %}
 {% block content %}
     <div class="card mb-4 mt-4">
         <div class="card-header">
@@ -28,8 +29,6 @@
                     <tr>
                         <th>Clase de Crédito</th>
                         <th>Tiempo minimo de servicio</th>
-
-                        <th>Valor minimo</th>
                         <th>Valor màximo</th>
                         <th>Estado</th>
                     </tr>
@@ -38,8 +37,6 @@
                     <tr>
                         <th>Clase de Crédito</th>
                         <th>Tiempo minimo de servicio</th>
-
-                        <th>Valor minimo</th>
                         <th>Valor màximo</th>
                         <th>Estado</th>
                     </tr>
@@ -52,8 +49,7 @@
                                     <a href="{% url 'asistente:restriccionclasecreditodetail' restriccionclasecredito.id %}">{{ clasecredito.descripcion|title }}</a>
                                 </td>
                                 <td>{{ restriccionclasecredito.tiempo_min }} años</td>
-                                <td>$ {{ restriccionclasecredito.val_min }} </td>
-                                <td>$ {{ restriccionclasecredito.val_max }} </td>
+                                <td>$ {{ restriccionclasecredito.val_max|intcomma }} </td>
                                 <td>{% if restriccionclasecredito.estado %}
                                     Activo
                                 {% endif %}

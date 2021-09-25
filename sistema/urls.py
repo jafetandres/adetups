@@ -34,7 +34,7 @@ urlpatterns = [
     # path('clasesolicituddelete/<int:pk>/', ClaseSolicitudDelete.as_view(), name='clasesolicituddelete'),
 
     path('restriccionclasecreditolist/', RestriccionClaseCreditoListView.as_view(), name="restriccionclasecreditolist"),
-    path('restriccionclasecreditocreate/', RestriccionClaseCreditoCreate.as_view(),
+    path('restriccionclasecreditocreate/', crear_restricciones_clase_credito,
          name="restriccionclasecreditocreate"),
     path('restriccionclasecreditoupdate/<int:pk>/', RestriccionClaseCreditoUpdate.as_view(),
          name='restriccionclasecreditoupdate'),

@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -166,14 +167,14 @@
         $('.table').dataTable({
             paging: true,
             searching: true,
-            {% block btn_imprimir %}
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'print',
-                        text: 'Imprimir'
-                    }],
-            {% endblock %}
+
+            {#dom: 'Bfrtip',#}
+            {#buttons: [#}
+            {#    {#}
+            {#        extend: 'print',#}
+            {#        text: 'Imprimir'#}
+            {#    }],#}
+
             language: {
                 search: "Buscar:",
                 lengthMenu: "Mostrar _MENU_ registros",
