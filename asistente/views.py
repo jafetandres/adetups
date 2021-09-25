@@ -1195,7 +1195,7 @@ def myFirstPage(canvas, doc):
     canvas.setTitle("Adetups_reportcredito")
     titulo = 'Solicitud de Crédito'
     archivo_imagen = 'asistente/static/img/logo_adetups.png'
-    canvas.drawImage(archivo_imagen, 40, 750, 120, 90, preserveAspectRatio=True, mask='auto')
+    #canvas.drawImage(archivo_imagen, 40, 750, 120, 90, preserveAspectRatio=True, mask='auto')
     canvas.setFont('Times-Roman', 18)
     canvas.drawString(PAGE_WIDTH / 2.0, PAGE_HEIGHT - 108, titulo)
     canvas.setFont('Times-Roman', 9)
