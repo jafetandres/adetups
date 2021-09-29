@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'socio',
     # 'django_celery_beat',
     'asistente',
-    'presidente'
+    'presidente',
+    'reportes'
 
 ]
 

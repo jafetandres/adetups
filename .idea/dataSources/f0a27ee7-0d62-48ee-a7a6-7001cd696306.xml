@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="jdbc:mysql://172.16.101.41 :3306/ADETUPS_RESP">
   <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.23">
-    <root id="1">
-      <ServerVersion>5.7.20</ServerVersion>
-      <DefaultEngine>InnoDB</DefaultEngine>
-      <DefaultTmpEngine>InnoDB</DefaultTmpEngine>
-      <DefaultCasing>exact</DefaultCasing>
-    </root>
+    <root id="1"/>
     <schema id="2" parent="1" name="ADETUPS_RESP">
       <Current>1</Current>
       <Collation>latin1_swedish_ci</Collation>

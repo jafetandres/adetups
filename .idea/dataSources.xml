@@ -4,6 +4,7 @@
     <data-source source="LOCAL" name="jdbc:mysql://172.16.101.41 :3306/ADETUPS_RESP" uuid="f0a27ee7-0d62-48ee-a7a6-7001cd696306">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
+      <configured-by-url>true</configured-by-url>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://172.16.101.41 :3306/ADETUPS_RESP</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
