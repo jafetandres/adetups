@@ -196,12 +196,26 @@
 
     </script>
     <script>
+        document.getElementById("cedulaId").addEventListener("input", soloNumeros);
+
         function soloNumeros(evt) {
-            var charCode = (evt.which) ? evt.which : event.keyCode;
-            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                return false;
+            var theEvent = evt || window.event;
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+            if (key.length == 0) return;
+            var regex = /^[0-9.,\b]+$/;
+            if (!regex.test(key)) {
+                theEvent.returnValue = false;
+                if (theEvent.preventDefault) theEvent.preventDefault();
             }
         }
+
+        /*      function soloNumeros(evt) {
+         /    var charCode = (evt.which) ? evt.which : event.keyCode;
+               if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                   return false;
+               }
+           }*/
     </script>
 {% endblock %}
 </body>

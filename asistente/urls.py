@@ -53,6 +53,5 @@ urlpatterns = [
     path('restriccionclasecreditodetail/<int:pk>/', RestriccionClaseCreditoDetail.as_view(),
          name="restriccionclasecreditodetail"),
     path('reportescreditos', RestriccionClaseCreditoDetail.as_view(), name="reportescreditos"),
-    path('table/as_json/', TableAsJSON.as_view(), name='table-as-json'),
     path('tablesocio/as_json/', TableSocioAsJSON.as_view(), name='tablesocio-as-json'),
 ]

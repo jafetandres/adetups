@@ -1,4 +1,5 @@
 {% extends 'asistente/index.html' %}
+{% load  humanize %}
 {% block content %}
     <div class="card shadow-lg border-0 rounded-lg mt-5">
         <div class="card-header"><h3 class="text-center font-weight-light my-4">Registro de Solicitud
@@ -289,7 +290,7 @@
 
                             listItem{{ forloop.counter }} = document.createElement('li');
                             listItem{{ forloop.counter }}.className = 'text-secondary';
-                            listItem{{ forloop.counter }}.innerHTML = 'Si tienes mas de {{ restriccion.tiempo_min }}{% if restriccion.tiempo_max is not None %}-{% endif %}{{ restriccion.tiempo_max }} años de servicio. Puedes solicitar desde $ {{ restriccion.val_min }} hasta $ {{ restriccion.val_max }}, con un plazo maximo de {{ restriccion.plazo_max }} meses';
+                            listItem{{ forloop.counter }}.innerHTML = 'Si tienes mas de {{ restriccion.tiempo_min }}{% if restriccion.tiempo_max is not None %}-{% endif %}{{ restriccion.tiempo_max }} años de servicio. Puedes solicitar hasta ${{ restriccion.val_max|intcomma }}, con un plazo maximo de {{ restriccion.plazo_max }} meses';
                             listElement.appendChild(listItem{{ forloop.counter }});
                         {% endfor %}
                     {% endif %}

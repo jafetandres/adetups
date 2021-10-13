@@ -42,6 +42,9 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.nombres
 
+    def __str__(self):
+        return self.nombres+' '+self.apellidos
+
 
 class Rubro(models.Model):
     descripcion = models.CharField(max_length=50, null=True, blank=True)
@@ -82,6 +85,9 @@ class Socio(models.Model):
     rubros = models.ManyToManyField(RubroSocio, blank=True, null=True)
 
     objects = SocioManager()
+
+    def __str__(self):
+        return self.usuario.nombres+' '+self.usuario.apellidos
 
     # tiempo = models.SmallIntegerField()  # Field name made lowercase.
 
@@ -148,6 +154,9 @@ class RestriccionClaseCredito(models.Model):
     estado = models.BooleanField(default=True, blank=True, null=True)  # Field name made lowercase.
     fecha_creacion = models.DateTimeField(auto_now=True, blank=True, null=True)
 
+    def __str__(self):
+        return str(self.id)
+
 
 class Parametro(models.Model):
     # clasecredito = models.ForeignKey(ClaseCredito, models.CASCADE)
@@ -213,9 +222,9 @@ class SolicitudCredito(models.Model):
     porcentaje_interes = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     observaciones = models.TextField(blank=True, null=True)
 
-    def as_list(self):
+    def as_list(self, path):
         from django.contrib.humanize.templatetags.humanize import intcomma
-        acciones = '<a class="btn btn-warning" href="/asistente/solicitudcreditoupdate/' + str(
+        acciones = '<a class="btn btn-warning" href="' + path + str(
             self.id) + '" aria-label="Edit"><b>Ver</b></a>'
         monto = '$ ' + str(intcomma(self.monto))
         socio = self.socio.usuario.nombres.title() + ' ' + self.socio.usuario.apellidos.title()

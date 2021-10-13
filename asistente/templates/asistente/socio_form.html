@@ -32,21 +32,23 @@
                     </div>
                 {% endif %}
             </div>
-            <form method="post" id="formularioId">
+            <form method="post" id="formularioId" autocomplete="off">
                 {% csrf_token %}
                 <div class="form-row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="nombresId">Nombres</label>
                             <input class="form-control py-4" id="nombresId" name="nombres" type="text"
-                                   placeholder="Ingrese los nombres" value="{{ socio.usuario.nombres|title }}" required/>
+                                   placeholder="Ingrese los nombres" value="{{ socio.usuario.nombres|title }}"
+                                   required/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="apellidosId">Apellidos</label>
                             <input class="form-control py-4" id="apellidosId" name="apellidos" type="text"
-                                   placeholder="Ingrese los apellidos" value="{{ socio.usuario.apellidos|title }}" required/>
+                                   placeholder="Ingrese los apellidos" value="{{ socio.usuario.apellidos|title }}"
+                                   required/>
                         </div>
                     </div>
                 </div>
@@ -55,7 +57,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="small mb-1" for="usernameId">Cédula</label>
-                                <input class="form-control py-4" id="usernameId" name="username" type="text"
+                                <input class="form-control py-4" id="cedulaId" name="username" type="number"
                                        placeholder="Ingrese la cédula" value="{{ usuario.username }}"
                                        required/>
                             </div>
@@ -95,7 +97,7 @@
                         <div class="form-group">
                             <label class="small mb-1" for="direccionId">Dirección</label>
                             <input class="form-control py-4" id="direccionId" name="direccion" type="text"
-                                   placeholder="Ingrese la dirección" value="{{ socio.direccion }}" required/>
+                                   placeholder="Ingrese la dirección" value="{{ socio.direccion|default_if_none:"" }}"/>
                         </div>
                     </div>
                 </div>
@@ -104,14 +106,14 @@
                         <div class="form-group">
                             <label class="small mb-1" for="telefonoId">Teléfono</label>
                             <input class="form-control py-4" id="telefonoId" name="telefono" type="tel"
-                                   placeholder="Ingrese el teléfono" value="{{ socio.telefono }}" required/>
+                                   placeholder="Ingrese el teléfono" value="{{ socio.telefono|default_if_none:"" }}"/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="celularId">Celular</label>
                             <input class="form-control py-4" id="celularId" name="celular" type="tel"
-                                   placeholder="Ingrese el celular" value="{{ socio.celular }}" required/>
+                                   placeholder="Ingrese el celular" value="{{ socio.celular|default_if_none:"" }}" required/>
                         </div>
                     </div>
                 </div>
@@ -120,14 +122,14 @@
                         <div class="form-group">
                             <label class="small mb-1" for="cargoId">Cargo</label>
                             <input class="form-control py-4" id="cargoId" name="cargo" type="text"
-                                   placeholder="Ingrese el cargo" value="{{ socio.cargo }}" required/>
+                                   placeholder="Ingrese el cargo" value="{{ socio.cargo|default_if_none:"" }}" required/>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="areaId">Área</label>
                             <input class="form-control py-4" id="areaId" name="area" type="text"
-                                   placeholder="Ingrese el area" value="{{ socio.area }}" required/>
+                                   placeholder="Ingrese el area" value="{{ socio.area|default_if_none:"" }}" required/>
                         </div>
                     </div>
                 </div>
@@ -230,19 +232,7 @@
 
 
     </script>
-    <script>
-        function soloNumeros(evt) {
-            var theEvent = evt || window.event;
-            var key = theEvent.keyCode || theEvent.which;
-            key = String.fromCharCode(key);
-            if (key.length == 0) return;
-            var regex = /^[0-9.,\b]+$/;
-            if (!regex.test(key)) {
-                theEvent.returnValue = false;
-                if (theEvent.preventDefault) theEvent.preventDefault();
-            }
-        }
-    </script>
+
     <script>
         $('#fecha_nacimientoId').datepicker({
             language: 'es-ES',

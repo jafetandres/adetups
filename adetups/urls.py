@@ -29,7 +29,8 @@ urlpatterns = [
     path('socio/', include('socio.urls', namespace='socio')),
     path('asistente/', include('asistente.urls', namespace='asistente')),
     path('presidente/', include('presidente.urls', namespace='presidente')),
-    path('resportes/',include('reportes.urls',namespace='reportes'))
+    path('resportes/', include('reportes.urls', namespace='reportes')),
+    path('genericos/', include('genericos.urls', namespace='genericos'))
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

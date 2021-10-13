@@ -78,3 +78,10 @@ def contar_dias(day1, month1, year1, day2, month2, year2):
         else:
             total = day2 - day1
             return total
+
+
+def calcular_tiempo_servicio(fecha_ingreso):
+    from datetime import date
+    return int(contar_dias(fecha_ingreso.day, fecha_ingreso.month, fecha_ingreso.year,
+                           date.today().day,
+                           date.today().month, date.today().year) / 365)

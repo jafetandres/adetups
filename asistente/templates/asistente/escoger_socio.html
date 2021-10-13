@@ -15,7 +15,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="small mb-1" for="cedulaId">Cédula</label>
-                            <input class="form-control py-4" id="cedulaId" name="cedula" type="text"
+                            <input class="form-control py-4" id="cedulaId" name="cedula" type="number"
                                    placeholder="Ingrese la cédula" required/>
                         </div>
                     </div>
@@ -35,4 +35,7 @@
             </form>
         </div>
     </div>
+{% endblock %}
+{% block js %}
+    {{ block.super }}
 {% endblock %}

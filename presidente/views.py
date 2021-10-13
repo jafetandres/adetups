@@ -1,23 +1,17 @@
-import io
 import numpy as np
 import numpy_financial as npf
 import datetime
 from django.contrib import messages
 from dateutil import relativedelta
 from django.contrib.auth import login
-from django.contrib.auth.mixins import  AccessMixin
+from django.contrib.auth.mixins import AccessMixin
 from django.db import IntegrityError
-from django.http import HttpResponseRedirect, FileResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, UpdateView, ListView, DetailView, CreateView, DeleteView
 from sistema.models import SolicitudCredito, Credito, Cuota, Socio, Usuario, RubroSocio, ClaseCredito, \
     RestriccionClaseCredito, Rubro, LiquidacionCredito
-from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Spacer, Paragraph, ListFlowable, ListItem
 
 
 class PresidenteRequiredMixin(AccessMixin):
@@ -33,7 +27,7 @@ class PresidenteRequiredMixin(AccessMixin):
         return super(PresidenteRequiredMixin, self).dispatch(request, *args, **kwargs)
 
 
-class HomePageView(PresidenteRequiredMixin,TemplateView):
+class HomePageView(PresidenteRequiredMixin, TemplateView):
     template_name = "presidente/index.html"
 
     def get_context_data(self, **kwargs):
@@ -489,84 +483,3 @@ class LicquidacionCreditoCreate(PresidenteRequiredMixin, CreateView):
     def get_success_url(self):
         credito = Credito.objects.get(id=self.kwargs['credito_id'])
         return reverse_lazy('asistente:creditodetail', args=[credito.id]) + '?ok'
-
-
-PAGE_WIDTH = A4[0]
-PAGE_HEIGHT = A4[1]
-styles = getSampleStyleSheet()
-
-
-def resultadoTest(request):
-    if request.method == 'POST':
-        # nombre = str(request.POST.get('nombre', False))
-        titulo = 'Créditos'  # + nombre
-
-        buffer = io.BytesIO()
-        h1 = ParagraphStyle(
-            'subtitulo',
-            fontName="Times-Roman",
-            fontSize=14,
-            leading=20)
-        h2 = ParagraphStyle(
-            'subtitulo',
-            fontName="Times-Roman",
-            fontSize=12,
-            leading=16)
-        doc = SimpleDocTemplate(buffer)
-        story = [Spacer(0, 80)]
-        estilo = styles['Normal']
-        linkStyle = ParagraphStyle(
-            'link',
-            textColor='#3366BB'
-        )
-        paragraphStyle = ParagraphStyle('parrafos',
-                                        alignment=TA_JUSTIFY,
-                                        fontSize=10,
-                                        fontName="Times-Roman",
-                                        )
-        # actividades_alimentacion = request.session.get('actividades_alimentacion')
-        # if actividades_alimentacion:
-        #     story.append(Paragraph('<b>Alimentación</b>', h1))
-        #     lista = ListFlowable(
-        #         [ListItem(Paragraph(actividad, paragraphStyle)
-        #                   )
-        #          for actividad in
-        #          actividades_alimentacion], bulletFontSize=10, bulletFontName="Times-Roman", bulletType='bullet',
-        #         leftIndent=10)
-        #     story.append(lista)
-        #     story.append(Spacer(1, 0.1 * inch))
-        #     story.append(Spacer(1, 0.1 * inch))
-        #     story.append(Paragraph('Desde:', h2))
-        #     story.append(Paragraph('Hasta:', h2))
-        #     story.append(Paragraph('http://www.arasaac.org/herramientas.php', linkStyle))
-        #     story.append(Paragraph('http://wikinclusion.org/index.php/1028', linkStyle))
-        #     story.append(Paragraph('http://wikinclusion.org/index.php/1018', linkStyle))
-        #     story.append(Paragraph('http://wikinclusion.org/index.php/1020', linkStyle))
-        #     story.append(Spacer(1, 0.1 * inch))
-        doc.build(story, onFirstPage=myFirstPage, onLaterPages=myLaterPages)
-        buffer.seek(0)
-        nombre = ''
-        return FileResponse(buffer, as_attachment=True, filename='adetups_reportecredito.pdf')
-    return render(request, 'presidente/reportes_credito.html')
-
-
-# Definimos las caracteristicas fijas de la primera página
-def myFirstPage(canvas, doc):
-    canvas.saveState()
-    canvas.setTitle("Adetups_reportcredito")
-    titulo = 'Reporte Créditos'
-    archivo_imagen = ''
-    # canvas.drawImage(archivo_imagen, 40, 750, 120, 90, preserveAspectRatio=True, mask='auto')
-    canvas.setFont('Times-Bold', 20)
-    canvas.drawCentredString(PAGE_WIDTH / 2.0, PAGE_HEIGHT - 108, titulo)
-    canvas.setFont('Times-Roman', 9)
-    canvas.drawString(inch, 0.75 * inch, "Página %s" % (doc.page))
-    canvas.restoreState()
-
-
-# Definimos disposiciones alternas para las caracteristicas de las otras páginas
-def myLaterPages(canvas, doc):
-    canvas.saveState()
-    canvas.setFont('Times-Roman', 9)
-    canvas.drawString(inch, 0.75 * inch, "Página %d" % (doc.page))
-    canvas.restoreState()

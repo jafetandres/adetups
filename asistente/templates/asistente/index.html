@@ -40,6 +40,8 @@
         <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
             <a class="nav-link" href="{% url 'asistente:solicitudcreditolist' %}">Solicitudes de Créditos</a>
             <a class="nav-link" href="{% url 'asistente:creditolist' %}">Créditos</a>
+            <a class="nav-link" href="{% url 'asistente:sociolist' %}">Socios</a>
+
             <a class="nav-link collapsed" href="#" data-toggle="collapse"
                data-target="#procesosCollapseRubros" aria-expanded="false"
                aria-controls="procesosCollapseRubros">
@@ -64,7 +66,7 @@
     <div class="collapse" id="collapseReportes" aria-labelledby="headingTwo"
          data-parent="#sidenavAccordion">
         <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-            <a class="nav-link" href="{% url 'asistente:reportescreditos' %}">Créditos</a>
+            <a class="nav-link" href="#">Créditos</a>
         </nav>
     </div>
 {% endblock %}
@@ -107,7 +109,8 @@
             <div class="card bg-primary text-white mb-4">
                 <div class="card-body">Solicitudes de Credito</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{% url 'asistente:solicitudcreditolist' %}">Lista de
+                    <a class="small text-white stretched-link" href="{% url 'asistente:solicitudcreditolist' %}">Lista
+                        de
                         solicitudes de credito</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
@@ -116,6 +119,7 @@
     </div>
 {% endblock %}
 {% block js %}
+    {{ block.super }}
     <script>
         function refrescarTable() {
             $('#tabla_solicitudes_credito').DataTable().ajax.reload();
@@ -124,7 +128,7 @@
     <script>
         $('#tabla_solicitudes_credito').DataTable({
             "bServerSide": true,
-            "sAjaxSource": "{% url 'asistente:table-as-json' %}",
+            "sAjaxSource": "{% url 'genericos:table-as-json' 'asistente' %}",
             "columnDefs": [
                 {className: "text-center", "targets": [5]}
             ],

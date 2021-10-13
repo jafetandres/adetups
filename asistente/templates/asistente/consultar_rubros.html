@@ -13,9 +13,6 @@
                 </div>
             </div>
         </div>
-        {% if 'ok' in request.GET %}
-            <div class="alert alert-success" role="alert">Registro creado correctamente</div>
-        {% endif %}
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-danger m-1" role="alert">{{ message }}</div>
@@ -27,12 +24,13 @@
                 <div class="form-row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <input type="text" placeholder="Ingrese el numero de cedula del socio" name="username"
+                            <input type="number" placeholder="Ingrese la cedula del socio" name="username"
+                                   id="cedulaId"
                                    class="form-control"/>
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-adetups">Cargar Rubros</button>
+                        <button type="submit" class="btn btn-adetups">Buscar Rubros</button>
                     </div>
                 </div>
                 {% if socio %}
@@ -118,35 +116,4 @@
             </div>
         </div>
     </div>
-{% endblock %}
-{% block js %}
-    <script>
-        $('#tablaRubrosSocio').dataTable({
-            paging: true,
-            searching: true,
-            pageLength: 20,
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    extend: 'print',
-                    text: 'Imprimir'
-                }],
-            language: {
-                search: "Buscar:",
-                lengthMenu: "Mostrar _MENU_ registros",
-                info: "Se muestra de _START_ a _END_ registros de _TOTAL_ registros en total",
-                infoEmpty: "Se muestra 0 registros de 0 ",
-                infoFiltered: "(Hay _MAX_ registros en total)",
-                infoPostFix: "",
-                loadingRecords: "Cargando...",
-                zeroRecords: "No existen registros",
-                paginate: {
-                    first: "Primero",
-                    previous: "Previo",
-                    next: "Siguiente",
-                    last: "Anterior"
-                },
-            },
-        });
-    </script>
 {% endblock %}

@@ -4,7 +4,6 @@
 {% endblock %}
 {% block cuenta %}
     href="{% url 'presidente:usuarioupdate' request.user.id %}"
-
 {% endblock %}
 {% block navbar %}
     <div class="sb-sidenav-menu-heading">Principal</div>
@@ -62,7 +61,7 @@
     <div class="collapse" id="collapseReportes" aria-labelledby="headingTwo"
          data-parent="#sidenavAccordion">
         <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-            <a class="nav-link" href="{% url 'presidente:reportecredito' %}">Créditos</a>
+            {#            <a class="nav-link" href="{% url 'presidente:reportecredito' %}">Créditos</a>#}
         </nav>
     </div>
 {% endblock %}
@@ -73,102 +72,66 @@
     </ol>
     <div class="row">
         <div class="col-xl-3 col-md-6">
-            <div class="card bg-warning text-white mb-4">
-                <div class="card-body">Rubros del socio</div>
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">Creditos</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{% url 'presidente:consultar_rubros' %}">Ver</a>
+                    <a class="small text-white stretched-link" href="#">Lista de creditos</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
         </div>
         <div class="col-xl-3 col-md-6">
-            <div class="card bg-success text-white mb-4">
-                <div class="card-body">Creditos</div>
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">Solicitudes de Credito</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="#">Ver</a>
+                    <a class="small text-white stretched-link" href={% url 'presidente:solicitudcreditolist' %}>Lista de
+                        solicitudes de credito</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="card mb-4">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-6">
-                    <i class="fas fa-table mr-1"></i>
-                    Solicitudes de Credito
-                </div>
-            </div>
-        </div>
-        <div class="card-body">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} m-1" role="alert">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                    <tr>
-                        <th>Socio</th>
-                        <th>Fecha de creación</th>
-                        <th>Garante</th>
-                        <th>Monto</th>
-                        <th>Clase de Credito</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                    </thead>
-                    <tfoot>
-                    <tr>
-                        <th>Socio</th>
-                        <th>Fecha de ingreso</th>
-                        <th>Garante</th>
-                        <th>Monto</th>
-                        <th>Clase de Credito</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                    </tfoot>
-                    <tbody>
-                    {% for solicitudcredito in solicitudescredito %}
-                        <tr>
-                            <td>
-                                <a href="{% url 'presidente:sociodetail' solicitudcredito.socio.usuario.id %}">{{ solicitudcredito.socio.usuario.nombres|title }} {{ solicitudcredito.socio.usuario.apellidos|title }}</a>
-                            </td>
-                            <td>{{ solicitudcredito.fecha_ingreso|date:"D d M Y" }}</td>
-                            <td>{{ solicitudcredito.garante.usuario.nombres|title }} {{ solicitudcredito.garante.usuario.apellidos|title }}
-                            </td>
-                            <td>$ {{ solicitudcredito.monto }}</td>
-                            <td>{{ solicitudcredito.clasecredito.descripcion|title }}</td>
-                            <td>
-                                {% if solicitudcredito.estado == 'pendiente' %}
-                                    <p class="text-warning">Pendiente</p>
-                                {% elif solicitudcredito.estado == 'aprobada' %}
-                                    <p class="text-success">Aprobada</p>
-                                {% elif solicitudcredito.estado == 'negada' %}
-                                    <p class="text-danger">Negada</p>
-                                {% elif solicitudcredito.estado == 'revisada' %}
-                                    <p class="text-success">Revisada</p>
-                                {% else %}
-                                    {{ solicitudcredito.estado|title }}
-                                {% endif %}
-
-                            </td>
-                            <td class="text-center">
-                                <a class="btn btn-warning"
-                                   href="{% url 'presidente:solicitudcreditoupdate' solicitudcredito.id %}"
-                                   aria-label="Edit">
-                                    Ver
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
 {% endblock %}
-{% block btn_imprimir %}
+{% block js %}
+    <script>
+        function refrescarTable() {
+            $('#tabla_solicitudes_credito').DataTable().ajax.reload();
+        }
+    </script>
+    <script>
+        $('#tabla_solicitudes_credito').DataTable({
+            "bServerSide": true,
+            "sAjaxSource": "{% url 'genericos:table-as-json' 'presidente' %}",
+            "columnDefs": [
+                {className: "text-center", "targets": [5]}
+            ],
+
+            {#dom: 'Bfrtip',#}
+            {#buttons: [#}
+            {#    {#}
+            {#        text: 'My button',#}
+            {#        action: function (e, dt, node, config) {#}
+            {#            alert('Button activated');#}
+            {#        }#}
+            {#    }#}
+            {#],#}
+
+            language: {
+                search: "Buscar:",
+                lengthMenu: "Mostrar _MENU_ registros",
+                info: "Se muestra de _START_ a _END_ registros de _TOTAL_ registros en total",
+                infoEmpty: "Se muestra 0 registros de 0 ",
+                infoFiltered: "(Hay _MAX_ registros en total)",
+                infoPostFix: "",
+                loadingRecords: "Cargando...",
+                zeroRecords: "No existen registros",
+                paginate: {
+                    first: "Primero",
+                    previous: "Previo",
+                    next: "Siguiente",
+                    last: "Anterior"
+                },
+            }
+        });
+    </script>
 {% endblock %}

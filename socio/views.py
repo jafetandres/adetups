@@ -1,11 +1,9 @@
-from datetime import date
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.mixins import AccessMixin
 from django.shortcuts import render, redirect
-from socio.forms import SolicitudCreditoForm
+from genericos.SolicitudCredito.SolicitudCreditoCreate import SolicitudCreditoCreate
 from django.urls import reverse_lazy
-from django.db.models import Q
 from django.views.generic import DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from sistema.models import SolicitudCredito, Socio, ClaseCredito, Credito, \
@@ -40,166 +38,9 @@ class SolicitudCreditoDetailView(SocioRequiredMixin, DetailView):
     template_name = 'socio/solicitudcredito_detail.html'
 
 
-def diasHastaFecha(day1, month1, year1, day2, month2, year2):
-    # Función para calcular si un año es bisiesto o no
-
-    def esBisiesto(year):
-        return year % 4 == 0 and year % 100 != 0 or year % 400 == 0
-
-    # Caso de años diferentes
-
-    if (year1 < year2):
-
-        # Días restante primer año
-
-        if esBisiesto(year1) == False:
-            diasMes = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-        else:
-            diasMes = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-
-        restoMes = diasMes[month1] - day1
-
-        restoYear = 0
-        i = month1 + 1
-
-        while i <= 12:
-            restoYear = restoYear + diasMes[i]
-            i = i + 1
-
-        primerYear = restoMes + restoYear
-
-        # Suma de días de los años que hay en medio
-
-        sumYear = year1 + 1
-        totalDias = 0
-
-        while (sumYear < year2):
-            if esBisiesto(sumYear) == False:
-                totalDias = totalDias + 365
-                sumYear = sumYear + 1
-            else:
-                totalDias = totalDias + 366
-                sumYear = sumYear + 1
-
-        # Dias año actual
-
-        if esBisiesto(year2) == False:
-            diasMes = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-        else:
-            diasMes = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-
-        llevaYear = 0
-        lastYear = 0
-        i = 1
-
-        while i < month2:
-            llevaYear = llevaYear + diasMes[i]
-            i = i + 1
-
-        lastYear = day2 + llevaYear
-
-        return totalDias + primerYear + lastYear
-
-    # Si estamos en el mismo año
-
-    else:
-
-        if esBisiesto(year1) == False:
-            diasMes = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-        else:
-            diasMes = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-
-        llevaYear = 0
-        total = 0
-        i = month1
-
-        if i < month2:
-            while i < month2:
-                llevaYear = llevaYear + diasMes[i]
-                i = i + 1
-            total = day2 + llevaYear - 1
-            return total
-        else:
-            total = day2 - day1
-            return total
-
-
-def calcular_tiempo_servicio(fecha_ingreso):
-    return int(diasHastaFecha(fecha_ingreso.day, fecha_ingreso.month, fecha_ingreso.year,
-                              date.today().day,
-                              date.today().month, date.today().year) / 365)
-
-
-class SolicitudCreditoCreate(SocioRequiredMixin, CreateView):
-    model = SolicitudCredito
-    form_class = SolicitudCreditoForm
+class SolicitudCreditoCreate(SocioRequiredMixin, SolicitudCreditoCreate, CreateView):
     template_name = 'socio/solicitudcredito_form.html'
     success_url = reverse_lazy('socio:home')
-
-    def get(self, request, *args, **kwargs):
-        socio = Socio.objects.get(usuario_id=self.request.user.id)
-        if Credito.objects.filter(socio=socio, estado='aprobado').exists():
-            messages.error(request, 'El socio ya tiene un prestamo activo y no puede solicitar otro')
-        return super().get(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        clasecreditos = []
-        for clasecredito in ClaseCredito.objects.all():
-            if clasecredito.estado == 'ACT':
-                if RestriccionClaseCredito.objects.filter(clasecredito=clasecredito.id):
-                    clasecreditos.append(clasecredito)
-
-        context["clasecreditos"] = clasecreditos
-        socio = Socio.objects.get(usuario_id=self.request.user.id)
-        garantes = Socio.objects.filter(is_garante=False).filter(~Q(id=socio.id))
-        context["socio"] = socio
-        context["garantes"] = garantes
-        num_anios = 0
-        if socio.fecha_ingreso is not None:
-            num_anios = calcular_tiempo_servicio(socio.fecha_ingreso)
-        else:
-            messages.error(self.request, 'El socio no tiene fecha de ingreso actualize sus datos por favor.')
-        context["anios_servicio"] = num_anios
-        return context
-
-    def form_valid(self, form):
-        socio = Socio.objects.get(usuario_id=self.request.user.id)
-        if socio.fecha_ingreso is None:
-            messages.error(self.request,
-                           'El socio no tiene informacion sobre su fecha de ingreso.El socio primero debe actualizar toda su informacion en Cuenta')
-            return redirect('socio:solicitudcreditocreate')
-        from operator import attrgetter
-        data = form.cleaned_data
-        monto = data["monto"]
-        plazo_max = data["plazo"]
-        num_anios = calcular_tiempo_servicio(socio.fecha_ingreso)
-        clasecredito = data['clasecredito']
-        restricciones = clasecredito.restricciones.all().order_by('-tiempo_min')
-        m = min(restricciones, key=attrgetter("tiempo_min"))
-        if num_anios < m.tiempo_min:
-            messages.error(self.request, 'Verifique su tiempo de servicio')
-            return redirect('socio:solicitudcreditocreate')
-
-        restriccion = min(restricciones, key=lambda x: int(attrgetter("tiempo_min")(x)) - num_anios > 0)
-
-        if monto > restriccion.val_max:
-            messages.error(self.request, 'Error el monto solicitado excede el limite de la restriccion del prestamo.')
-            return redirect('socio:solicitudcreditocreate')
-        if plazo_max > restriccion.plazo_max:
-            messages.error(self.request, 'Error el plazo  excede el limite de la restriccion del prestamo')
-            return redirect('socio:solicitudcreditocreate')
-        if Credito.objects.filter(socio=socio, estado='aprobado').exists():
-            messages.error(self.request, 'El socio ya tiene un prestamo activo y no puede solicitar otro')
-            return redirect('socio:solicitudcreditocreate')
-
-        form.instance.porcentaje_interes = data['clasecredito'].porcentaje_interes
-        form.instance.socio = socio
-        self.object = form.save()
-        garante = data['garante']
-        garante.is_garante = True
-        garante.save()
-        return super().form_valid(form)
 
 
 def cuota_list(request):
@@ -222,7 +63,7 @@ def rubro_list(request):
     return render(request, 'socio/consultar_rubros.html', {'rubros': rubros})
 
 
-class UsuarioUpdate(SocioRequiredMixin, UpdateView):
+class SocioUpdate(SocioRequiredMixin, UpdateView):
     model = Usuario
     template_name = 'socio/perfil.html'
     fields = ['nombres', 'apellidos', 'fecha_nacimiento']
@@ -292,8 +133,3 @@ def cambiar_password(request):
             messages.success(request, "Contraseña cambiada")
             login(request, usuario)
     return render(request, 'socio/cambiar_password.html')
-
-
-def generar_solicitud_pdf(request, pk):
-    from reportes.views import generar_reporte_solicitudcredito
-    return generar_reporte_solicitudcredito(request, pk)

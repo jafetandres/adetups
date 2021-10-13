@@ -24,17 +24,19 @@ from django.urls import path
 
 from sistema.models import *
 
-
 csrf_protect_m = method_decorator(csrf_protect)
 sensitive_post_parameters_m = method_decorator(sensitive_post_parameters())
 
 
-
 class SocioAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'direccion')
+    list_display = ('id', 'usuario', 'celular', 'cedula', 'is_garante')
+
+    def cedula(self, obj):
+        return obj.usuario.username
 
 
 admin.site.register(Socio, SocioAdmin)
+
 
 class RubroAdmin(admin.ModelAdmin):
     list_display = ('descripcion', 'tipo')
@@ -42,45 +44,24 @@ class RubroAdmin(admin.ModelAdmin):
 
 admin.site.register(Rubro, RubroAdmin)
 
+
 class RubroSocioAdmin(admin.ModelAdmin):
-    list_display = ('rubro', 'descripcion')
+    list_display = ('id', 'rubro', 'descripcion')
 
 
 admin.site.register(RubroSocio, RubroSocioAdmin)
-
-class AdtclascreAdmin(admin.ModelAdmin):
-    list_display = ('clcdescri', 'clccodigo')
-
-
-admin.site.register(Adtclascre, AdtclascreAdmin)
-
-
-class AdtclasolAdmin(admin.ModelAdmin):
-    list_display = ('csocodigo', 'csoabrev')
-
-
-admin.site.register(Adtclasol, AdtclasolAdmin)
-
-
-class AdtclcreqAdmin(admin.ModelAdmin):
-    list_display = ('ccrplamax', 'clccodigo')
-
-
-admin.site.register(Adtclcreq, AdtclcreqAdmin)
-
 
 
 class UserAdmin(admin.ModelAdmin):
     add_form_template = 'admin/auth/user/add_form.html'
     change_user_password_template = None
 
-
     search_fields = ('nombres', 'apellidos', 'username')
 
     form = UserChangeForm
     add_form = UserCreationForm
     change_password_form = AdminPasswordChangeForm
-    list_display = ('nombres', 'apellidos', 'username')
+    list_display = ('nombres', 'apellidos', 'username', 'tipo')
 
     ordering = ('username',)
     filter_horizontal = ('groups', 'user_permissions',)
@@ -228,18 +209,31 @@ class UserAdmin(admin.ModelAdmin):
 
 admin.site.register(Usuario, UserAdmin)
 
-admin.site.register(Adtcredito)
-admin.site.register(Adtdetrub)
-# admin.site.register(Adtevento)
-# admin.site.register(Adtevndet)
-admin.site.register(SolicitudCredito)
-admin.site.register(ClaseCredito)
-admin.site.register(Adtparam)
-admin.site.register(Adtperfil)
-admin.site.register(Adtregdet)
-admin.site.register(Adtregistro)
-admin.site.register(Adtrubros)
-admin.site.register(Adtrubsoc)
-admin.site.register(Adtsocios)
-admin.site.register(Adtsolcre)
-admin.site.register(Adtusuario)
+
+class SolicitudCreditoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'socio', 'monto', 'plazo')
+
+
+admin.site.register(SolicitudCredito, SolicitudCreditoAdmin)
+
+
+class ClaseCreditoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'descripcion', 'estado')
+
+
+admin.site.register(ClaseCredito, ClaseCreditoAdmin)
+
+
+class RestriccionClaseCreditoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'tiempo_min', 'val_max', 'plazo_max')
+
+
+admin.site.register(RestriccionClaseCredito, RestriccionClaseCreditoAdmin)
+
+
+class CreditoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'socio', 'monto', 'fecha_ingreso')
+
+
+admin.site.register(Credito, CreditoAdmin)
+admin.site.register(Cuota)

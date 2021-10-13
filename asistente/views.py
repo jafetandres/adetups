@@ -1,9 +1,7 @@
-import io
 import datetime
 import numpy as np
 import numpy_financial as npf
 from dateutil import relativedelta
-from datetime import date
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.mixins import AccessMixin
@@ -12,14 +10,7 @@ from django.http import HttpResponseRedirect, FileResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView, ListView, DeleteView
-from reportlab.graphics.shapes import Line, Drawing
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Spacer, Paragraph, Table, TableStyle, PageBreak
-from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
-from asistente.forms import SolicitudCreditoForm
+from genericos.SolicitudCredito.SolicitudCreditoCreate import SolicitudCreditoCreate
 from sistema.forms import UsuarioForm
 from sistema.models import SolicitudCredito, Usuario, Socio, ClaseCredito, RubroSocio, Credito, Parametro, Rubro, Cuota, \
     LiquidacionCredito, RestriccionClaseCredito
@@ -29,44 +20,6 @@ from pyexcel_xlsx import get_data as xlsx_get
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import generic
 from braces.views import JSONResponseMixin
-
-
-class TableAsJSON(JSONResponseMixin, generic.View):
-    model = SolicitudCredito
-
-    def get(self, request, *args, **kwargs):
-        col_name_map = {
-            '0': 'socio',
-            '1': 'fecha_ingreso',
-            '2': 'monto',
-            '3': 'clasecredito',
-            '4': 'estado',
-            '5': 'acciones',
-        }
-        object_list = self.model.objects.all()
-        search_text = request.GET.get('sSearch', '').lower()
-        start = int(request.GET.get('iDisplayStart', 0))
-        delta = int(request.GET.get('iDisplayLength', 50))
-        sort_dir = request.GET.get('sSortDir_0', 'asc')
-        sort_col = int(request.GET.get('iSortCol_0', 0))
-        sort_col_name = request.GET.get('mDataProp_%s' % sort_col, '1')
-        sort_dir_prefix = (sort_dir == 'desc' and '-' or '')
-
-        if sort_col_name in col_name_map:
-            sort_col = col_name_map[sort_col_name]
-            object_list = object_list.order_by('%s%s' % (sort_dir_prefix, sort_col))
-
-        filtered_object_list = object_list
-        if len(search_text) > 0:
-            filtered_object_list = object_list.filter_on_search(search_text)
-
-        json = {
-            "iTotalRecords": object_list.count(),
-            "iTotalDisplayRecords": filtered_object_list.count(),
-            "sEcho": request.GET.get('sEcho', 1),
-            "aaData": [obj.as_list() for obj in filtered_object_list[start:(start + delta)]]
-        }
-        return self.render_json_response(json)
 
 
 class AsistenteRequiredMixin(AccessMixin):
@@ -236,97 +189,9 @@ class SolicitudCreditoUpdate(AsistenteRequiredMixin, UpdateView):
         return reverse_lazy('asistente:solicitudcreditoupdate', args=[self.object.id])
 
 
-class SolicitudCreditoCreate(AsistenteRequiredMixin, CreateView):
-    model = SolicitudCredito
-    form_class = SolicitudCreditoForm
+class SolicitudCreditoCreate(SolicitudCreditoCreate):
     template_name = 'asistente/solicitudcredito_form.html'
-    success_url = reverse_lazy('asistente:home')
-
-    def get(self, request, *args, **kwargs):
-        socio = Socio.objects.get(usuario_id=self.request.user.id)
-        if self.kwargs['usuario_id']:
-            socio = Socio.objects.get(usuario_id=self.kwargs['usuario_id'])
-        if Credito.objects.filter(socio=socio, estado='aprobado').exists():
-            messages.error(request, 'El socio ya tiene un prestamo activo y no puede solicitar otro')
-        return super().get(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        clasecreditos = ClaseCredito.objects.all()
-        garantes = Socio.objects.filter(is_garante=False)
-        context["clasecreditos"] = clasecreditos
-        socio_usuario = Socio.objects.get(usuario_id=self.kwargs['usuario_id'])
-        context["socio"] = socio_usuario
-        context["garantes"] = garantes
-        socio = Socio.objects.get(usuario_id=self.request.user.id)
-        if self.kwargs['usuario_id']:
-            socio = Socio.objects.get(usuario_id=self.kwargs['usuario_id'])
-        fecha_actual = date.today()
-        if socio.fecha_ingreso is not None:
-            num_anios = diasHastaFecha(socio.fecha_ingreso.day, socio.fecha_ingreso.month, socio.fecha_ingreso.year,
-                                       fecha_actual.day,
-                                       fecha_actual.month, fecha_actual.year) / 365
-        else:
-            num_anios = 0
-            messages.error(self.request, 'El socio no tiene fecha de ingreso actualize sus datos')
-        context["anios_servicio"] = int(num_anios)
-        return context
-
-    def form_valid(self, form):
-        socio = Socio.objects.get(usuario_id=self.request.user.id)
-        if self.kwargs['usuario_id']:
-            socio = Socio.objects.get(usuario_id=self.kwargs['usuario_id'])
-        data = form.cleaned_data
-        if Credito.objects.filter(socio=socio, estado='aprobado').exists():
-            messages.error(self.request, 'El socio ya tiene un prestamo activo y no puede solicitar otro')
-            return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
-
-        if socio.fecha_ingreso is None:
-            messages.error(self.request,
-                           'El socio no tiene informacion sobre su fecha de ingreso.El socio primero debe actualizar toda su informacion en Cuenta')
-            return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
-
-        fecha_actual = date.today()
-        num_anios = diasHastaFecha(socio.fecha_ingreso.day, socio.fecha_ingreso.month, socio.fecha_ingreso.year,
-                                   fecha_actual.day,
-                                   fecha_actual.month, fecha_actual.year) / 365
-        # if int(num_anios) < data['clasecredito'].tiempo_minimo_servicio:
-        #     messages.error(self.request,
-        #                    'El socio no cumple con el tiempo minimo de servicio para esta clase de prestamo')
-        #     return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
-
-        for restriccion in data['clasecredito'].restricciones.all():
-            if int(num_anios) >= restriccion.tiempo_min:
-                if data['monto'] < restriccion.val_min or data['monto'] > restriccion.val_max:
-                    messages.error(self.request,
-                                   'Por favor  revise que el monto ingresado respete la restriccion del credito')
-                    return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
-
-                if data['plazo'] > restriccion.plazo_max:
-                    messages.error(self.request,
-                                   'Por favor  revise que el plazo ingresado respete la restriccion del credito')
-                    return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
-            else:
-                messages.error(self.request,
-                               'Por favor  revise su tiempo de servicio')
-                return redirect('asistente:solicitudcreditocreate', socio.usuario.id)
-
-        # garante = Socio.objects.get(id=data['garante'])
-        # solicitudcredito = form.save(commit=False)
-        # solicitudcredito.garante = Socio.objects.get(id=data['garante'])
-        # print(data['clasecredito'].)
-        # form.instance.cuota = 10.00
-        # form.instance.interes = 10.00
-        # para
-        form.instance.porcentaje_interes = data['clasecredito'].porcentaje_interes
-        form.instance.socio = socio
-        # form.instance.garante = Socio.objects.get(id=data['garante'])
-        # form.instance.clasecredito = ClaseCredito.objects.get(id=1)
-        self.object = form.save()
-        garante = data['garante']
-        garante.is_garante = True
-        garante.save()
-        return super().form_valid(form)
+    success_url = reverse_lazy('asistente:solicitudcreditolist')
 
 
 class SocioCreate(AsistenteRequiredMixin, CreateView):
@@ -1050,9 +915,6 @@ class RestriccionClaseCreditoCreate(AsistenteRequiredMixin, CreateView):
     def get_success_url(self):
         messages.success(self.request, "Registro creado exitosamente")
         return reverse_lazy('asistente:restriccionclasecreditolist')
-
-
-
 
 # def reportes_creditos(request):
 #     if request.method == 'POST':

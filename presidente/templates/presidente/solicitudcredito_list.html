@@ -15,67 +15,7 @@
                     <div class="alert alert-{{ message.tags }} m-1" role="alert">{{ message }}</div>
                 {% endfor %}
             {% endif %}
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                    <tr>
-                        <th>Socio</th>
-                        <th>Fecha de creación</th>
-                        <th>Garante</th>
-                        <th>Monto</th>
-                        <th>Clase de Credito</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                    </thead>
-                    <tfoot>
-                    <tr>
-                        <th>Socio</th>
-                        <th>Fecha de ingreso</th>
-                        <th>Garante</th>
-                        <th>Monto</th>
-                        <th>Clase de Credito</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                    </tfoot>
-                    <tbody>
-                    {% for solicitudcredito in solicitudcredito_list %}
-                        <tr>
-                            <td>
-                                <a href="{% url 'presidente:sociodetail' solicitudcredito.socio.usuario.id %}">{{ solicitudcredito.socio.usuario.nombres|title }} {{ solicitudcredito.socio.usuario.apellidos|title }}</a>
-                            </td>
-                            <td>{{ solicitudcredito.fecha_ingreso|date:"D d M Y" }}</td>
-                            <td>{{ solicitudcredito.garante.usuario.nombres|title }} {{ solicitudcredito.garante.usuario.apellidos|title }}
-                            </td>
-                            <td>$ {{ solicitudcredito.monto }}</td>
-                            <td>{{ solicitudcredito.clasecredito.descripcion|title }}</td>
-                            <td>
-                                {% if solicitudcredito.estado == 'pendiente' %}
-                                    <p class="text-warning">Pendiente</p>
-                                {% elif solicitudcredito.estado == 'aprobada' %}
-                                    <p class="text-success">Aprobada</p>
-                                {% elif solicitudcredito.estado == 'negada' %}
-                                    <p class="text-danger">Negada</p>
-                                {% elif solicitudcredito.estado == 'revisada' %}
-                                    <p class="text-success">Revisada</p>
-                                {% else %}
-                                    {{ solicitudcredito.estado|title }}
-                                {% endif %}
-
-                            </td>
-                            <td class="text-center">
-                                <a class="btn btn-warning"
-                                   href="{% url 'presidente:solicitudcreditoupdate' solicitudcredito.id %}"
-                                   aria-label="Edit">
-                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% include 'presidente/tabla_solicitudes_credito.html' %}
         </div>
     </div>
 {% endblock %}

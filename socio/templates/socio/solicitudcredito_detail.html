@@ -36,9 +36,9 @@
                 </div>
                 <div class="col-md-2">
                     <a class="btn btn-outline-primary" target="_blank"
-                       href="{% url 'socio:generarsolicitudpdf' solicitudcredito.id %}"> <i class="fa fa-print"
-                                                                                            aria-hidden="true"></i>
-                        Imprimir Solicitud
+                       href="{% url 'reportes:reportesolicitudcredito' solicitudcredito.id %}"> <i class="fa fa-print"
+                                                                                                   aria-hidden="true"></i>
+                        Descargar Solicitud PDF
                     </a>
                 </div>
             </div>
@@ -89,7 +89,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="small mb-1" for="fecha_ingresoId">Fecha de ingreso</label>
-                        <p id="fecha_ingresoId">{{ solicitudcredito.socio.fecha_ingreso}}</p>
+                        <p id="fecha_ingresoId">{{ solicitudcredito.socio.fecha_ingreso }}</p>
                     </div>
                 </div>
             </div>

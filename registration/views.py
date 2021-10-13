@@ -37,3 +37,49 @@ def login_view(request):
         else:
             messages.error(request, 'Usuario o contraseña incorrectos.')
     return render(request, 'registration/login.html')
+
+
+def cambiar_password(request):
+    bandera = False
+    if request.method == 'POST':
+        if len(request.POST['new_password2']) < 8:
+            bandera = False
+            messages.warning(request, "La nueva contraseña debe tener minimo 8 caracteres")
+        else:
+            bandera = True
+        indice = 0
+        mayusculas = 0
+        minusculas = 0
+        while indice < len(request.POST['new_password2']):
+            letra = request.POST['new_password2'][indice]
+            if letra.isupper() == True:
+                mayusculas += 1
+            else:
+                minusculas += 1
+            indice += 1
+        if mayusculas < 1:
+            bandera = False
+            messages.warning(request, "La nueva contraseña debe tener minimo una letra en mayuscula")
+
+        else:
+            bandera = True
+        if minusculas < 1:
+            bandera = False
+            messages.warning(request, "La nueva contraseña debe tener minimo una letra en minuscula")
+
+        else:
+            bandera = True
+        if request.POST['new_password1'] != request.POST['new_password2']:
+            bandera = False
+            messages.warning(request, "La nueva contraseña no coicide con la confirmacion")
+
+        else:
+            bandera = True
+        if bandera is True:
+            usuario = Usuario.objects.get(id=request.user.id)
+            usuario.set_password(request.POST['new_password2'])
+            usuario.save()
+            messages.success(request, "Contraseña cambiada")
+            login(request, usuario)
+            return redirect('/')
+    return render(request, 'registration/password_change_form.html')
